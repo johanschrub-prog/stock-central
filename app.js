@@ -277,32 +277,43 @@ if(categorieActive === "DASHBOARD"){
         <strong>${valeurRCLP.toFixed(2)} €</strong>
     </div>
 
-    <div class="card">
-        <h2>📊 GLOBAL</h2>
+ <div class="card">
 
-        Articles :
-        ${totalArticles}
+<h2>📊 GLOBAL</h2>
 
-        <br><br>
+Articles :
+${totalArticles}
 
-        Articles sans prix :
-        ${sansPrix}
+<br><br>
 
-        <br><br>
+Articles sans prix :
+${sansPrix}
 
-        Articles stock zéro :
-        ${stockZero}
+<br><br>
 
-        <br><br>
+Articles stock zéro :
+${stockZero}
 
-        Valeur totale :
+<br><br>
 
-        <strong>
-        ${(valeurHDLP + valeurRCLP).toFixed(2)} €
-        </strong>
+Valeur HDLP :
+${valeurHDLP.toFixed(2)} €
 
-    </div>
-    `;
+<br><br>
+
+Valeur RCLP :
+${valeurRCLP.toFixed(2)} €
+
+<br><br>
+
+<strong style="font-size:22px;color:#1976d2">
+
+Valeur totale :
+${(valeurHDLP + valeurRCLP).toFixed(2)} €
+
+</strong>
+
+</div>
 
     return;
 }
@@ -510,24 +521,27 @@ stock = {
             String(a.code) === String(code)
         );
 
-        stock[categorie].push({
+      stock[categorie].push({
 
-            id:
-            ancien?.id ||
-            crypto.randomUUID(),
+    id:
+    ancien?.id ||
+    crypto.randomUUID(),
 
-            code: code,
+    code: code,
 
-            article:
-            row.ARTICLE || "",
+    article:
+    row.ARTICLE || "",
 
-            stock:
-            ancien?.stock || 0,
+    stock:
+    ancien?.stock || 0,
 
-            prix:
-            ancien?.prix || 0
+    prix:
+    ancien?.prix || 0,
 
-        });
+    mouvements:
+    ancien?.mouvements || []
+
+});
 
     });
 
