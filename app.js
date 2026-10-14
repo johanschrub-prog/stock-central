@@ -65,6 +65,34 @@ function importStock(event){
     reader.readAsText(file);
 
 }
+function exportStock(){
+
+    const blob =
+    new Blob(
+        [
+            JSON.stringify(
+                stock,
+                null,
+                2
+            )
+        ],
+        {
+            type:"application/json"
+        }
+    );
+
+    const lien =
+    document.createElement("a");
+
+    lien.href =
+    URL.createObjectURL(blob);
+
+    lien.download =
+    "stock-central.json";
+
+    lien.click();
+
+}
 function renderOnglets(){
 
 document.getElementById(
@@ -298,57 +326,16 @@ localStorage.getItem(STORAGE_KEY)
 
 stock = {
 
-"HDLP MINI BAR":
-ancienStock["HDLP MINI BAR"] || [],
+"HDLP MINI BAR": [],
+"HDLP SOFT": [],
+"HDLP BAR": [],
+"HDLP SEMINAIRE": [],
 
-"HDLP SOFT":
-ancienStock["HDLP SOFT"] || [],
-
-"HDLP BAR":
-ancienStock["HDLP BAR"] || [],
-
-"HDLP SEMINAIRE":
-ancienStock["HDLP SEMINAIRE"] || [],
-
-"RCLP ALCOOL":
-ancienStock["RCLP ALCOOL"] || [],
-
-"RCLP SOFT":
-ancienStock["RCLP SOFT"] || [],
-
-"RCLP VIN":
-ancienStock["RCLP VIN"] || []
+"RCLP ALCOOL": [],
+"RCLP SOFT": [],
+"RCLP VIN": []
 
 };
-function exportStock(){
-
-    const blob =
-    new Blob(
-        [
-            JSON.stringify(
-                stock,
-                null,
-                2
-            )
-        ],
-        {
-            type:
-            "application/json"
-        }
-    );
-
-    const lien =
-    document.createElement("a");
-
-    lien.href =
-    URL.createObjectURL(blob);
-
-    lien.download =
-    "stock-central.json";
-
-    lien.click();
-
-}
         function importerFeuille(
             nomFeuille,
             categorie
@@ -372,11 +359,11 @@ function exportStock(){
     row.CODE ||
     "";
 
-    const ancien =
-    stock[categorie]
-    ?.find(a =>
-        String(a.code) === String(code)
-    );
+const ancien =
+ancienStock[categorie]
+?.find(a =>
+    String(a.code) === String(code)
+);
 
     stock[categorie].push({
 
@@ -398,7 +385,7 @@ function exportStock(){
     });
 
 });
-`
+
 
             });
 
