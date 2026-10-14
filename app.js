@@ -270,7 +270,36 @@ renderOnglets();
 render();
 
 }
+function importRemonteeHDLP(){
 
+    const mouvements =
+    JSON.parse(
+        localStorage.getItem(
+            "remonteeHDLP"
+        )
+    ) || [];
+
+    alert(
+        mouvements.length +
+        " mouvement(s) trouvé(s)"
+    );
+
+}
+function importRemonteeRCLP(){
+
+    const mouvements =
+    JSON.parse(
+        localStorage.getItem(
+            "remonteeRCLP"
+        )
+    ) || [];
+
+    alert(
+        mouvements.length +
+        " mouvement(s) trouvé(s)"
+    );
+
+}
 function render(){
 
 const liste =
