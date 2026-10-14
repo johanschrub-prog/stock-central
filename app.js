@@ -226,17 +226,18 @@ function importerExcel(event){
             {type:"array"}
         );
 
-        stock = {
+stock = {
 
-            "CAVE MINI BAR": [],
-            "CAVE SOFT": [],
-            "CAVE BAR": [],
-            "CAVE SEMINAIRE": [],
+    "HDLP MINI BAR": [],
+    "HDLP SOFT": [],
+    "HDLP BAR": [],
+    "HDLP SEMINAIRE": [],
 
-            "CAVE ALCOOL": [],
-            "CAVE VIN": []
+    "RCLP ALCOOL": [],
+    "RCLP SOFT": [],
+    "RCLP VIN": []
 
-        };
+};
 
         function importerFeuille(
             nomFeuille,
@@ -279,40 +280,40 @@ function importerExcel(event){
 
         }
 
-        importerFeuille(
-            "INVENTAIRE HDLP CAVE MINI BAR",
-            "CAVE MINI BAR"
-        );
+ importerFeuille(
+    "INVENTAIRE HDLP CAVE MINI BAR",
+    "HDLP MINI BAR"
+);
 
-        importerFeuille(
-            "INVENTAIRE HDLP CAVE SOFT",
-            "HDLP SOFT"
-        );
+importerFeuille(
+    "INVENTAIRE HDLP CAVE SOFT",
+    "HDLP SOFT"
+);
 
-        importerFeuille(
-            "INVENTAIRE CAVE BAR",
-            "CAVE BAR"
-        );
+importerFeuille(
+    "INVENTAIRE CAVE BAR",
+    "HDLP BAR"
+);
 
-        importerFeuille(
-            "INVENTAIRE CAVE SEMINAIRE",
-            "CAVE SEMINAIRE"
-        );
+importerFeuille(
+    "INVENTAIRE CAVE SEMINAIRE",
+    "HDLP SEMINAIRE"
+);
 
-        importerFeuille(
-            "INVENTAIRE RCLP CAVE ALCOOL",
-            "CAVE ALCOOL"
-        );
+importerFeuille(
+    "INVENTAIRE RCLP CAVE ALCOOL",
+    "RCLP ALCOOL"
+);
 
-        importerFeuille(
-            "INVENTAIRE RCLP CAVE SOFT",
-            "RCLP SOFT"
-        );
+importerFeuille(
+    "INVENTAIRE RCLP CAVE SOFT",
+    "RCLP SOFT"
+);
 
-        importerFeuille(
-            "INVENTAIRE RCLP CAVE VIN",
-            "CAVE VIN"
-        );
+importerFeuille(
+    "INVENTAIRE RCLP CAVE VIN",
+    "RCLP VIN"
+);
 
         save();
 
