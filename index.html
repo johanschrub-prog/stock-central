@@ -1,1 +1,136 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
 
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Stock Central</title>
+
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+
+<style>
+
+body{
+    font-family:Segoe UI,sans-serif;
+    margin:0;
+    background:#f5f6f8;
+}
+
+header{
+    background:#1976d2;
+    color:white;
+    padding:15px;
+    text-align:center;
+}
+
+.tabs{
+    display:flex;
+    gap:10px;
+    padding:10px;
+    background:white;
+    overflow:auto;
+}
+
+.tab{
+    border:none;
+    border-radius:8px;
+    padding:10px 15px;
+    cursor:pointer;
+    background:#ddd;
+    white-space:nowrap;
+}
+
+.active{
+    background:#1976d2;
+    color:white;
+}
+
+.toolbar{
+    display:flex;
+    gap:10px;
+    padding:10px;
+    background:white;
+    flex-wrap:wrap;
+}
+
+input{
+    padding:10px;
+}
+
+.cards{
+    padding:10px;
+}
+
+.card{
+    background:white;
+    border-radius:12px;
+    padding:15px;
+    margin-bottom:10px;
+    box-shadow:0 2px 6px rgba(0,0,0,.15);
+}
+
+.valeur{
+    color:#1976d2;
+    font-weight:bold;
+}
+
+#btnAccueil{
+    position:fixed;
+    bottom:20px;
+    right:20px;
+    width:55px;
+    height:55px;
+    border:none;
+    border-radius:50%;
+    background:#1976d2;
+    color:white;
+    font-size:24px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+<h2>📦 STOCK CENTRAL</h2>
+</header>
+
+<div id="ongletsPrincipaux" class="tabs"></div>
+
+<div id="sousOnglets" class="tabs"></div>
+
+<div class="toolbar">
+
+<input
+id="search"
+placeholder="Recherche article ou code"
+oninput="render()">
+
+<button onclick="document.getElementById('importExcel').click()">
+📥 Import Inventaire
+</button>
+
+<input
+type="file"
+id="importExcel"
+accept=".xlsx"
+style="display:none"
+onchange="importerExcel(event)">
+
+</div>
+
+<div id="cards" class="cards"></div>
+
+<button
+id="btnAccueil"
+onclick="location.href='https://johanschrub-prog.github.io/hotel-paix-hub/'">
+🏠
+</button>
+
+<script src="app.js"></script>
+
+</body>
+</html>
