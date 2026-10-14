@@ -438,7 +438,12 @@ onclick="modifierArticle('${a.id}')">
 ✏️ Modifier
 
 </button>
+<button
+onclick="voirMouvements('${a.id}')">
 
+📜 Historique
+
+</button>
 </div>
 `;
 
@@ -526,6 +531,36 @@ stock = {
 "RCLP VIN": []
 
 };
+        function voirMouvements(id){
+
+    const article =
+    (stock[categorieActive] || [])
+    .find(a => a.id === id);
+
+    if(!article) return;
+
+    if(
+        !article.mouvements ||
+        article.mouvements.length === 0
+    ){
+        alert("Aucun mouvement");
+        return;
+    }
+
+    alert(
+        article.mouvements
+        .map(m =>
+
+            `${m.date}
+${m.type}
+${m.quantite}
+${m.origine}`
+
+        )
+        .join("\n\n")
+    );
+
+}
      function importerFeuille(
     nomFeuille,
     categorie
