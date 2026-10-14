@@ -353,7 +353,7 @@ if(categorieActive === "DASHBOARD"){
 
     });
 
- document.getElementById("cards").innerHTML ="";
+document.getElementById("cards").innerHTML = `
 
 <div class="card">
     <h2>🏨 HDLP</h2>
@@ -408,6 +408,7 @@ ${(valeurHDLP + valeurRCLP).toFixed(2)} €
 </div>
 
 `;
+
 renderOnglets();
 return;
 
