@@ -44,32 +44,7 @@ header{
 .active{
     color:white;
 }
-document.getElementById(
-"ongletsPrincipaux"
-).innerHTML = `
 
-<button
-class="tab"
-style="${
-siteActif==='HDLP'
-? 'background:#1976d2;color:white;'
-: ''
-}"
-onclick="changerSite('HDLP')">
-🏨 STOCK HDLP
-</button>
-
-<button
-class="tab"
-style="${
-siteActif==='RCLP'
-? 'background:#ff9800;color:white;'
-: ''
-}"
-onclick="changerSite('RCLP')">
-🍴 STOCK RCLP
-</button>
-`;
 .toolbar{
     display:flex;
     gap:10px;
