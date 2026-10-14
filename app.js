@@ -5,9 +5,9 @@ JSON.parse(
 localStorage.getItem(STORAGE_KEY)
 ) || {};
 
-let siteActif = "HDLP";
 
-let categorieActive = "DASHBOARD";
+
+let categorieActive = "";
 
 const categories = {
 
@@ -67,9 +67,10 @@ function importStock(event){
 }
 function modifierArticle(id){
 
-    const article =
-    stock[categorieActive]
-    .find(a => a.id === id);
+  const article =
+(stock[categorieActive] || [])
+.find(a => a.id === id);
+
 
     if(!article) return;
 
@@ -128,75 +129,82 @@ function exportStock(){
     lien.click();
 
 }
-function changerSite(site){
+function renderOnglets(){
 
-siteActif = site;
+document.getElementById(
+"ongletsPrincipaux"
+).innerHTML = `
 
-if(site === "HDLP"){
-
-    categorieActive = "HDLP MINI BAR";
-
-}
-else if(site === "RCLP"){
-
-    categorieActive = "RCLP ALCOOL";
-
-}
-else{
-
-    categorieActive = "DASHBOARD";
-
-}
-
-renderOnglets();
-
-render();
-
-}
-
-let html = "";
-
-       
-
-categories[siteActif]
-.forEach(c=>{
-
-const couleur =
-siteActif === "RCLP"
-? "#ff9800"
-: "#1976d2";
-
-const style =
-categorieActive === c
-? `background:${couleur};color:white;`
-: "";
-
-html += `
 <button
 class="tab"
-style="${style}"
-onclick="changerCategorie('${c}')">
-${c==="DASHBOARD" ? "📊 TABLEAU DE BORD" : c}
+style="${
+siteActif==='DASHBOARD'
+? 'background:#28a745;color:white;'
+: ''
+}"
+onclick="changerSite('DASHBOARD')">
+📊 TABLEAU DE BORD
+</button>
+
+<button
+class="tab"
+style="${
+siteActif==='HDLP'
+? 'background:#1976d2;color:white;'
+: ''
+}"
+onclick="changerSite('HDLP')">
+🏨 STOCK HDLP
+</button>
+
+<button
+class="tab"
+style="${
+siteActif==='RCLP'
+? 'background:#ff9800;color:white;'
+: ''
+}"
+onclick="changerSite('RCLP')">
+🍴 STOCK RCLP
 </button>
 `;
 
-});
+let html = "";
 
-if(siteActif === "DASHBOARD"){
+if(siteActif !== "DASHBOARD"){
 
-    document.getElementById(
-        "sousOnglets"
-    ).innerHTML = "";
+    categories[siteActif]
+    .forEach(c=>{
+
+        const couleur =
+        siteActif === "RCLP"
+        ? "#ff9800"
+        : "#1976d2";
+
+        const style =
+        categorieActive === c
+        ? `background:${couleur};color:white;`
+        : "";
+
+        html += `
+        <button
+        class="tab"
+        style="${style}"
+        onclick="changerCategorie('${c}')">
+
+        ${c}
+
+        </button>
+        `;
+    });
 
 }
-else{
 
-    document.getElementById(
-        "sousOnglets"
-    ).innerHTML = html;
+document.getElementById(
+"sousOnglets"
+).innerHTML = html;
 
 }
-
 function changerSite(site){
 
 siteActif = site;
@@ -222,6 +230,7 @@ renderOnglets();
 render();
 
 }
+
 function changerCategorie(cat){
 
 categorieActive = cat;
@@ -285,23 +294,23 @@ if(categorieActive === "DASHBOARD"){
 
     });
 
-    document.getElementById("cards").innerHTML = `
+ document.getElementById("cards").innerHTML = `
 
-    <div class="card">
-        <h2>🏨 HDLP</h2>
-        Valeur du stock :
-        <br><br>
-        <strong>${valeurHDLP.toFixed(2)} €</strong>
-    </div>
+<div class="card">
+    <h2>🏨 HDLP</h2>
+    Valeur du stock :
+    <br><br>
+    <strong>${valeurHDLP.toFixed(2)} €</strong>
+</div>
 
-    <div class="card">
-        <h2>🍴 RCLP</h2>
-        Valeur du stock :
-        <br><br>
-        <strong>${valeurRCLP.toFixed(2)} €</strong>
-    </div>
+<div class="card">
+    <h2>🍴 RCLP</h2>
+    Valeur du stock :
+    <br><br>
+    <strong>${valeurRCLP.toFixed(2)} €</strong>
+</div>
 
- <div class="card">
+<div class="card">
 
 <h2>📊 GLOBAL</h2>
 
@@ -339,7 +348,10 @@ ${(valeurHDLP + valeurRCLP).toFixed(2)} €
 
 </div>
 
-    return;
+`;
+
+return;
+
 }
 liste
 .filter(a=>
@@ -481,9 +493,7 @@ document.getElementById(
 
 }
 
-renderOnglets();
 
-render();
 function importerExcel(event){
 
     const file = event.target.files[0];
@@ -614,6 +624,7 @@ importerFeuille(
 
     };
 
-    reader.readAsArrayBuffer(file);
+       reader.readAsArrayBuffer(file);
 
 }
+changerSite("DASHBOARD");
