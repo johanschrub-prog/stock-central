@@ -261,17 +261,33 @@ function importerExcel(event){
             e.target.result,
             {type:"array"}
         );
+const ancienStock =
+JSON.parse(
+localStorage.getItem(STORAGE_KEY)
+) || {};
 
 stock = {
 
-    "HDLP MINI BAR": [],
-    "HDLP SOFT": [],
-    "HDLP BAR": [],
-    "HDLP SEMINAIRE": [],
+"HDLP MINI BAR":
+ancienStock["HDLP MINI BAR"] || [],
 
-    "RCLP ALCOOL": [],
-    "RCLP SOFT": [],
-    "RCLP VIN": []
+"HDLP SOFT":
+ancienStock["HDLP SOFT"] || [],
+
+"HDLP BAR":
+ancienStock["HDLP BAR"] || [],
+
+"HDLP SEMINAIRE":
+ancienStock["HDLP SEMINAIRE"] || [],
+
+"RCLP ALCOOL":
+ancienStock["RCLP ALCOOL"] || [],
+
+"RCLP SOFT":
+ancienStock["RCLP SOFT"] || [],
+
+"RCLP VIN":
+ancienStock["RCLP VIN"] || []
 
 };
 
@@ -291,26 +307,40 @@ stock = {
                 {defval:""}
             );
 
-            rows.forEach(row=>{
+        rows.forEach(row=>{
 
-                stock[categorie].push({
+    const code =
+    row.NA ||
+    row.CODE ||
+    "";
 
-                    id: crypto.randomUUID(),
+    const ancien =
+    stock[categorie]
+    ?.find(a =>
+        String(a.code) === String(code)
+    );
 
-                    code:
-                    row.NA ||
-                    row.CODE ||
-                    "",
+    stock[categorie].push({
 
-                    article:
-                    row.ARTICLE ||
-                    "",
+        id:
+        ancien?.id ||
+        crypto.randomUUID(),
 
-                    stock: 0,
+        code: code,
 
-                    prix: 0
+        article:
+        row.ARTICLE || "",
 
-                });
+        stock:
+        ancien?.stock || 0,
+
+        prix:
+        ancien?.prix || 0
+
+    });
+
+});
+`
 
             });
 
