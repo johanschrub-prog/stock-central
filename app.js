@@ -349,7 +349,7 @@ ${(valeurHDLP + valeurRCLP).toFixed(2)} €
 </div>
 
 `;
-
+renderOnglets();
 return;
 
 }
@@ -618,7 +618,7 @@ importerFeuille(
 
         save();
 
-        render();
+     changerSite("DASHBOARD");
 
         alert("Import terminé");
 
