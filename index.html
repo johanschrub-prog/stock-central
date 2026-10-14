@@ -127,7 +127,19 @@ input{
 <div id="sousOnglets" class="tabs"></div>
 
 <div class="toolbar">
+    
+<input
+type="file"
+id="importStock"
+accept=".json"
+style="display:none"
+onchange="importStock(event)">
 
+<button
+    
+onclick="document.getElementById('importStock').click()">
+📂 Reprendre
+</button>
 <input
 id="search"
 placeholder="Recherche article ou code"
