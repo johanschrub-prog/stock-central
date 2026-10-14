@@ -279,9 +279,62 @@ function importRemonteeHDLP(){
         )
     ) || [];
 
+    if(mouvements.length === 0){
+
+        alert("Aucune remontée HDLP");
+
+        return;
+    }
+
+    mouvements.forEach(m => {
+
+        Object.keys(stock).forEach(categorie => {
+
+            const article =
+            stock[categorie]
+            .find(a =>
+                String(a.code) === String(m.code)
+            );
+
+            if(article){
+
+                article.stock =
+                Math.max(
+                    0,
+                    Number(article.stock || 0)
+                    -
+                    Number(m.quantite || 0)
+                );
+
+                article.mouvements.push({
+
+                    date: m.date,
+
+                    type: "SORTIE",
+
+                    quantite: m.quantite,
+
+                    origine: "REMONTEE HDLP"
+
+                });
+
+            }
+
+        });
+
+    });
+
+    save();
+
+    localStorage.removeItem(
+        "remonteeHDLP"
+    );
+
+    render();
+
     alert(
         mouvements.length +
-        " mouvement(s) trouvé(s)"
+        " mouvement(s) importé(s)"
     );
 
 }
@@ -294,9 +347,62 @@ function importRemonteeRCLP(){
         )
     ) || [];
 
+    if(mouvements.length === 0){
+
+        alert("Aucune remontée RCLP");
+
+        return;
+    }
+
+    mouvements.forEach(m => {
+
+        Object.keys(stock).forEach(categorie => {
+
+            const article =
+            stock[categorie]
+            .find(a =>
+                String(a.code) === String(m.code)
+            );
+
+            if(article){
+
+                article.stock =
+                Math.max(
+                    0,
+                    Number(article.stock || 0)
+                    -
+                    Number(m.quantite || 0)
+                );
+
+                article.mouvements.push({
+
+                    date: m.date,
+
+                    type: "SORTIE",
+
+                    quantite: m.quantite,
+
+                    origine: "REMONTEE RCLP"
+
+                });
+
+            }
+
+        });
+
+    });
+
+    save();
+
+    localStorage.removeItem(
+        "remonteeRCLP"
+    );
+
+    render();
+
     alert(
         mouvements.length +
-        " mouvement(s) trouvé(s)"
+        " mouvement(s) importé(s)"
     );
 
 }
