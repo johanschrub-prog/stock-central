@@ -65,6 +65,41 @@ function importStock(event){
     reader.readAsText(file);
 
 }
+function modifierArticle(id){
+
+    const article =
+    stock[categorieActive]
+    .find(a => a.id === id);
+
+    if(!article) return;
+
+    let nouveauStock =
+    prompt(
+        "Stock",
+        article.stock
+    );
+
+    if(nouveauStock === null) return;
+
+    let nouveauPrix =
+    prompt(
+        "Prix",
+        article.prix
+    );
+
+    if(nouveauPrix === null) return;
+
+    article.stock =
+    Number(nouveauStock);
+
+    article.prix =
+    Number(nouveauPrix);
+
+    save();
+
+    render();
+
+}
 function exportStock(){
 
     const blob =
@@ -105,6 +140,12 @@ onclick="changerSite('HDLP')">
 🏨 STOCK HDLP
 </button>
 
+<button
+onclick="modifierArticle('${a.id}')">
+
+✏️ Modifier
+
+</button>
 <button
 class="tab ${siteActif==='RCLP'?'active':''}"
 onclick="changerSite('RCLP')">
