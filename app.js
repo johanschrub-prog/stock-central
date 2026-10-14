@@ -7,11 +7,12 @@ localStorage.getItem(STORAGE_KEY)
 
 let siteActif = "HDLP";
 
-let categorieActive = "HDLP MINI BAR";
+let categorieActive = "DASHBOARD";
 
 const categories = {
 
 HDLP:[
+"DASHBOARD",
 "HDLP MINI BAR",
 "HDLP SOFT",
 "HDLP BAR",
@@ -19,6 +20,7 @@ HDLP:[
 ],
 
 RCLP:[
+"DASHBOARD",
 "RCLP ALCOOL",
 "RCLP SOFT",
 "RCLP VIN"
@@ -150,6 +152,8 @@ onclick="changerSite('RCLP')">
 
 let html = "";
 
+       
+
 categories[siteActif]
 .forEach(c=>{
 
@@ -168,7 +172,7 @@ html += `
 class="tab"
 style="${style}"
 onclick="changerCategorie('${c}')">
-${c}
+${c==="DASHBOARD" ? "📊 TABLEAU DE BORD" : c}
 </button>
 `;
 
@@ -215,7 +219,93 @@ document.getElementById("search")
 ?.toLowerCase() || "";
 
 let html = "";
+if(categorieActive === "DASHBOARD"){
 
+    let valeurHDLP = 0;
+    let valeurRCLP = 0;
+
+    let totalArticles = 0;
+    let sansPrix = 0;
+    let stockZero = 0;
+
+    Object.keys(stock).forEach(cat=>{
+
+        stock[cat].forEach(a=>{
+
+            totalArticles++;
+
+            if(Number(a.prix || 0) === 0){
+                sansPrix++;
+            }
+
+            if(Number(a.stock || 0) === 0){
+                stockZero++;
+            }
+
+            const valeur =
+                Number(a.stock || 0)
+                *
+                Number(a.prix || 0);
+
+            if(cat.startsWith("HDLP")){
+
+                valeurHDLP += valeur;
+
+            }else if(cat.startsWith("RCLP")){
+
+                valeurRCLP += valeur;
+
+            }
+
+        });
+
+    });
+
+    document.getElementById("cards").innerHTML = `
+
+    <div class="card">
+        <h2>🏨 HDLP</h2>
+        Valeur du stock :
+        <br><br>
+        <strong>${valeurHDLP.toFixed(2)} €</strong>
+    </div>
+
+    <div class="card">
+        <h2>🍴 RCLP</h2>
+        Valeur du stock :
+        <br><br>
+        <strong>${valeurRCLP.toFixed(2)} €</strong>
+    </div>
+
+    <div class="card">
+        <h2>📊 GLOBAL</h2>
+
+        Articles :
+        ${totalArticles}
+
+        <br><br>
+
+        Articles sans prix :
+        ${sansPrix}
+
+        <br><br>
+
+        Articles stock zéro :
+        ${stockZero}
+
+        <br><br>
+
+        Valeur totale :
+
+        <strong>
+        ${(valeurHDLP + valeurRCLP).toFixed(2)} €
+        </strong>
+
+    </div>
+    `;
+
+    return;
+}
 liste
 .filter(a=>
 
