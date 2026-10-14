@@ -7,7 +7,7 @@ localStorage.getItem(STORAGE_KEY)
 
 let siteActif = "HDLP";
 
-let categorieActive = "CAVE MINI BAR";
+let categorieActive = "HDLP MINI BAR";
 
 const categories = {
 
@@ -200,7 +200,43 @@ ${valeur.toFixed(2)} €
 `;
 
 });
+let totalStock = 0;
+let totalValeur = 0;
 
+liste.forEach(a => {
+
+    totalStock += Number(a.stock || 0);
+
+    totalValeur +=
+    Number(a.stock || 0)
+    *
+    Number(a.prix || 0);
+
+});
+
+html += `
+
+<div class="card">
+
+<b>RÉCAPITULATIF</b>
+
+<br><br>
+
+Articles :
+${liste.length}
+
+<br>
+
+Stock total :
+${totalStock}
+
+<br>
+
+Valeur totale :
+${totalValeur.toFixed(2)} €
+
+</div>
+`;
 document.getElementById(
 "cards"
 ).innerHTML = html;
