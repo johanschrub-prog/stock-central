@@ -290,7 +290,35 @@ ancienStock["RCLP SOFT"] || [],
 ancienStock["RCLP VIN"] || []
 
 };
+function exportStock(){
 
+    const blob =
+    new Blob(
+        [
+            JSON.stringify(
+                stock,
+                null,
+                2
+            )
+        ],
+        {
+            type:
+            "application/json"
+        }
+    );
+
+    const lien =
+    document.createElement("a");
+
+    lien.href =
+    URL.createObjectURL(blob);
+
+    lien.download =
+    "stock-central.json";
+
+    lien.click();
+
+}
         function importerFeuille(
             nomFeuille,
             categorie
