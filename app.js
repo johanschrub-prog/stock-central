@@ -280,7 +280,9 @@ stock['${categorieActive}']
 .prix=Number(this.value);
 
 save();
-">
+render();
+"
+>
 
 <br>
 
@@ -291,8 +293,16 @@ ${valeur.toFixed(2)} €
 
 </div>
 
-</div>
+<br>
 
+<button
+onclick="modifierArticle('${a.id}')">
+
+✏️ Modifier
+
+</button>
+
+</div>
 `;
 
 });
@@ -318,11 +328,15 @@ html += `
 
 <br><br>
 
+Articles :
+${liste.length}
+
+<br>
+
 Articles avec stock :
 ${liste.filter(a =>
     Number(a.stock) > 0
 ).length}
-
 
 <br>
 
