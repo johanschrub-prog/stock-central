@@ -221,11 +221,12 @@ value="${a.stock||0}"
 onchange="
 stock['${categorieActive}']
 .find(x=>x.id==='${a.id}')
-.stock=Number(this.value);
+.prix=Number(this.value);
 
 save();
 render();
-">
+"
+>
 
 
 <br><br>
