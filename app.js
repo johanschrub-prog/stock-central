@@ -224,6 +224,7 @@ stock['${categorieActive}']
 .stock=Number(this.value);
 
 save();
+render();
 ">
 
 
@@ -280,8 +281,11 @@ html += `
 
 <br><br>
 
-Articles :
-${liste.length}
+Articles avec stock :
+${liste.filter(a =>
+    Number(a.stock) > 0
+).length}
+
 
 <br>
 
@@ -336,60 +340,57 @@ stock = {
 "RCLP VIN": []
 
 };
-        function importerFeuille(
-            nomFeuille,
-            categorie
-        ){
+     function importerFeuille(
+    nomFeuille,
+    categorie
+){
 
-            const sheet =
-            workbook.Sheets[nomFeuille];
+    const sheet =
+    workbook.Sheets[nomFeuille];
 
-            if(!sheet) return;
+    if(!sheet) return;
 
-            const rows =
-            XLSX.utils.sheet_to_json(
-                sheet,
-                {defval:""}
-            );
+    const rows =
+    XLSX.utils.sheet_to_json(
+        sheet,
+        {defval:""}
+    );
 
-        rows.forEach(row=>{
+    rows.forEach(row=>{
 
-    const code =
-    row.NA ||
-    row.CODE ||
-    "";
+        const code =
+        row.NA ||
+        row.CODE ||
+        "";
 
-const ancien =
-ancienStock[categorie]
-?.find(a =>
-    String(a.code) === String(code)
-);
+        const ancien =
+        ancienStock[categorie]
+        ?.find(a =>
+            String(a.code) === String(code)
+        );
 
-    stock[categorie].push({
+        stock[categorie].push({
 
-        id:
-        ancien?.id ||
-        crypto.randomUUID(),
+            id:
+            ancien?.id ||
+            crypto.randomUUID(),
 
-        code: code,
+            code: code,
 
-        article:
-        row.ARTICLE || "",
+            article:
+            row.ARTICLE || "",
 
-        stock:
-        ancien?.stock || 0,
+            stock:
+            ancien?.stock || 0,
 
-        prix:
-        ancien?.prix || 0
+            prix:
+            ancien?.prix || 0
+
+        });
 
     });
 
-});
-
-
-            });
-
-        }
+}
 
  importerFeuille(
     "INVENTAIRE HDLP CAVE MINI BAR",
