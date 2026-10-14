@@ -1,5 +1,5 @@
 const STORAGE_KEY = "StockCentral";
-
+let siteActif = "DASHBOARD";
 let stock =
 JSON.parse(
 localStorage.getItem(STORAGE_KEY)
@@ -12,7 +12,6 @@ let categorieActive = "DASHBOARD";
 const categories = {
 
 HDLP:[
-"DASHBOARD",
 "HDLP MINI BAR",
 "HDLP SOFT",
 "HDLP BAR",
@@ -20,7 +19,6 @@ HDLP:[
 ],
 
 RCLP:[
-"DASHBOARD",
 "RCLP ALCOOL",
 "RCLP SOFT",
 "RCLP VIN"
@@ -130,25 +128,31 @@ function exportStock(){
     lien.click();
 
 }
-function renderOnglets(){
+function changerSite(site){
 
-document.getElementById(
-"ongletsPrincipaux"
-).innerHTML = `
+siteActif = site;
 
-<button
-class="tab ${siteActif==='HDLP'?'active':''}"
-onclick="changerSite('HDLP')">
-🏨 STOCK HDLP
-</button>
+if(site === "HDLP"){
 
+    categorieActive = "HDLP MINI BAR";
 
-<button
-class="tab ${siteActif==='RCLP'?'active':''}"
-onclick="changerSite('RCLP')">
-🍴 STOCK RCLP
-</button>
-`;
+}
+else if(site === "RCLP"){
+
+    categorieActive = "RCLP ALCOOL";
+
+}
+else{
+
+    categorieActive = "DASHBOARD";
+
+}
+
+renderOnglets();
+
+render();
+
+}
 
 let html = "";
 
@@ -178,26 +182,46 @@ ${c==="DASHBOARD" ? "📊 TABLEAU DE BORD" : c}
 
 });
 
-document.getElementById(
-"sousOnglets"
-).innerHTML = html;
+if(siteActif === "DASHBOARD"){
+
+    document.getElementById(
+        "sousOnglets"
+    ).innerHTML = "";
 
 }
+else{
 
+    document.getElementById(
+        "sousOnglets"
+    ).innerHTML = html;
+
+}
 
 function changerSite(site){
 
 siteActif = site;
 
-categorieActive =
-categories[site][0];
+if(site === "HDLP"){
+
+    categorieActive = "HDLP MINI BAR";
+
+}
+else if(site === "RCLP"){
+
+    categorieActive = "RCLP ALCOOL";
+
+}
+else{
+
+    categorieActive = "DASHBOARD";
+
+}
 
 renderOnglets();
 
 render();
 
 }
-
 function changerCategorie(cat){
 
 categorieActive = cat;
