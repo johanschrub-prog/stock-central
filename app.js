@@ -140,12 +140,7 @@ onclick="changerSite('HDLP')">
 🏨 STOCK HDLP
 </button>
 
-<button
-onclick="modifierArticle('${a.id}')">
 
-✏️ Modifier
-
-</button>
 <button
 class="tab ${siteActif==='RCLP'?'active':''}"
 onclick="changerSite('RCLP')">
@@ -262,7 +257,7 @@ value="${a.stock||0}"
 onchange="
 stock['${categorieActive}']
 .find(x=>x.id==='${a.id}')
-.prix=Number(this.value);
+.stock=Number(this.value);
 
 save();
 render();
