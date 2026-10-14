@@ -12,16 +12,16 @@ let categorieActive = "CAVE MINI BAR";
 const categories = {
 
 HDLP:[
-"CAVE MINI BAR",
-"CAVE SOFT",
-"CAVE BAR",
-"CAVE SEMINAIRE"
+"HDLP MINI BAR",
+"HDLP SOFT",
+"HDLP BAR",
+"HDLP SEMINAIRE"
 ],
 
 RCLP:[
-"CAVE ALCOOL",
-"CAVE SOFT",
-"CAVE VIN"
+"RCLP ALCOOL",
+"RCLP SOFT",
+"RCLP VIN"
 ]
 
 };
@@ -161,13 +161,30 @@ Stock :
 type="number"
 value="${a.stock||0}"
 onchange="
-a=this.value
+stock['${categorieActive}']
+.find(x=>x.id==='${a.id}')
+.stock=Number(this.value);
+
+save();
 ">
+
 
 <br><br>
 
 Prix :
-${Number(a.prix||0).toFixed(2)} €
+
+<input
+type="number"
+step="0.01"
+value="${a.prix||0}"
+
+onchange="
+stock['${categorieActive}']
+.find(x=>x.id==='${a.id}')
+.prix=Number(this.value);
+
+save();
+">
 
 <br>
 
@@ -193,3 +210,118 @@ document.getElementById(
 renderOnglets();
 
 render();
+function importerExcel(event){
+
+    const file = event.target.files[0];
+
+    if(!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = function(e){
+
+        const workbook =
+        XLSX.read(
+            e.target.result,
+            {type:"array"}
+        );
+
+        stock = {
+
+            "CAVE MINI BAR": [],
+            "CAVE SOFT": [],
+            "CAVE BAR": [],
+            "CAVE SEMINAIRE": [],
+
+            "CAVE ALCOOL": [],
+            "CAVE VIN": []
+
+        };
+
+        function importerFeuille(
+            nomFeuille,
+            categorie
+        ){
+
+            const sheet =
+            workbook.Sheets[nomFeuille];
+
+            if(!sheet) return;
+
+            const rows =
+            XLSX.utils.sheet_to_json(
+                sheet,
+                {defval:""}
+            );
+
+            rows.forEach(row=>{
+
+                stock[categorie].push({
+
+                    id: crypto.randomUUID(),
+
+                    code:
+                    row.NA ||
+                    row.CODE ||
+                    "",
+
+                    article:
+                    row.ARTICLE ||
+                    "",
+
+                    stock: 0,
+
+                    prix: 0
+
+                });
+
+            });
+
+        }
+
+        importerFeuille(
+            "INVENTAIRE HDLP CAVE MINI BAR",
+            "CAVE MINI BAR"
+        );
+
+        importerFeuille(
+            "INVENTAIRE HDLP CAVE SOFT",
+            "HDLP SOFT"
+        );
+
+        importerFeuille(
+            "INVENTAIRE CAVE BAR",
+            "CAVE BAR"
+        );
+
+        importerFeuille(
+            "INVENTAIRE CAVE SEMINAIRE",
+            "CAVE SEMINAIRE"
+        );
+
+        importerFeuille(
+            "INVENTAIRE RCLP CAVE ALCOOL",
+            "CAVE ALCOOL"
+        );
+
+        importerFeuille(
+            "INVENTAIRE RCLP CAVE SOFT",
+            "RCLP SOFT"
+        );
+
+        importerFeuille(
+            "INVENTAIRE RCLP CAVE VIN",
+            "CAVE VIN"
+        );
+
+        save();
+
+        render();
+
+        alert("Import terminé");
+
+    };
+
+    reader.readAsArrayBuffer(file);
+
+}
