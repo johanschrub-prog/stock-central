@@ -59,9 +59,20 @@ let html = "";
 categories[siteActif]
 .forEach(c=>{
 
+const couleur =
+siteActif === "RCLP"
+? "#ff9800"
+: "#1976d2";
+
+const style =
+categorieActive === c
+? `background:${couleur};color:white;`
+: "";
+
 html += `
 <button
-class="tab ${categorieActive===c?'active':''}"
+class="tab"
+style="${style}"
 onclick="changerCategorie('${c}')">
 ${c}
 </button>
@@ -74,6 +85,7 @@ document.getElementById(
 ).innerHTML = html;
 
 }
+
 
 function changerSite(site){
 
