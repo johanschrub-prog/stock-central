@@ -34,7 +34,37 @@ JSON.stringify(stock)
 );
 
 }
+function importStock(event){
 
+    const file =
+    event.target.files[0];
+
+    if(!file) return;
+
+    const reader =
+    new FileReader();
+
+    reader.onload =
+    function(e){
+
+        stock =
+        JSON.parse(
+            e.target.result
+        );
+
+        save();
+
+        render();
+
+        alert(
+        "Sauvegarde restaurée"
+        );
+
+    };
+
+    reader.readAsText(file);
+
+}
 function renderOnglets(){
 
 document.getElementById(
