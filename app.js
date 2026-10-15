@@ -257,8 +257,10 @@ onclick="changerSite('RCLP')">
 
 let html = "";
 
-if(siteActif !== "DASHBOARD"){
-
+if(
+    siteActif === "HDLP" ||
+    siteActif === "RCLP"
+){
     categories[siteActif]
     .forEach(c=>{
 
@@ -1698,25 +1700,9 @@ onchange="render()">
 type="date"
 id="filtreDate"
 onchange="render()">
-``
 
-        <option value="">
-        Tous
-        </option>
 
-        <option value="ENTREE">
-        Entrées
-        </option>
-
-        <option value="SORTIE">
-        Sorties
-        </option>
-
-        <option value="TRANSFERT">
-        Transferts
-        </option>
-
-    </select>
+      
 
     </div>
 
