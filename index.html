@@ -129,11 +129,7 @@ onclick="document.getElementById('importStock').click()">
 <button onclick="importRemonteeRCLP()">
 📥 Remontées RCLP
 </button>
-<input
-id="search"
-placeholder="Recherche article ou code"
-oninput="render()">
-<button onclick="importVentesBoutique()">
+    <button onclick="importVentesBoutique()">
 🛍️ Ventes Boutique
 </button>
 <button onclick="document.getElementById('importExcel').click()">
@@ -142,6 +138,11 @@ oninput="render()">
 <button onclick="exportStock()">
 💾 Sauvegarde
 </button>
+<input
+id="search"
+placeholder="Recherche article ou code"
+oninput="render()">
+
 <input
 type="file"
 id="importExcel"
