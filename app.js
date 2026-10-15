@@ -697,6 +697,217 @@ function validerImportRCLP(){
     );
 
 }
+function importVentesBoutique(){
+
+    const ventes =
+    JSON.parse(
+        localStorage.getItem(
+            "ventesBoutique"
+        )
+    ) || [];
+
+    if(ventes.length === 0){
+
+        alert(
+            "Aucune vente boutique"
+        );
+
+        return;
+
+    }
+
+    let html = `
+
+    <div class="card">
+
+    <h2>🛍️ Ventes Boutique</h2>
+
+    `;
+
+    ventes.forEach((v,index)=>{
+
+        const caveMemo =
+        localStorage.getItem(
+            "cave_" + v.code
+        ) || "HDLP SOFT";
+
+        html += `
+
+        <div style="
+        border-bottom:1px solid #ddd;
+        padding:10px;
+        ">
+
+            <b>
+            ${v.article}
+            </b>
+
+            <br>
+
+            Code :
+            ${v.code}
+
+            <br>
+
+            Quantité :
+            ${v.quantite}
+
+            <br><br>
+
+            Cave :
+
+            <select
+            id="venteBoutique_${index}">
+
+                <option value="HDLP MINI BAR"
+                ${caveMemo==="HDLP MINI BAR"?"selected":""}>
+                HDLP MINI BAR
+                </option>
+
+                <option value="HDLP SOFT"
+                ${caveMemo==="HDLP SOFT"?"selected":""}>
+                HDLP SOFT
+                </option>
+
+                <option value="HDLP BAR"
+                ${caveMemo==="HDLP BAR"?"selected":""}>
+                HDLP BAR
+                </option>
+
+                <option value="HDLP SEMINAIRE"
+                ${caveMemo==="HDLP SEMINAIRE"?"selected":""}>
+                HDLP SEMINAIRE
+                </option>
+
+                <option value="RCLP ALCOOL"
+                ${caveMemo==="RCLP ALCOOL"?"selected":""}>
+                RCLP ALCOOL
+                </option>
+
+                <option value="RCLP SOFT"
+                ${caveMemo==="RCLP SOFT"?"selected":""}>
+                RCLP SOFT
+                </option>
+
+                <option value="RCLP VIN"
+                ${caveMemo==="RCLP VIN"?"selected":""}>
+                RCLP VIN
+                </option>
+
+            </select>
+
+        </div>
+
+        `;
+
+    });
+
+    html += `
+
+    <br>
+
+    <button
+    onclick="validerImportBoutique()">
+
+    ✅ Importer les ventes
+
+    </button>
+
+    </div>
+
+    `;
+
+    document.getElementById(
+        "cards"
+    ).innerHTML = html;
+
+}
+function validerImportBoutique(){
+
+    const ventes =
+    JSON.parse(
+        localStorage.getItem(
+            "ventesBoutique"
+        )
+    ) || [];
+
+    ventes.forEach((v,index)=>{
+
+        const cave =
+
+        document
+        .getElementById(
+            "venteBoutique_" + index
+        )
+        .value;
+
+        localStorage.setItem(
+            "cave_" + v.code,
+            cave
+        );
+
+        const article =
+
+        stock[cave]
+        ?.find(a =>
+
+            String(a.code)
+
+            ===
+
+            String(v.code)
+
+        );
+
+        if(!article) return;
+
+        article.stock =
+
+        Number(article.stock || 0)
+
+        -
+
+        Number(v.quantite || 0);
+
+        if(!article.mouvements){
+
+            article.mouvements = [];
+
+        }
+
+        article.mouvements.push({
+
+            date:
+            v.date,
+
+            type:
+            "SORTIE",
+
+            quantite:
+            v.quantite,
+
+            origine:
+            "VENTE BOUTIQUE"
+
+        });
+
+    });
+
+    save();
+
+    localStorage.removeItem(
+        "ventesBoutique"
+    );
+
+    changerSite(
+        "DASHBOARD"
+    );
+
+    alert(
+        "Ventes Boutique importées ✅"
+    );
+
+}
 function render(){
 
 const liste =
