@@ -101,7 +101,7 @@ function modifierArticle(id){
     render();
 
 }
- function voirMouvements(id){
+function voirMouvements(id){
 
     const article =
     (stock[categorieActive] || [])
@@ -113,22 +113,59 @@ function modifierArticle(id){
         !article.mouvements ||
         article.mouvements.length === 0
     ){
-        alert("Aucun mouvement");
+        alert(
+            "Aucun mouvement"
+        );
         return;
     }
 
-    alert(
-        article.mouvements
-        .map(m =>
+    let texte =
+    "📜 HISTORIQUE\n\n";
 
-            `${m.date}
-${m.type}
-${m.quantite}
-${m.origine}`
+    article.mouvements
+    .slice()
+    .reverse()
+    .forEach(m => {
 
-        )
-        .join("\n\n")
-    );
+        texte +=
+
+        "📅 " +
+        (m.date || "") +
+
+        "\n" +
+
+        "Type : " +
+        (m.type || "") +
+
+        "\n" +
+
+        "Qté : " +
+        (m.quantite || 0) +
+
+        "\n" +
+
+        "Origine : " +
+        (m.origine || "") +
+
+        "\n";
+
+        if(m.fournisseur){
+
+            texte +=
+
+            "Fournisseur : " +
+
+            m.fournisseur +
+
+            "\n";
+
+        }
+
+        texte += "\n";
+
+    });
+
+    alert(texte);
 
 }
 function exportStock(){
@@ -1133,21 +1170,24 @@ function validerImportCommandeHDLP(){
 
         }
 
-        article.mouvements.push({
+     article.mouvements.push({
 
-            date:
-            c.date,
+    date:
+    c.date,
 
-            type:
-            "ENTREE",
+    type:
+    "ENTREE",
 
-            quantite:
-            c.quantite,
+    quantite:
+    c.quantite,
 
-            origine:
-            "COMMANDE HDLP"
+    origine:
+    "COMMANDE HDLP",
 
-        });
+    fournisseur:
+    c.fournisseur || ""
+
+});
 
     });
 
@@ -1385,21 +1425,24 @@ function validerImportCommandeRCLP(){
 
         }
 
-        article.mouvements.push({
+    article.mouvements.push({
 
-            date:
-            c.date,
+    date:
+    c.date,
 
-            type:
-            "ENTREE",
+    type:
+    "ENTREE",
 
-            quantite:
-            c.quantite,
+    quantite:
+    c.quantite,
 
-            origine:
-            "COMMANDE RCLP"
+    origine:
+    "COMMANDE RCLP",
 
-        });
+    fournisseur:
+    c.fournisseur || ""
+
+});
 
     });
 
