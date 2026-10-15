@@ -962,7 +962,15 @@ function importCommandeHDLP(){
 
             Quantité :
             +${c.quantite}
+<br><br>
 
+Valeur achat (€) :
+
+<input
+type="number"
+step="0.01"
+id="prixHDLP_${index}"
+placeholder="Montant total">
             <br><br>
 
             Cave :
@@ -1036,7 +1044,19 @@ function validerImportCommandeHDLP(){
             "commandeHDLP_" + index
         )
         .value;
+const montant =
+Number(
+document
+.getElementById(
+    "prixHDLP_" + index
+)
+.value || 0
+);
 
+const prixUnitaire =
+Number(c.quantite) > 0
+? montant / Number(c.quantite)
+: 0;
         localStorage.setItem(
             "cave_" + c.code,
             cave
@@ -1064,7 +1084,14 @@ function validerImportCommandeHDLP(){
         +
 
         Number(c.quantite || 0);
+if(prixUnitaire > 0){
 
+    article.prix =
+    Number(
+        prixUnitaire.toFixed(2)
+    );
+
+}
         if(!article.mouvements){
 
             article.mouvements = [];
@@ -1156,7 +1183,11 @@ function importCommandeRCLP(){
 
             Quantité :
             +${c.quantite}
-
+<input
+type="number"
+step="0.01"
+id="prixRCLP_${index}"
+placeholder="Montant total">
             <br><br>
 
             Cave :
@@ -1253,9 +1284,24 @@ function validerImportCommandeRCLP(){
         +
 
         Number(c.quantite || 0);
-
+article.prix =
+Number(
+    prixUnitaire.toFixed(2)
+);
         if(!article.mouvements){
+const montant =
+Number(
+document
+.getElementById(
+    "prixRCLP_" + index
+)
+.value || 0
+);
 
+const prixUnitaire =
+Number(c.quantite) > 0
+? montant / Number(c.quantite)
+: 0;
             article.mouvements = [];
 
         }
