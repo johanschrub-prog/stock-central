@@ -908,6 +908,391 @@ function validerImportBoutique(){
     );
 
 }
+function importCommandeHDLP(){
+
+    const commandes =
+    JSON.parse(
+        localStorage.getItem(
+            "commandeHDLP"
+        )
+    ) || [];
+
+    if(commandes.length === 0){
+
+        alert(
+            "Aucune commande HDLP"
+        );
+
+        return;
+
+    }
+
+    let html = `
+
+    <div class="card">
+
+    <h2>🚚 Commandes HDLP</h2>
+
+    `;
+
+    commandes.forEach((c,index)=>{
+
+        const caveMemo =
+        localStorage.getItem(
+            "cave_" + c.code
+        ) || "HDLP BAR";
+
+        html += `
+
+        <div style="
+        border-bottom:1px solid #ddd;
+        padding:10px;
+        ">
+
+            <b>
+            ${c.article}
+            </b>
+
+            <br>
+
+            Code :
+            ${c.code}
+
+            <br>
+
+            Quantité :
+            +${c.quantite}
+
+            <br><br>
+
+            Cave :
+
+            <select
+            id="commandeHDLP_${index}">
+
+                <option value="HDLP MINI BAR"
+                ${caveMemo==="HDLP MINI BAR"?"selected":""}>
+                HDLP MINI BAR
+                </option>
+
+                <option value="HDLP SOFT"
+                ${caveMemo==="HDLP SOFT"?"selected":""}>
+                HDLP SOFT
+                </option>
+
+                <option value="HDLP BAR"
+                ${caveMemo==="HDLP BAR"?"selected":""}>
+                HDLP BAR
+                </option>
+
+                <option value="HDLP SEMINAIRE"
+                ${caveMemo==="HDLP SEMINAIRE"?"selected":""}>
+                HDLP SEMINAIRE
+                </option>
+
+            </select>
+
+        </div>
+
+        `;
+
+    });
+
+    html += `
+
+    <br>
+
+    <button
+    onclick="validerImportCommandeHDLP()">
+
+    ✅ Importer les réceptions
+
+    </button>
+
+    </div>
+
+    `;
+
+    document.getElementById(
+        "cards"
+    ).innerHTML = html;
+
+}
+function validerImportCommandeHDLP(){
+
+    const commandes =
+    JSON.parse(
+        localStorage.getItem(
+            "commandeHDLP"
+        )
+    ) || [];
+
+    commandes.forEach((c,index)=>{
+
+        const cave =
+
+        document
+        .getElementById(
+            "commandeHDLP_" + index
+        )
+        .value;
+
+        localStorage.setItem(
+            "cave_" + c.code,
+            cave
+        );
+
+        const article =
+
+        stock[cave]
+        ?.find(a =>
+
+            String(a.code)
+
+            ===
+
+            String(c.code)
+
+        );
+
+        if(!article) return;
+
+        article.stock =
+
+        Number(article.stock || 0)
+
+        +
+
+        Number(c.quantite || 0);
+
+        if(!article.mouvements){
+
+            article.mouvements = [];
+
+        }
+
+        article.mouvements.push({
+
+            date:
+            c.date,
+
+            type:
+            "ENTREE",
+
+            quantite:
+            c.quantite,
+
+            origine:
+            "COMMANDE HDLP"
+
+        });
+
+    });
+
+    save();
+
+    localStorage.removeItem(
+        "commandeHDLP"
+    );
+
+    changerSite(
+        "DASHBOARD"
+    );
+
+    alert(
+        "Commandes HDLP importées ✅"
+    );
+
+}
+function importCommandeRCLP(){
+
+    const commandes =
+    JSON.parse(
+        localStorage.getItem(
+            "commandeRCLP"
+        )
+    ) || [];
+
+    if(commandes.length === 0){
+
+        alert(
+            "Aucune commande RCLP"
+        );
+
+        return;
+
+    }
+
+    let html = `
+
+    <div class="card">
+
+    <h2>🚚 Commandes RCLP</h2>
+
+    `;
+
+    commandes.forEach((c,index)=>{
+
+        const caveMemo =
+        localStorage.getItem(
+            "cave_" + c.code
+        ) || "RCLP ALCOOL";
+
+        html += `
+
+        <div style="
+        border-bottom:1px solid #ddd;
+        padding:10px;
+        ">
+
+            <b>${c.article}</b>
+
+            <br>
+
+            Code :
+            ${c.code}
+
+            <br>
+
+            Quantité :
+            +${c.quantite}
+
+            <br><br>
+
+            Cave :
+
+            <select
+            id="commandeRCLP_${index}">
+
+                <option value="RCLP ALCOOL"
+                ${caveMemo==="RCLP ALCOOL"?"selected":""}>
+                RCLP ALCOOL
+                </option>
+
+                <option value="RCLP SOFT"
+                ${caveMemo==="RCLP SOFT"?"selected":""}>
+                RCLP SOFT
+                </option>
+
+                <option value="RCLP VIN"
+                ${caveMemo==="RCLP VIN"?"selected":""}>
+                RCLP VIN
+                </option>
+
+            </select>
+
+        </div>
+
+        `;
+
+    });
+
+    html += `
+
+    <br>
+
+    <button
+    onclick="validerImportCommandeRCLP()">
+
+    ✅ Importer les réceptions
+
+    </button>
+
+    </div>
+
+    `;
+
+    document.getElementById(
+        "cards"
+    ).innerHTML = html;
+
+}
+function validerImportCommandeRCLP(){
+
+    const commandes =
+    JSON.parse(
+        localStorage.getItem(
+            "commandeRCLP"
+        )
+    ) || [];
+
+    commandes.forEach((c,index)=>{
+
+        const cave =
+
+        document
+        .getElementById(
+            "commandeRCLP_" + index
+        )
+        .value;
+
+        localStorage.setItem(
+            "cave_" + c.code,
+            cave
+        );
+
+        const article =
+
+        stock[cave]
+        ?.find(a =>
+
+            String(a.code)
+
+            ===
+
+            String(c.code)
+
+        );
+
+        if(!article) return;
+
+        article.stock =
+
+        Number(article.stock || 0)
+
+        +
+
+        Number(c.quantite || 0);
+
+        if(!article.mouvements){
+
+            article.mouvements = [];
+
+        }
+
+        article.mouvements.push({
+
+            date:
+            c.date,
+
+            type:
+            "ENTREE",
+
+            quantite:
+            c.quantite,
+
+            origine:
+            "COMMANDE RCLP"
+
+        });
+
+    });
+
+    save();
+
+    localStorage.removeItem(
+        "commandeRCLP"
+    );
+
+    changerSite(
+        "DASHBOARD"
+    );
+
+    alert(
+        "Commandes RCLP importées ✅"
+    );
+
+}
 function render(){
 
 const liste =
