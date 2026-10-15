@@ -1461,6 +1461,137 @@ function validerImportCommandeRCLP(){
     );
 
 }
+function transfererArticle(id){
+
+    const article =
+    (stock[categorieActive] || [])
+    .find(a => a.id === id);
+
+    if(!article) return;
+
+    const quantite =
+    Number(
+        prompt(
+            "Quantité à transférer",
+            0
+        )
+    );
+
+    if(
+        isNaN(quantite) ||
+        quantite <= 0
+    ){
+        return;
+    }
+
+    const destination =
+    prompt(
+`Destination :
+
+HDLP MINI BAR
+HDLP SOFT
+HDLP BAR
+HDLP SEMINAIRE
+
+RCLP ALCOOL
+RCLP SOFT
+RCLP VIN`
+    );
+
+    if(!destination) return;
+
+    if(!stock[destination]){
+
+        alert(
+            "Cave inconnue"
+        );
+
+        return;
+
+    }
+
+    const articleDestination =
+    stock[destination]
+    .find(a =>
+
+        String(a.code) ===
+        String(article.code)
+
+    );
+
+    if(!articleDestination){
+
+        alert(
+            "Article introuvable dans la cave destination"
+        );
+
+        return;
+
+    }
+
+    article.stock =
+    Number(article.stock || 0)
+    - quantite;
+
+    articleDestination.stock =
+    Number(articleDestination.stock || 0)
+    + quantite;
+
+    if(!article.mouvements){
+
+        article.mouvements = [];
+
+    }
+
+    if(!articleDestination.mouvements){
+
+        articleDestination.mouvements = [];
+
+    }
+
+    article.mouvements.push({
+
+        date:
+        new Date()
+        .toLocaleString(),
+
+        type:
+        "TRANSFERT SORTIE",
+
+        quantite:
+        quantite,
+
+        origine:
+        "VERS " + destination
+
+    });
+
+    articleDestination.mouvements.push({
+
+        date:
+        new Date()
+        .toLocaleString(),
+
+        type:
+        "TRANSFERT ENTREE",
+
+        quantite:
+        quantite,
+
+        origine:
+        "DEPUIS " + categorieActive
+
+    });
+
+    save();
+
+    render();
+
+    alert(
+        "Transfert effectué ✅"
+    );
+
+}
 function render(){
 
 const liste =
@@ -1663,10 +1794,18 @@ onclick="modifierArticle('${a.id}')">
 ✏️ Modifier
 
 </button>
+
 <button
 onclick="voirMouvements('${a.id}')">
 
 📜 Historique
+
+</button>
+
+<button
+onclick="transfererArticle('${a.id}')">
+
+🔄 Transférer
 
 </button>
 </div>
