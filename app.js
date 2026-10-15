@@ -274,9 +274,7 @@ function importRemonteeHDLP(){
 
     const mouvements =
     JSON.parse(
-        localStorage.getItem(
-            "remonteeHDLP"
-        )
+        localStorage.getItem("remonteeHDLP")
     ) || [];
 
     if(mouvements.length === 0){
@@ -284,43 +282,121 @@ function importRemonteeHDLP(){
         alert("Aucune remontée HDLP");
 
         return;
-
     }
 
-    mouvements.forEach(m => {
+    let html = `
+    <div class="card">
 
-        Object.keys(stock).forEach(categorie => {
+    <h2>📥 Remontées HDLP</h2>
+    `;
+
+    mouvements.forEach((m,index)=>{
+
+        html += `
+
+        <div style="
+        border-bottom:1px solid #ddd;
+        padding:8px;
+        ">
+
+        <label>
+
+        <input
+        type="checkbox"
+        checked
+        id="mvtHDLP_${index}">
+
+        ${m.article}
+
+        <br>
+
+        Code :
+        ${m.code}
+
+        <br>
+
+        Quantité :
+        ${m.quantite}
+
+        </label>
+
+        </div>
+
+        `;
+    });
+
+    html += `
+
+    <br>
+
+    <button
+    onclick="validerImportHDLP()">
+
+    ✅ Importer la sélection
+
+    </button>
+
+    </div>
+    `;
+
+    document.getElementById(
+        "cards"
+    ).innerHTML = html;
+
+}
+function validerImportHDLP(){
+
+    const mouvements =
+    JSON.parse(
+        localStorage.getItem(
+            "remonteeHDLP"
+        )
+    ) || [];
+
+    mouvements.forEach((m,index)=>{
+
+        if(
+            !document.getElementById(
+                "mvtHDLP_" + index
+            ).checked
+        ){
+            return;
+        }
+
+        Object.keys(stock)
+        .forEach(categorie=>{
 
             const article =
             stock[categorie]
             .find(a =>
-                String(a.code) === String(m.code)
+                String(a.code) ===
+                String(m.code)
             );
 
-            if(article){
+            if(!article) return;
 
-                article.stock =
-                Number(article.stock || 0)
-                -
-                Number(m.quantite || 0);
+            article.stock =
+            Number(article.stock || 0)
+            -
+            Number(m.quantite || 0);
 
-                if(!article.mouvements){
-                    article.mouvements = [];
-                }
+            if(!article.mouvements){
 
-                article.mouvements.push({
-
-                    date: m.date,
-
-                    type: "SORTIE",
-
-                    quantite: m.quantite,
-
-                    origine: "REMONTEE HDLP"
-
-                });
+                article.mouvements = [];
 
             }
+
+            article.mouvements.push({
+
+                date: m.date,
+
+                type: "SORTIE",
+
+                quantite: m.quantite,
+
+                origine: "REMONTEE HDLP"
+
+            });
 
         });
 
@@ -335,8 +411,7 @@ function importRemonteeHDLP(){
     render();
 
     alert(
-        mouvements.length +
-        " mouvement(s) importé(s)"
+        "Import terminé ✅"
     );
 
 }
@@ -344,9 +419,7 @@ function importRemonteeRCLP(){
 
     const mouvements =
     JSON.parse(
-        localStorage.getItem(
-            "remonteeRCLP"
-        )
+        localStorage.getItem("remonteeRCLP")
     ) || [];
 
     if(mouvements.length === 0){
@@ -356,39 +429,120 @@ function importRemonteeRCLP(){
         return;
     }
 
-    mouvements.forEach(m => {
+    let html = `
+    <div class="card">
 
-        Object.keys(stock).forEach(categorie => {
+    <h2>📥 Remontées RCLP</h2>
+    `;
+
+    mouvements.forEach((m,index)=>{
+
+        html += `
+
+        <div style="
+        border-bottom:1px solid #ddd;
+        padding:8px;
+        ">
+
+        <label>
+
+        <input
+        type="checkbox"
+        checked
+        id="mvtRCLP_${index}">
+
+        ${m.article}
+
+        <br>
+
+        Code :
+        ${m.code}
+
+        <br>
+
+        Quantité :
+        ${m.quantite}
+
+        </label>
+
+        </div>
+
+        `;
+
+    });
+
+    html += `
+
+    <br>
+
+    <button
+    onclick="validerImportRCLP()">
+
+    ✅ Importer la sélection
+
+    </button>
+
+    </div>
+    `;
+
+    document.getElementById(
+        "cards"
+    ).innerHTML = html;
+
+}
+function validerImportRCLP(){
+
+    const mouvements =
+    JSON.parse(
+        localStorage.getItem(
+            "remonteeRCLP"
+        )
+    ) || [];
+
+    mouvements.forEach((m,index)=>{
+
+        if(
+            !document.getElementById(
+                "mvtRCLP_" + index
+            ).checked
+        ){
+            return;
+        }
+
+        Object.keys(stock)
+        .forEach(categorie=>{
 
             const article =
             stock[categorie]
             .find(a =>
-                String(a.code) === String(m.code)
+                String(a.code) ===
+                String(m.code)
             );
 
-            if(article){
+            if(!article) return;
 
-               article.stock =
-Number(article.stock || 0)
--
-Number(m.quantite || 0);
-              if(!article.mouvements){
-    article.mouvements = [];
-}
+            article.stock =
+            Number(article.stock || 0)
+            -
+            Number(m.quantite || 0);
 
-                article.mouvements.push({
+            if(!article.mouvements){
 
-                    date: m.date,
-
-                    type: "SORTIE",
-
-                    quantite: m.quantite,
-
-                    origine: "REMONTEE RCLP"
-
-                });
+                article.mouvements = [];
 
             }
+
+            article.mouvements.push({
+
+                date: m.date,
+
+                type: "SORTIE",
+
+                quantite: m.quantite,
+
+                origine: "REMONTEE RCLP"
+
+            });
 
         });
 
@@ -403,8 +557,7 @@ Number(m.quantite || 0);
     render();
 
     alert(
-        mouvements.length +
-        " mouvement(s) importé(s)"
+        "Import RCLP terminé ✅"
     );
 
 }
