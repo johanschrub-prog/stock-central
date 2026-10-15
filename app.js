@@ -942,6 +942,25 @@ function importCommandeHDLP(){
             "cave_" + c.code
         ) || "HDLP BAR";
 
+        const articleExiste =
+        stock[caveMemo]
+        ?.find(a =>
+
+            String(a.code)
+            ===
+            String(c.code)
+
+        );
+
+        const montantDefaut =
+
+        articleExiste?.prix
+
+        ? Number(articleExiste.prix) *
+          Number(c.quantite)
+
+        : "";
+
         html += `
 
         <div style="
@@ -962,15 +981,7 @@ function importCommandeHDLP(){
 
             Quantité :
             +${c.quantite}
-<br><br>
 
-Valeur achat (€) :
-
-<input
-type="number"
-step="0.01"
-id="prixHDLP_${index}"
-placeholder="Montant total">
             <br><br>
 
             Cave :
@@ -1000,6 +1011,19 @@ placeholder="Montant total">
 
             </select>
 
+            <br><br>
+
+            Valeur achat (€)
+
+            <br>
+
+            <input
+            type="number"
+            step="0.01"
+            id="prixHDLP_${index}"
+            value="${montantDefaut}"
+            placeholder="Montant total">
+
         </div>
 
         `;
@@ -1021,11 +1045,13 @@ placeholder="Montant total">
 
     `;
 
-    document.getElementById(
-        "cards"
-    ).innerHTML = html;
+    document
+    .getElementById("cards")
+    .innerHTML =
+    html;
 
 }
+
 function validerImportCommandeHDLP(){
 
     const commandes =
@@ -1044,19 +1070,25 @@ function validerImportCommandeHDLP(){
             "commandeHDLP_" + index
         )
         .value;
-const montant =
-Number(
-document
-.getElementById(
-    "prixHDLP_" + index
-)
-.value || 0
-);
 
-const prixUnitaire =
-Number(c.quantite) > 0
-? montant / Number(c.quantite)
-: 0;
+        const montant =
+        Number(
+            document
+            .getElementById(
+                "prixHDLP_" + index
+            )
+            .value || 0
+        );
+
+        const prixUnitaire =
+
+        Number(c.quantite) > 0
+
+        ? montant /
+          Number(c.quantite)
+
+        : 0;
+
         localStorage.setItem(
             "cave_" + c.code,
             cave
@@ -1084,14 +1116,17 @@ Number(c.quantite) > 0
         +
 
         Number(c.quantite || 0);
-if(prixUnitaire > 0){
 
-    article.prix =
-    Number(
-        prixUnitaire.toFixed(2)
-    );
+        if(prixUnitaire > 0){
 
-}
+            article.prix =
+
+            Number(
+                prixUnitaire.toFixed(2)
+            );
+
+        }
+
         if(!article.mouvements){
 
             article.mouvements = [];
@@ -1165,6 +1200,25 @@ function importCommandeRCLP(){
             "cave_" + c.code
         ) || "RCLP ALCOOL";
 
+        const articleExiste =
+        stock[caveMemo]
+        ?.find(a =>
+
+            String(a.code)
+            ===
+            String(c.code)
+
+        );
+
+        const montantDefaut =
+
+        articleExiste?.prix
+
+        ? Number(articleExiste.prix) *
+          Number(c.quantite)
+
+        : "";
+
         html += `
 
         <div style="
@@ -1172,7 +1226,9 @@ function importCommandeRCLP(){
         padding:10px;
         ">
 
-            <b>${c.article}</b>
+            <b>
+            ${c.article}
+            </b>
 
             <br>
 
@@ -1183,11 +1239,7 @@ function importCommandeRCLP(){
 
             Quantité :
             +${c.quantite}
-<input
-type="number"
-step="0.01"
-id="prixRCLP_${index}"
-placeholder="Montant total">
+
             <br><br>
 
             Cave :
@@ -1212,6 +1264,19 @@ placeholder="Montant total">
 
             </select>
 
+            <br><br>
+
+            Valeur achat (€)
+
+            <br>
+
+            <input
+            type="number"
+            step="0.01"
+            id="prixRCLP_${index}"
+            value="${montantDefaut}"
+            placeholder="Montant total">
+
         </div>
 
         `;
@@ -1233,9 +1298,10 @@ placeholder="Montant total">
 
     `;
 
-    document.getElementById(
-        "cards"
-    ).innerHTML = html;
+    document
+    .getElementById("cards")
+    .innerHTML =
+    html;
 
 }
 function validerImportCommandeRCLP(){
@@ -1256,6 +1322,24 @@ function validerImportCommandeRCLP(){
             "commandeRCLP_" + index
         )
         .value;
+
+        const montant =
+        Number(
+            document
+            .getElementById(
+                "prixRCLP_" + index
+            )
+            .value || 0
+        );
+
+        const prixUnitaire =
+
+        Number(c.quantite) > 0
+
+        ? montant /
+          Number(c.quantite)
+
+        : 0;
 
         localStorage.setItem(
             "cave_" + c.code,
@@ -1284,24 +1368,19 @@ function validerImportCommandeRCLP(){
         +
 
         Number(c.quantite || 0);
-article.prix =
-Number(
-    prixUnitaire.toFixed(2)
-);
-        if(!article.mouvements){
-const montant =
-Number(
-document
-.getElementById(
-    "prixRCLP_" + index
-)
-.value || 0
-);
 
-const prixUnitaire =
-Number(c.quantite) > 0
-? montant / Number(c.quantite)
-: 0;
+        if(prixUnitaire > 0){
+
+            article.prix =
+
+            Number(
+                prixUnitaire.toFixed(2)
+            );
+
+        }
+
+        if(!article.mouvements){
+
             article.mouvements = [];
 
         }
