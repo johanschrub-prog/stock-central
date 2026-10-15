@@ -210,6 +210,11 @@ siteActif==='DASHBOARD'
 : ''
 }"
 onclick="changerSite('DASHBOARD')">
+
+📊 TABLEAU DE BORD
+
+</button>
+
 <button
 class="tab"
 style="${
@@ -222,8 +227,6 @@ onclick="changerSite('HISTORIQUE')">
 📜 HISTORIQUE
 
 </button>
-📊 TABLEAU DE BORD
-</button>
 
 <button
 class="tab"
@@ -233,7 +236,9 @@ siteActif==='HDLP'
 : ''
 }"
 onclick="changerSite('HDLP')">
+
 🏨 STOCK HDLP
+
 </button>
 
 <button
@@ -244,7 +249,9 @@ siteActif==='RCLP'
 : ''
 }"
 onclick="changerSite('RCLP')">
+
 🍴 STOCK RCLP
+
 </button>
 `;
 
@@ -1651,6 +1658,141 @@ document.getElementById("search")
 ?.toLowerCase() || "";
 
 let html = "";
+    if(categorieActive === "HISTORIQUE"){
+
+    let html = `
+
+    <div class="card">
+
+    <h2>📜 Historique Global</h2>
+
+    <label>Type :</label>
+
+    <select
+    id="filtreType"
+    onchange="render()">
+
+        <option value="">
+        Tous
+        </option>
+
+        <option value="ENTREE">
+        Entrées
+        </option>
+
+        <option value="SORTIE">
+        Sorties
+        </option>
+
+        <option value="TRANSFERT">
+        Transferts
+        </option>
+
+    </select>
+
+    </div>
+
+    `;
+
+    let mouvements = [];
+
+    Object.keys(stock)
+    .forEach(categorie => {
+
+        stock[categorie]
+        .forEach(article => {
+
+            (article.mouvements || [])
+            .forEach(m => {
+
+                mouvements.push({
+
+                    article:
+                    article.article,
+
+                    code:
+                    article.code,
+
+                    cave:
+                    categorie,
+
+                    ...m
+
+                });
+
+            });
+
+        });
+
+    });
+
+    const filtreType =
+
+    document.getElementById(
+        "filtreType"
+    )?.value || "";
+
+    mouvements
+    .reverse()
+    .forEach(m => {
+
+        if(
+            filtreType &&
+            !m.type.includes(filtreType)
+        ){
+            return;
+        }
+
+        html += `
+
+        <div class="card">
+
+            <b>
+            ${m.article}
+            </b>
+
+            <br>
+
+            ${m.code}
+
+            <br>
+
+            Type :
+            ${m.type}
+
+            <br>
+
+            Quantité :
+            ${m.quantite}
+
+            <br>
+
+            Origine :
+            ${m.origine}
+
+            <br>
+
+            Cave :
+            ${m.cave}
+
+            <br>
+
+            Date :
+            ${m.date}
+
+        </div>
+
+        `;
+
+    });
+
+    document.getElementById(
+        "cards"
+    ).innerHTML = html;
+
+    return;
+
+}
 if(categorieActive === "DASHBOARD"){
 
     let valeurHDLP = 0;
