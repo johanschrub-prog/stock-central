@@ -210,6 +210,18 @@ siteActif==='DASHBOARD'
 : ''
 }"
 onclick="changerSite('DASHBOARD')">
+<button
+class="tab"
+style="${
+siteActif==='HISTORIQUE'
+? 'background:#6f42c1;color:white;'
+: ''
+}"
+onclick="changerSite('HISTORIQUE')">
+
+📜 HISTORIQUE
+
+</button>
 📊 TABLEAU DE BORD
 </button>
 
@@ -274,30 +286,34 @@ document.getElementById(
 }
 function changerSite(site){
 
-siteActif = site;
+    siteActif = site;
 
-if(site === "HDLP"){
+    if(site === "HDLP"){
 
-    categorieActive = "HDLP MINI BAR";
+        categorieActive = "HDLP MINI BAR";
+
+    }
+    else if(site === "RCLP"){
+
+        categorieActive = "RCLP ALCOOL";
+
+    }
+    else if(site === "HISTORIQUE"){
+
+        categorieActive = "HISTORIQUE";
+
+    }
+    else{
+
+        categorieActive = "DASHBOARD";
+
+    }
+
+    renderOnglets();
+
+    render();
 
 }
-else if(site === "RCLP"){
-
-    categorieActive = "RCLP ALCOOL";
-
-}
-else{
-
-    categorieActive = "DASHBOARD";
-
-}
-
-renderOnglets();
-
-render();
-
-}
-
 function changerCategorie(cat){
 
 categorieActive = cat;
