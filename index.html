@@ -159,7 +159,83 @@ id="btnAccueil"
 onclick="location.href='https://johanschrub-prog.github.io/hotel-paix-hub/'">
 🏠
 </button>
+<div id="popupTransfert"
+style="
+display:none;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,.5);
+z-index:9999;
+">
 
+<div
+style="
+background:white;
+margin:20px;
+padding:15px;
+border-radius:12px;
+">
+
+<h3>🔄 Transfert de stock</h3>
+
+<p id="articleTransfert"></p>
+
+<input
+id="quantiteTransfert"
+type="number"
+placeholder="Quantité"
+style="width:100%;margin-bottom:10px;">
+
+<select
+id="destinationTransfert"
+style="width:100%;padding:10px;">
+
+<option value="HDLP MINI BAR">
+HDLP MINI BAR
+</option>
+
+<option value="HDLP SOFT">
+HDLP SOFT
+</option>
+
+<option value="HDLP BAR">
+HDLP BAR
+</option>
+
+<option value="HDLP SEMINAIRE">
+HDLP SEMINAIRE
+</option>
+
+<option value="RCLP ALCOOL">
+RCLP ALCOOL
+</option>
+
+<option value="RCLP SOFT">
+RCLP SOFT
+</option>
+
+<option value="RCLP VIN">
+RCLP VIN
+</option>
+
+</select>
+
+<br><br>
+
+<button onclick="validerTransfert()">
+✅ Valider
+</button>
+
+<button onclick="fermerTransfert()">
+❌ Annuler
+</button>
+
+</div>
+
+</div>
 <script src="app.js"></script>
 
 </body>
