@@ -1666,11 +1666,39 @@ let html = "";
 
     <h2>📜 Historique Global</h2>
 
-    <label>Type :</label>
+   <label>Type :</label>
 
-    <select
-    id="filtreType"
-    onchange="render()">
+<select
+id="filtreType"
+onchange="render()">
+
+    <option value="">
+    Tous
+    </option>
+
+    <option value="ENTREE">
+    Entrées
+    </option>
+
+    <option value="SORTIE">
+    Sorties
+    </option>
+
+    <option value="TRANSFERT">
+    Transferts
+    </option>
+
+</select>
+
+<br><br>
+
+<label>Date :</label>
+
+<input
+type="date"
+id="filtreDate"
+onchange="render()">
+``
 
         <option value="">
         Tous
@@ -1731,11 +1759,40 @@ let html = "";
     document.getElementById(
         "filtreType"
     )?.value || "";
+        const filtreDate =
+
+document.getElementById(
+    "filtreDate"
+)?.value || "";
 
     mouvements
     .reverse()
     .forEach(m => {
+if(
+    filtreType &&
+    !m.type.includes(
+        filtreType
+    )
+){
+    return;
+}
 
+if(filtreDate){
+
+    const dateMouvement =
+
+    new Date(m.date)
+    .toISOString()
+    .split("T")[0];
+
+    if(
+        dateMouvement !==
+        filtreDate
+    ){
+        return;
+    }
+
+}
         if(
             filtreType &&
             !m.type.includes(filtreType)
