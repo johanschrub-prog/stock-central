@@ -4,7 +4,7 @@ let stock =
 JSON.parse(
 localStorage.getItem(STORAGE_KEY)
 ) || {};
-
+let articleTransfertActif = null;
 
 
 let categorieActive = "";
@@ -1463,83 +1463,113 @@ function validerImportCommandeRCLP(){
 }
 function transfererArticle(id){
 
-    const article =
+    articleTransfertActif =
     (stock[categorieActive] || [])
     .find(a => a.id === id);
 
-    if(!article) return;
+    if(!articleTransfertActif) return;
+
+    document.getElementById(
+        "articleTransfert"
+    ).innerHTML =
+
+    "<b>" +
+    articleTransfertActif.article +
+    "</b><br>Stock : " +
+    articleTransfertActif.stock;
+
+    document.getElementById(
+        "quantiteTransfert"
+    ).value = "";
+
+    document.getElementById(
+        "popupTransfert"
+    ).style.display =
+    "block";
+
+}
+function fermerTransfert(){
+
+    document.getElementById(
+        "popupTransfert"
+    ).style.display =
+    "none";
+
+    articleTransfertActif = null;
+
+}
+function validerTransfert(){
+
+    if(!articleTransfertActif) return;
 
     const quantite =
     Number(
-        prompt(
-            "Quantité à transférer",
-            0
-        )
+        document.getElementById(
+            "quantiteTransfert"
+        ).value
     );
 
     if(
         isNaN(quantite) ||
         quantite <= 0
     ){
+        alert(
+            "Quantité invalide"
+        );
         return;
     }
 
     const destination =
-    prompt(
-`Destination :
-
-HDLP MINI BAR
-HDLP SOFT
-HDLP BAR
-HDLP SEMINAIRE
-
-RCLP ALCOOL
-RCLP SOFT
-RCLP VIN`
-    );
-
-    if(!destination) return;
-
-    if(!stock[destination]){
-
-        alert(
-            "Cave inconnue"
-        );
-
-        return;
-
-    }
+    document.getElementById(
+        "destinationTransfert"
+    ).value;
 
     const articleDestination =
     stock[destination]
-    .find(a =>
+    ?.find(a =>
 
-        String(a.code) ===
-        String(article.code)
+        String(a.code)
+
+        ===
+
+        String(
+            articleTransfertActif.code
+        )
 
     );
 
     if(!articleDestination){
 
         alert(
-            "Article introuvable dans la cave destination"
+            "Article introuvable dans cette cave"
         );
 
         return;
-
     }
 
-    article.stock =
-    Number(article.stock || 0)
-    - quantite;
+    articleTransfertActif.stock =
+
+    Number(
+        articleTransfertActif.stock || 0
+    )
+
+    -
+
+    quantite;
 
     articleDestination.stock =
-    Number(articleDestination.stock || 0)
-    + quantite;
 
-    if(!article.mouvements){
+    Number(
+        articleDestination.stock || 0
+    )
 
-        article.mouvements = [];
+    +
+
+    quantite;
+
+    if(!articleTransfertActif.mouvements){
+
+        articleTransfertActif.mouvements = [];
 
     }
 
@@ -1549,7 +1579,7 @@ RCLP VIN`
 
     }
 
-    article.mouvements.push({
+    articleTransfertActif.mouvements.push({
 
         date:
         new Date()
@@ -1584,6 +1614,8 @@ RCLP VIN`
     });
 
     save();
+
+    fermerTransfert();
 
     render();
 
