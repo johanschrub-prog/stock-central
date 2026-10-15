@@ -274,7 +274,9 @@ function importRemonteeHDLP(){
 
     const mouvements =
     JSON.parse(
-        localStorage.getItem("remonteeHDLP")
+        localStorage.getItem(
+            "remonteeHDLP"
+        )
     ) || [];
 
     if(mouvements.length === 0){
@@ -282,47 +284,102 @@ function importRemonteeHDLP(){
         alert("Aucune remontée HDLP");
 
         return;
+
     }
 
     let html = `
+
     <div class="card">
 
     <h2>📥 Remontées HDLP</h2>
+
     `;
 
     mouvements.forEach((m,index)=>{
+
+        const caveMemo =
+        localStorage.getItem(
+            "cave_" + m.code
+        ) || "HDLP BAR";
 
         html += `
 
         <div style="
         border-bottom:1px solid #ddd;
-        padding:8px;
+        padding:10px;
         ">
 
-        <label>
+            <b>
+            ${m.article}
+            </b>
 
-        <input
-        type="checkbox"
-        checked
-        id="mvtHDLP_${index}">
+            <br>
 
-        ${m.article}
+            Code :
+            ${m.code}
 
-        <br>
+            <br>
 
-        Code :
-        ${m.code}
+            Quantité :
+            ${m.quantite}
 
-        <br>
+            <br><br>
 
-        Quantité :
-        ${m.quantite}
+            Cave :
 
-        </label>
+            <select
+            id="caveHDLP_${index}">
+
+                <option
+                value="HDLP MINI BAR"
+                ${
+                caveMemo ===
+                "HDLP MINI BAR"
+                ? "selected"
+                : ""
+                }>
+                HDLP MINI BAR
+                </option>
+
+                <option
+                value="HDLP SOFT"
+                ${
+                caveMemo ===
+                "HDLP SOFT"
+                ? "selected"
+                : ""
+                }>
+                HDLP SOFT
+                </option>
+
+                <option
+                value="HDLP BAR"
+                ${
+                caveMemo ===
+                "HDLP BAR"
+                ? "selected"
+                : ""
+                }>
+                HDLP BAR
+                </option>
+
+                <option
+                value="HDLP SEMINAIRE"
+                ${
+                caveMemo ===
+                "HDLP SEMINAIRE"
+                ? "selected"
+                : ""
+                }>
+                HDLP SEMINAIRE
+                </option>
+
+            </select>
 
         </div>
 
         `;
+
     });
 
     html += `
@@ -332,16 +389,18 @@ function importRemonteeHDLP(){
     <button
     onclick="validerImportHDLP()">
 
-    ✅ Importer la sélection
+    ✅ Importer les remontées
 
     </button>
 
     </div>
+
     `;
 
-    document.getElementById(
-        "cards"
-    ).innerHTML = html;
+    document
+    .getElementById("cards")
+    .innerHTML =
+    html;
 
 }
 function validerImportHDLP(){
@@ -355,48 +414,61 @@ function validerImportHDLP(){
 
     mouvements.forEach((m,index)=>{
 
-        if(
-            !document.getElementById(
-                "mvtHDLP_" + index
-            ).checked
-        ){
-            return;
+        const cave =
+
+        document
+        .getElementById(
+            "caveHDLP_" + index
+        )
+        .value;
+
+        localStorage.setItem(
+            "cave_" + m.code,
+            cave
+        );
+
+        const article =
+
+        stock[cave]
+        ?.find(a =>
+
+            String(a.code)
+
+            ===
+
+            String(m.code)
+
+        );
+
+        if(!article) return;
+
+        article.stock =
+
+        Number(article.stock || 0)
+
+        -
+
+        Number(m.quantite || 0);
+
+        if(!article.mouvements){
+
+            article.mouvements = [];
+
         }
 
-        Object.keys(stock)
-        .forEach(categorie=>{
+        article.mouvements.push({
 
-            const article =
-            stock[categorie]
-            .find(a =>
-                String(a.code) ===
-                String(m.code)
-            );
+            date:
+            m.date,
 
-            if(!article) return;
+            type:
+            "SORTIE",
 
-            article.stock =
-            Number(article.stock || 0)
-            -
-            Number(m.quantite || 0);
+            quantite:
+            m.quantite,
 
-            if(!article.mouvements){
-
-                article.mouvements = [];
-
-            }
-
-            article.mouvements.push({
-
-                date: m.date,
-
-                type: "SORTIE",
-
-                quantite: m.quantite,
-
-                origine: "REMONTEE HDLP"
-
-            });
+            origine:
+            "REMONTEE HDLP"
 
         });
 
@@ -408,10 +480,12 @@ function validerImportHDLP(){
         "remonteeHDLP"
     );
 
-    render();
+    changerSite(
+        "DASHBOARD"
+    );
 
     alert(
-        "Import terminé ✅"
+        "Remontées HDLP importées ✅"
     );
 
 }
