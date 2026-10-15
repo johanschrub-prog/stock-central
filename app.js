@@ -493,7 +493,9 @@ function importRemonteeRCLP(){
 
     const mouvements =
     JSON.parse(
-        localStorage.getItem("remonteeRCLP")
+        localStorage.getItem(
+            "remonteeRCLP"
+        )
     ) || [];
 
     if(mouvements.length === 0){
@@ -501,43 +503,86 @@ function importRemonteeRCLP(){
         alert("Aucune remontée RCLP");
 
         return;
+
     }
 
     let html = `
+
     <div class="card">
 
     <h2>📥 Remontées RCLP</h2>
+
     `;
 
     mouvements.forEach((m,index)=>{
+
+        const caveMemo =
+        localStorage.getItem(
+            "cave_" + m.code
+        ) || "RCLP ALCOOL";
 
         html += `
 
         <div style="
         border-bottom:1px solid #ddd;
-        padding:8px;
+        padding:10px;
         ">
 
-        <label>
+            <b>
+            ${m.article}
+            </b>
 
-        <input
-        type="checkbox"
-        checked
-        id="mvtRCLP_${index}">
+            <br>
 
-        ${m.article}
+            Code :
+            ${m.code}
 
-        <br>
+            <br>
 
-        Code :
-        ${m.code}
+            Quantité :
+            ${m.quantite}
 
-        <br>
+            <br><br>
 
-        Quantité :
-        ${m.quantite}
+            Cave :
 
-        </label>
+            <select
+            id="caveRCLP_${index}">
+
+                <option
+                value="RCLP ALCOOL"
+                ${
+                caveMemo ===
+                "RCLP ALCOOL"
+                ? "selected"
+                : ""
+                }>
+                RCLP ALCOOL
+                </option>
+
+                <option
+                value="RCLP SOFT"
+                ${
+                caveMemo ===
+                "RCLP SOFT"
+                ? "selected"
+                : ""
+                }>
+                RCLP SOFT
+                </option>
+
+                <option
+                value="RCLP VIN"
+                ${
+                caveMemo ===
+                "RCLP VIN"
+                ? "selected"
+                : ""
+                }>
+                RCLP VIN
+                </option>
+
+            </select>
 
         </div>
 
@@ -552,16 +597,18 @@ function importRemonteeRCLP(){
     <button
     onclick="validerImportRCLP()">
 
-    ✅ Importer la sélection
+    ✅ Importer les remontées
 
     </button>
 
     </div>
+
     `;
 
-    document.getElementById(
-        "cards"
-    ).innerHTML = html;
+    document
+    .getElementById("cards")
+    .innerHTML =
+    html;
 
 }
 function validerImportRCLP(){
@@ -575,48 +622,61 @@ function validerImportRCLP(){
 
     mouvements.forEach((m,index)=>{
 
-        if(
-            !document.getElementById(
-                "mvtRCLP_" + index
-            ).checked
-        ){
-            return;
+        const cave =
+
+        document
+        .getElementById(
+            "caveRCLP_" + index
+        )
+        .value;
+
+        localStorage.setItem(
+            "cave_" + m.code,
+            cave
+        );
+
+        const article =
+
+        stock[cave]
+        ?.find(a =>
+
+            String(a.code)
+
+            ===
+
+            String(m.code)
+
+        );
+
+        if(!article) return;
+
+        article.stock =
+
+        Number(article.stock || 0)
+
+        -
+
+        Number(m.quantite || 0);
+
+        if(!article.mouvements){
+
+            article.mouvements = [];
+
         }
 
-        Object.keys(stock)
-        .forEach(categorie=>{
+        article.mouvements.push({
 
-            const article =
-            stock[categorie]
-            .find(a =>
-                String(a.code) ===
-                String(m.code)
-            );
+            date:
+            m.date,
 
-            if(!article) return;
+            type:
+            "SORTIE",
 
-            article.stock =
-            Number(article.stock || 0)
-            -
-            Number(m.quantite || 0);
+            quantite:
+            m.quantite,
 
-            if(!article.mouvements){
-
-                article.mouvements = [];
-
-            }
-
-            article.mouvements.push({
-
-                date: m.date,
-
-                type: "SORTIE",
-
-                quantite: m.quantite,
-
-                origine: "REMONTEE RCLP"
-
-            });
+            origine:
+            "REMONTEE RCLP"
 
         });
 
@@ -628,10 +688,12 @@ function validerImportRCLP(){
         "remonteeRCLP"
     );
 
-    render();
+    changerSite(
+        "DASHBOARD"
+    );
 
     alert(
-        "Import RCLP terminé ✅"
+        "Remontées RCLP importées ✅"
     );
 
 }
