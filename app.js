@@ -314,13 +314,11 @@ function importRemonteeRCLP(){
 
             if(article){
 
-                article.stock =
-                Math.max(
-                    0,
-                    Number(article.stock || 0)
-                    -
-                    Number(m.quantite || 0)
-                );
+               article.stock =
+Number(article.stock || 0)
+-
+Number(m.quantite || 0);
+              
 
                 article.mouvements.push({
 
@@ -537,7 +535,11 @@ render();
 
 <br>
 
-<div class="valeur">
+<div class="valeur"
+style="
+color:${Number(a.stock) < 0 ? '#dc3545' : '#1976d2'};
+font-weight:bold;
+">
 
 Valeur :
 ${valeur.toFixed(2)} €
