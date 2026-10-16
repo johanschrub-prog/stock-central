@@ -354,7 +354,9 @@ function importRemonteeHDLP(){
     <div class="card">
 
     <h2>📥 Remontées HDLP</h2>
-
+<button onclick="supprimerRemonteesHDLP()">
+🗑️ Purger HDLP
+</button>
     `;
 
     mouvements.forEach((m,index)=>{
@@ -469,6 +471,64 @@ ${m.type}
     html;
 
 }
+function supprimerVentesBoutique(){
+
+    if(
+        !confirm(
+            "Supprimer toutes les ventes boutique ?"
+        )
+    ){
+        return;
+    }
+
+    localStorage.removeItem(
+        "ventesBoutique"
+    );
+
+    alert(
+        "Ventes boutique supprimées ✅"
+    );
+
+}
+function supprimerRemonteesRCLP(){
+
+    if(
+        !confirm(
+            "Supprimer toutes les remontées RCLP ?"
+        )
+    ){
+        return;
+    }
+
+    localStorage.removeItem(
+        "remonteeRCLP"
+    );
+
+    alert(
+        "Remontées RCLP supprimées ✅"
+    );
+
+}
+function supprimerRemonteesHDLP(){
+
+    if(
+        !confirm(
+            "Supprimer toutes les remontées HDLP ?"
+        )
+    ){
+        return;
+    }
+
+    localStorage.removeItem(
+        "remonteeHDLP"
+    );
+
+    alert(
+        "Remontées HDLP supprimées ✅"
+    );
+
+}
+``
 function validerImportHDLP(){
 
     const mouvements =
@@ -600,7 +660,9 @@ function importRemonteeRCLP(){
     <div class="card">
 
     <h2>📥 Remontées RCLP</h2>
-
+<button onclick="supprimerRemonteesRCLP()">
+🗑️ Purger RCLP
+</button>
     `;
 
     mouvements.forEach((m,index)=>{
@@ -832,7 +894,9 @@ function importVentesBoutique(){
     <div class="card">
 
     <h2>🛍️ Ventes Boutique</h2>
-
+<button onclick="supprimerVentesBoutique()">
+🗑️ Purger Boutique
+</button>
     `;
 
     ventes.forEach((v,index)=>{
