@@ -1704,7 +1704,7 @@ localStorage.getItem(
 ) || ''
 }"
 onchange="render()">
-
+<label>Date fin :</label>
 <input
 type="date"
 id="filtreDateFin"
