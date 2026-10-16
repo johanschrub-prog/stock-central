@@ -1657,7 +1657,53 @@ const recherche =
 document.getElementById("search")
 ?.value
 ?.toLowerCase() || "";
+let mouvements = [];
 
+Object.keys(stock)
+.forEach(categorie => {
+
+    stock[categorie]
+    .forEach(article => {
+
+        (article.mouvements || [])
+        .forEach(m => {
+
+            mouvements.push({
+
+                article:
+                article.article,
+
+                code:
+                article.code,
+
+                cave:
+                categorie,
+
+                ...m
+
+            });
+
+        });
+
+    });
+
+});
+
+const fournisseurs =
+
+[
+    ...new Set(
+
+        mouvements
+        .map(m => m.fournisseur)
+        .filter(f => f)
+
+    )
+
+]
+
+.sort();
+    
 let html = "";
 if(categorieActive === "HISTORIQUE"){
 
@@ -1838,52 +1884,7 @@ localStorage.getItem(
         "filtreDateFin"
     ) || "";
 
-    let mouvements = [];
-
-    Object.keys(stock)
-    .forEach(categorie => {
-
-        stock[categorie]
-        .forEach(article => {
-
-            (article.mouvements || [])
-            .forEach(m => {
-
-                mouvements.push({
-
-                    article:
-                    article.article,
-
-                    code:
-                    article.code,
-
-                    cave:
-                    categorie,
-
-                    ...m
-
-                });
-
-            });
-
-        });
-
-    });
-    const fournisseurs =
-
-[
-    ...new Set(
-
-        mouvements
-        .map(m => m.fournisseur)
-        .filter(f => f)
-
-    )
-
-]
-
-.sort();
-
+  
     mouvements
     .reverse()
     .forEach(m => {
