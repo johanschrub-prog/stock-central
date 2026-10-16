@@ -1759,6 +1759,15 @@ let html = "";
     document.getElementById(
         "filtreDateFin"
     )?.value || "";
+     localStorage.setItem(
+    "filtreDateDebut",
+    filtreDateDebut
+);
+
+localStorage.setItem(
+    "filtreDateFin",
+    filtreDateFin
+);
 
     mouvements
     .reverse()
