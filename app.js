@@ -101,6 +101,37 @@ function modifierArticle(id){
     render();
 
 }
+function remettreStocksAZero(){
+
+    if(
+        !confirm(
+            "Remettre tous les stocks à zéro ?"
+        )
+    ){
+        return;
+    }
+
+    Object.keys(stock)
+    .forEach(categorie => {
+
+        stock[categorie]
+        .forEach(article => {
+
+            article.stock = 0;
+
+        });
+
+    });
+
+    save();
+
+    render();
+
+    alert(
+        "Tous les stocks ont été remis à zéro ✅"
+    );
+
+}
 function voirMouvements(id){
 
     const article =
