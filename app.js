@@ -1669,52 +1669,73 @@ let html = "";
 
         <label>Type :</label>
 
-        <select
-        id="filtreType"
-        onchange="render()">
+<select
+id="filtreType"
+onchange="
+localStorage.setItem(
+'filtreType',
+this.value
+);
+render();
+">
 
-            <option value="">
-            Tous
-            </option>
 
-            <option value="ENTREE">
-            Entrées
-            </option>
+<option value=""
+${localStorage.getItem('filtreType') === '' ? 'selected' : ''}>
+Tous
+</option>
 
-            <option value="SORTIE">
-            Sorties
-            </option>
+<option value="ENTREE"
+${localStorage.getItem('filtreType') === 'ENTREE' ? 'selected' : ''}>
+Entrées
+</option>
 
-            <option value="TRANSFERT">
-            Transferts
-            </option>
+<option value="SORTIE"
+${localStorage.getItem('filtreType') === 'SORTIE' ? 'selected' : ''}>
+Sorties
+</option>
 
-        </select>
+<option value="TRANSFERT"
+${localStorage.getItem('filtreType') === 'TRANSFERT' ? 'selected' : ''}>
+Transferts
+</option>
+
+</select>
+
+           
 
         <br><br>
 
         <label>Date début :</label>
 
-      <input
+  
+<input
 type="date"
 id="filtreDateDebut"
-value="${
-localStorage.getItem(
-'filtreDateDebut'
-) || ''
-}"
-onchange="render()">
+value="${localStorage.getItem('filtreDateDebut') || ''}"
+onchange="
+localStorage.setItem(
+'filtreDateDebut',
+this.value
+);
+render();
+">
+
+<br><br>
+
 <label>Date fin :</label>
+
 <input
 type="date"
 id="filtreDateFin"
-value="${
-localStorage.getItem(
-'filtreDateFin'
-) || ''
-}"
-onchange="render()">
-
+value="${localStorage.getItem('filtreDateFin') || ''}"
+onchange="
+localStorage.setItem(
+'filtreDateFin',
+this.value
+);
+render();
+">
     </div>
 
     `;
@@ -1751,29 +1772,20 @@ onchange="render()">
 
     });
 
-    const filtreType =
-    document.getElementById(
-        "filtreType"
-    )?.value || "";
+const filtreType =
+localStorage.getItem(
+    "filtreType"
+) || "";
 
-    const filtreDateDebut =
-    document.getElementById(
-        "filtreDateDebut"
-    )?.value || "";
+const filtreDateDebut =
+localStorage.getItem(
+    "filtreDateDebut"
+) || "";
 
-    const filtreDateFin =
-    document.getElementById(
-        "filtreDateFin"
-    )?.value || "";
-     localStorage.setItem(
-    "filtreDateDebut",
-    filtreDateDebut
-);
-
-localStorage.setItem(
-    "filtreDateFin",
-    filtreDateFin
-);
+const filtreDateFin =
+localStorage.getItem(
+    "filtreDateFin"
+) || "";
 
     mouvements
     .reverse()
@@ -1874,7 +1886,7 @@ if(
             : ""}
 
             Date :
-            ${m.date}
+            ${new Date(m.date).toLocaleString()}
 
         </div>
 
