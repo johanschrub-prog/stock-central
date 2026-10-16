@@ -1857,6 +1857,50 @@ ${f}
 
 <br><br>
 
+<label>Origine :</label>
+
+<select
+id="filtreOrigine"
+onchange="
+localStorage.setItem(
+'filtreOrigine',
+this.value
+);
+render();
+">
+
+<option value="">
+Toutes
+</option>
+
+<option value="REMONTEE HDLP">
+Remontées HDLP
+</option>
+
+<option value="REMONTEE RCLP">
+Remontées RCLP
+</option>
+
+<option value="VENTE BOUTIQUE">
+Ventes Boutique
+</option>
+
+<option value="COMMANDE HDLP">
+Commandes HDLP
+</option>
+
+<option value="COMMANDE RCLP">
+Commandes RCLP
+</option>
+
+<option value="TRANSFERT">
+Transferts
+</option>
+
+</select>
+
+<br><br>
+
 <button
 onclick="exportHistoriqueExcel()">
 
@@ -1877,6 +1921,11 @@ localStorage.getItem(
     localStorage.getItem(
         "filtreType"
     ) || "";
+
+    const filtreOrigine =
+localStorage.getItem(
+    "filtreOrigine"
+) || "";
 
     const filtreFournisseur =
 localStorage.getItem(
@@ -1928,6 +1977,40 @@ if(filtreSite){
         ){
             return;
         }
+        if(
+    filtreOrigine
+){
+
+    if(
+        filtreOrigine ===
+        "TRANSFERT"
+    ){
+
+        if(
+            !String(m.type)
+            .includes("TRANSFERT")
+        ){
+            return;
+        }
+
+    }
+    else{
+
+        if(
+            String(
+                m.origine || ""
+            )
+
+            !==
+
+            filtreOrigine
+        ){
+            return;
+        }
+
+    }
+
+}
 if(
     filtreFournisseur &&
     String(
