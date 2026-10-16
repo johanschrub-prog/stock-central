@@ -1607,7 +1607,7 @@ function validerTransfert(){
     articleTransfertActif.mouvements.push({
 
       date:
-new Date().toLocaleString(),
+new Date().toISOString(),
 
         type:
         "TRANSFERT SORTIE",
@@ -1788,37 +1788,52 @@ localStorage.setItem(
             return;
         }
 
-        const morceaux =
-        (m.date || "")
-        .split(" ")[0]
-        .split("/");
+let dateMouvement = "";
 
-        if(morceaux.length === 3){
+if(
+    String(m.date)
+    .includes("/")
+){
 
-            const dateMouvement =
+    const morceaux =
+    m.date
+    .split(" ")[0]
+    .split("/");
 
-            morceaux[2] + "-" +
-            morceaux[1].padStart(2,"0") + "-" +
-            morceaux[0].padStart(2,"0");
+    if(morceaux.length === 3){
 
-            if(
-                filtreDateDebut &&
-                dateMouvement <
-                filtreDateDebut
-            ){
-                return;
-            }
+        dateMouvement =
 
-            if(
-                filtreDateFin &&
-                dateMouvement >
-                filtreDateFin
-            ){
-                return;
-            }
+        morceaux[2] + "-" +
+        morceaux[1].padStart(2,"0") + "-" +
+        morceaux[0].padStart(2,"0");
 
-        }
+    }
 
+}
+else{
+
+    dateMouvement =
+    String(m.date)
+    .substring(0,10);
+
+}
+
+if(
+    filtreDateDebut &&
+    dateMouvement <
+    filtreDateDebut
+){
+    return;
+}
+
+if(
+    filtreDateFin &&
+    dateMouvement >
+    filtreDateFin
+){
+    return;
+}
         html += `
 
         <div class="card">
