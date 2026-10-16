@@ -1831,14 +1831,27 @@ localStorage.getItem(
     .reverse()
     .forEach(m => {
 
-        if(
-    filtreSite &&
-    !String(m.cave)
-    .startsWith(
-        filtreSite
-    )
-){
-    return;
+if(filtreSite){
+
+    const cave =
+    String(
+        m.cave || ""
+    ).toUpperCase();
+
+    if(
+        filtreSite === "HDLP" &&
+        !cave.includes("HDLP")
+    ){
+        return;
+    }
+
+    if(
+        filtreSite === "RCLP" &&
+        !cave.includes("RCLP")
+    ){
+        return;
+    }
+
 }
 
         if(
