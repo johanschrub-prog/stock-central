@@ -1606,9 +1606,8 @@ function validerTransfert(){
 
     articleTransfertActif.mouvements.push({
 
-        date:
-        new Date()
-        .toLocaleString(),
+      date:
+new Date().toISOString(),
 
         type:
         "TRANSFERT SORTIE",
@@ -1765,17 +1764,26 @@ if(
 
 if(filtreDate){
 
-    const dateMouvement =
+    const morceaux =
+    (m.date || "")
+    .split(" ")[0]
+    .split("/");
 
-    new Date(m.date)
-    .toISOString()
-    .split("T")[0];
+    if(morceaux.length === 3){
 
-    if(
-        dateMouvement !==
-        filtreDate
-    ){
-        return;
+        const dateMouvement =
+
+        morceaux[2] + "-" +
+        morceaux[1].padStart(2,"0") + "-" +
+        morceaux[0].padStart(2,"0");
+
+        if(
+            dateMouvement !==
+            filtreDate
+        ){
+            return;
+        }
+
     }
 
 }
