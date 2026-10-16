@@ -1607,7 +1607,7 @@ function validerTransfert(){
     articleTransfertActif.mouvements.push({
 
       date:
-new Date().toISOString(),
+new Date().toLocaleString(),
 
         type:
         "TRANSFERT SORTIE",
@@ -1773,26 +1773,37 @@ mouvements
         return;
     }
 
-    const morceaux =
-    (m.date || "")
-    .split(" ")[0]
-    .split("/");
+ const morceaux =
+(m.date || "")
+.split(" ")[0]
+.split("/");
 
-    if(morceaux.length === 3){
+if(morceaux.length === 3){
 
-        const dateMouvement =
+    const dateMouvement =
 
-        morceaux[2] + "-" +
-        morceaux[1].padStart(2,"0") + "-" +
-        morceaux[0].padStart(2,"0");
+    morceaux[2] + "-" +
+    morceaux[1].padStart(2,"0") + "-" +
+    morceaux[0].padStart(2,"0");
 
-        if(
-            filtreDateDebut &&
-            dateMouvement <
-            filtreDateDebut
-        ){
-            return;
-        }
+    if(
+        filtreDateDebut &&
+        dateMouvement <
+        filtreDateDebut
+    ){
+        return;
+    }
+
+    if(
+        filtreDateFin &&
+        dateMouvement >
+        filtreDateFin
+    ){
+        return;
+    }
+
+}
+
 
         if(
             filtreDateFin &&
@@ -1841,51 +1852,6 @@ mouvements
           m.fournisseur +
           "<br>"
         : ""}
-
-        Date :
-        ${m.date}
-
-    </div>
-
-    `;
-
-});
-
- 
-
-    html += `
-
-    <div class="card">
-
-        <b>
-        ${m.article}
-        </b>
-
-        <br>
-
-        ${m.code}
-
-        <br>
-
-        Type :
-        ${m.type}
-
-        <br>
-
-        Quantité :
-        ${m.quantite}
-
-        <br>
-
-        Origine :
-        ${m.origine}
-
-        <br>
-
-        Cave :
-        ${m.cave}
-
-        <br>
 
         Date :
         ${m.date}
