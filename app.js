@@ -1695,19 +1695,25 @@ let html = "";
 
         <label>Date début :</label>
 
-        <input
-        type="date"
-        id="filtreDateDebut"
-        onchange="render()">
+      <input
+type="date"
+id="filtreDateDebut"
+value="${
+localStorage.getItem(
+'filtreDateDebut'
+) || ''
+}"
+onchange="render()">
 
-        <br><br>
-
-        <label>Date fin :</label>
-
-        <input
-        type="date"
-        id="filtreDateFin"
-        onchange="render()">
+<input
+type="date"
+id="filtreDateFin"
+value="${
+localStorage.getItem(
+'filtreDateFin'
+) || ''
+}"
+onchange="render()">
 
     </div>
 
