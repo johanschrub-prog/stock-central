@@ -1659,59 +1659,59 @@ document.getElementById("search")
 ?.toLowerCase() || "";
 
 let html = "";
-    if(categorieActive === "HISTORIQUE"){
+ if(categorieActive === "HISTORIQUE"){
 
-let html = `
+    let html = `
 
-<div class="card">
+    <div class="card">
 
-<h2>📜 Historique Global</h2>
+        <h2>📜 Historique Global</h2>
 
-<label>Type :</label>
+        <label>Type :</label>
 
-<select
-id="filtreType"
-onchange="render()">
+        <select
+        id="filtreType"
+        onchange="render()">
 
-    <option value="">
-    Tous
-    </option>
+            <option value="">
+            Tous
+            </option>
 
-    <option value="ENTREE">
-    Entrées
-    </option>
+            <option value="ENTREE">
+            Entrées
+            </option>
 
-    <option value="SORTIE">
-    Sorties
-    </option>
+            <option value="SORTIE">
+            Sorties
+            </option>
 
-    <option value="TRANSFERT">
-    Transferts
-    </option>
+            <option value="TRANSFERT">
+            Transferts
+            </option>
 
-</select>
+        </select>
 
-<br><br>
+        <br><br>
 
-<label>Date début :</label>
+        <label>Date début :</label>
 
-<input
-type="date"
-id="filtreDateDebut"
-onchange="render()">
+        <input
+        type="date"
+        id="filtreDateDebut"
+        onchange="render()">
 
-<br><br>
+        <br><br>
 
-<label>Date fin :</label>
+        <label>Date fin :</label>
 
-<input
-type="date"
-id="filtreDateFin"
-onchange="render()">
+        <input
+        type="date"
+        id="filtreDateFin"
+        onchange="render()">
 
-</div>
+    </div>
 
-`;
+    `;
 
     let mouvements = [];
 
@@ -1746,121 +1746,111 @@ onchange="render()">
     });
 
     const filtreType =
-
     document.getElementById(
         "filtreType"
     )?.value || "";
+
     const filtreDateDebut =
-document.getElementById(
-    "filtreDateDebut"
-)?.value || "";
+    document.getElementById(
+        "filtreDateDebut"
+    )?.value || "";
 
-const filtreDateFin =
-document.getElementById(
-    "filtreDateFin"
-)?.value || "";    
+    const filtreDateFin =
+    document.getElementById(
+        "filtreDateFin"
+    )?.value || "";
 
-mouvements
-.reverse()
-.forEach(m => {
-
-    if(
-        filtreType &&
-        !m.type.includes(
-            filtreType
-        )
-    ){
-        return;
-    }
-
- const morceaux =
-(m.date || "")
-.split(" ")[0]
-.split("/");
-
-if(morceaux.length === 3){
-
-    const dateMouvement =
-
-    morceaux[2] + "-" +
-    morceaux[1].padStart(2,"0") + "-" +
-    morceaux[0].padStart(2,"0");
-
-    if(
-        filtreDateDebut &&
-        dateMouvement <
-        filtreDateDebut
-    ){
-        return;
-    }
-
-    if(
-        filtreDateFin &&
-        dateMouvement >
-        filtreDateFin
-    ){
-        return;
-    }
-
-}
-
+    mouvements
+    .reverse()
+    .forEach(m => {
 
         if(
-            filtreDateFin &&
-            dateMouvement >
-            filtreDateFin
+            filtreType &&
+            !m.type.includes(
+                filtreType
+            )
         ){
             return;
         }
 
-    }
+        const morceaux =
+        (m.date || "")
+        .split(" ")[0]
+        .split("/");
 
-    html += `
+        if(morceaux.length === 3){
 
-    <div class="card">
+            const dateMouvement =
 
-        <b>${m.article}</b>
+            morceaux[2] + "-" +
+            morceaux[1].padStart(2,"0") + "-" +
+            morceaux[0].padStart(2,"0");
 
-        <br>
+            if(
+                filtreDateDebut &&
+                dateMouvement <
+                filtreDateDebut
+            ){
+                return;
+            }
 
-        ${m.code}
+            if(
+                filtreDateFin &&
+                dateMouvement >
+                filtreDateFin
+            ){
+                return;
+            }
 
-        <br>
+        }
 
-        Type :
-        ${m.type}
+        html += `
 
-        <br>
+        <div class="card">
 
-        Quantité :
-        ${m.quantite}
+            <b>${m.article}</b>
 
-        <br>
+            <br>
 
-        Origine :
-        ${m.origine}
+            Code :
+            ${m.code}
 
-        <br>
+            <br>
 
-        Cave :
-        ${m.cave}
+            Type :
+            ${m.type}
 
-        <br>
+            <br>
 
-        ${m.fournisseur
-        ? "Fournisseur : " +
-          m.fournisseur +
-          "<br>"
-        : ""}
+            Quantité :
+            ${m.quantite}
 
-        Date :
-        ${m.date}
+            <br>
 
-    </div>
+            Origine :
+            ${m.origine}
 
-    `;
+            <br>
 
-});
+            Cave :
+            ${m.cave}
+
+            <br>
+
+            ${m.fournisseur
+            ? "Fournisseur : " +
+              m.fournisseur +
+              "<br>"
+            : ""}
+
+            Date :
+            ${m.date}
+
+        </div>
+
+        `;
+
+    });
 
     document.getElementById(
         "cards"
