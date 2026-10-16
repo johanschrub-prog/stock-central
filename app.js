@@ -1698,6 +1698,8 @@ RCLP
 
 <br><br>
 
+<label>Type :</label>
+
         <select
         id="filtreType"
         onchange="
