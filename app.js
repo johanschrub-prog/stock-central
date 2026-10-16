@@ -1661,13 +1661,13 @@ document.getElementById("search")
 let html = "";
     if(categorieActive === "HISTORIQUE"){
 
-    let html = `
+  let html = `
 
-    <div class="card">
+<div class="card">
 
-    <h2>📜 Historique Global</h2>
+<h2>📜 Historique Global</h2>
 
-   <label>Type :</label>
+<label>Type :</label>
 
 <select
 id="filtreType"
@@ -1700,12 +1700,43 @@ type="date"
 id="filtreDate"
 onchange="render()">
 
+<br><br>
 
-      
+<label>Période :</label>
 
-    </div>
+<select
+id="filtrePeriode"
+onchange="render()">
 
-    `;
+    <option value="">
+    Toutes
+    </option>
+
+    <option value="jour">
+    Aujourd'hui
+    </option>
+
+    <option value="7j">
+    7 derniers jours
+    </option>
+
+    <option value="30j">
+    30 derniers jours
+    </option>
+
+    <option value="mois">
+    Ce mois
+    </option>
+
+    <option value="annee">
+    Cette année
+    </option>
+
+</select>
+
+</div>
+
+`;
 
     let mouvements = [];
 
@@ -1744,98 +1775,191 @@ onchange="render()">
     document.getElementById(
         "filtreType"
     )?.value || "";
-        const filtreDate =
-
+    const filtreDate =
 document.getElementById(
     "filtreDate"
 )?.value || "";
 
-    mouvements
-    .reverse()
-    .forEach(m => {
-if(
-    filtreType &&
-    !m.type.includes(
-        filtreType
-    )
-){
-    return;
-}
+const filtrePeriode =
+document.getElementById(
+    "filtrePeriode"
+)?.value || "";
 
-if(filtreDate){
+  mouvements
+.reverse()
+.forEach(m => {
 
-    const morceaux =
-    (m.date || "")
-    .split(" ")[0]
-    .split("/");
+    if(
+        filtreType &&
+        !m.type.includes(
+            filtreType
+        )
+    ){
+        return;
+    }
 
-    if(morceaux.length === 3){
+    if(filtreDate){
 
-        const dateMouvement =
+        const morceaux =
+        (m.date || "")
+        .split(" ")[0]
+        .split("/");
 
-        morceaux[2] + "-" +
-        morceaux[1].padStart(2,"0") + "-" +
-        morceaux[0].padStart(2,"0");
+        if(morceaux.length === 3){
 
-        if(
-            dateMouvement !==
-            filtreDate
-        ){
-            return;
+            const dateMouvement =
+
+            morceaux[2] + "-" +
+            morceaux[1].padStart(2,"0") + "-" +
+            morceaux[0].padStart(2,"0");
+
+            if(
+                dateMouvement !==
+                filtreDate
+            ){
+                return;
+            }
+
         }
 
     }
 
-}
-        if(
-            filtreType &&
-            !m.type.includes(filtreType)
-        ){
-            return;
+    if(filtrePeriode){
+
+        const morceaux =
+        (m.date || "")
+        .split(" ")[0]
+        .split("/");
+
+        if(morceaux.length === 3){
+
+            const dateMouvement =
+            new Date(
+
+                morceaux[2],
+                morceaux[1] - 1,
+                morceaux[0]
+
+            );
+
+            const maintenant =
+            new Date();
+
+            const diffJours =
+
+            (
+                maintenant -
+                dateMouvement
+            )
+
+            /
+
+            (1000 * 60 * 60 * 24);
+
+            if(
+                filtrePeriode === "jour"
+                &&
+                diffJours > 1
+            ){
+                return;
+            }
+
+            if(
+                filtrePeriode === "7j"
+                &&
+                diffJours > 7
+            ){
+                return;
+            }
+
+            if(
+                filtrePeriode === "30j"
+                &&
+                diffJours > 30
+            ){
+                return;
+            }
+
+            if(
+                filtrePeriode === "mois"
+            ){
+
+                if(
+                    dateMouvement.getMonth()
+                    !==
+                    maintenant.getMonth()
+
+                    ||
+
+                    dateMouvement.getFullYear()
+                    !==
+                    maintenant.getFullYear()
+                ){
+                    return;
+                }
+
+            }
+
+            if(
+                filtrePeriode === "annee"
+            ){
+
+                if(
+                    dateMouvement.getFullYear()
+                    !==
+                    maintenant.getFullYear()
+                ){
+                    return;
+                }
+
+            }
+
         }
 
-        html += `
+    }
 
-        <div class="card">
+    html += `
 
-            <b>
-            ${m.article}
-            </b>
+    <div class="card">
 
-            <br>
+        <b>
+        ${m.article}
+        </b>
 
-            ${m.code}
+        <br>
 
-            <br>
+        ${m.code}
 
-            Type :
-            ${m.type}
+        <br>
 
-            <br>
+        Type :
+        ${m.type}
 
-            Quantité :
-            ${m.quantite}
+        <br>
 
-            <br>
+        Quantité :
+        ${m.quantite}
 
-            Origine :
-            ${m.origine}
+        <br>
 
-            <br>
+        Origine :
+        ${m.origine}
 
-            Cave :
-            ${m.cave}
+        <br>
 
-            <br>
+        Cave :
+        ${m.cave}
 
-            Date :
-            ${m.date}
+        <br>
 
-        </div>
+        Date :
+        ${m.date}
 
-        `;
+    </div>
 
-    });
+    `;
+
+});
 
     document.getElementById(
         "cards"
