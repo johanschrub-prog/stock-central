@@ -504,14 +504,31 @@ function validerImportHDLP(){
 
         if(!article) return;
 
-        article.stock =
+      if(
+    m.type ===
+    "REDESCENTE"
+){
 
-        Number(article.stock || 0)
+    article.stock =
 
-        -
+    Number(article.stock || 0)
 
-        Number(m.quantite || 0);
+    +
 
+    Number(m.quantite || 0);
+
+}
+else{
+
+    article.stock =
+
+    Number(article.stock || 0)
+
+    -
+
+    Number(m.quantite || 0);
+
+}
         if(!article.mouvements){
 
             article.mouvements = [];
