@@ -380,18 +380,13 @@ function importRemonteeHDLP(){
 
 Type :
 
-<span style="
-font-weight:bold;
-color:${
+${
 m.type === "REDESCENTE"
-? "#28a745"
-: "#dc3545"
-};
-">
-
-${m.type}
-
-</span>
+?
+"<span style='color:#28a745;font-weight:bold'>🟢 REDESCENTE</span>"
+:
+"<span style='color:#dc3545;font-weight:bold'>🔴 REMONTEE</span>"
+}
 
             <br>
 
