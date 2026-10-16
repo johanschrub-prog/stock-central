@@ -682,6 +682,10 @@ function importRemonteeRCLP(){
             <b>
             ${m.article}
             </b>
+<br>
+
+Type :
+${m.type}
 
             <br>
 
