@@ -1659,7 +1659,7 @@ document.getElementById("search")
 ?.toLowerCase() || "";
 
 let html = "";
- if(categorieActive === "HISTORIQUE"){
+if(categorieActive === "HISTORIQUE"){
 
     let html = `
 
@@ -1669,76 +1669,96 @@ let html = "";
 
         <label>Type :</label>
 
-<select
-id="filtreType"
-onchange="
-localStorage.setItem(
-'filtreType',
-this.value
-);
-render();
-">
+        <select
+        id="filtreType"
+        onchange="
+        localStorage.setItem(
+        'filtreType',
+        this.value
+        );
+        render();
+        ">
 
+            <option value=""
+            ${localStorage.getItem('filtreType') === '' ? 'selected' : ''}>
+            Tous
+            </option>
 
-<option value=""
-${localStorage.getItem('filtreType') === '' ? 'selected' : ''}>
-Tous
-</option>
+            <option value="ENTREE"
+            ${localStorage.getItem('filtreType') === 'ENTREE' ? 'selected' : ''}>
+            Entrées
+            </option>
 
-<option value="ENTREE"
-${localStorage.getItem('filtreType') === 'ENTREE' ? 'selected' : ''}>
-Entrées
-</option>
+            <option value="SORTIE"
+            ${localStorage.getItem('filtreType') === 'SORTIE' ? 'selected' : ''}>
+            Sorties
+            </option>
 
-<option value="SORTIE"
-${localStorage.getItem('filtreType') === 'SORTIE' ? 'selected' : ''}>
-Sorties
-</option>
+            <option value="TRANSFERT"
+            ${localStorage.getItem('filtreType') === 'TRANSFERT' ? 'selected' : ''}>
+            Transferts
+            </option>
 
-<option value="TRANSFERT"
-${localStorage.getItem('filtreType') === 'TRANSFERT' ? 'selected' : ''}>
-Transferts
-</option>
-
-</select>
-
-           
+        </select>
 
         <br><br>
 
         <label>Date début :</label>
 
-  
-<input
-type="date"
-id="filtreDateDebut"
-value="${localStorage.getItem('filtreDateDebut') || ''}"
-onchange="
-localStorage.setItem(
-'filtreDateDebut',
-this.value
-);
-render();
-">
+        <input
+        type="date"
+        id="filtreDateDebut"
+        value="${
+        localStorage.getItem(
+        'filtreDateDebut'
+        ) || ''
+        }"
+        onchange="
+        localStorage.setItem(
+        'filtreDateDebut',
+        this.value
+        );
+        render();
+        ">
 
-<br><br>
+        <br><br>
 
-<label>Date fin :</label>
+        <label>Date fin :</label>
 
-<input
-type="date"
-id="filtreDateFin"
-value="${localStorage.getItem('filtreDateFin') || ''}"
-onchange="
-localStorage.setItem(
-'filtreDateFin',
-this.value
-);
-render();
-">
+        <input
+        type="date"
+        id="filtreDateFin"
+        value="${
+        localStorage.getItem(
+        'filtreDateFin'
+        ) || ''
+        }"
+        onchange="
+        localStorage.setItem(
+        'filtreDateFin',
+        this.value
+        );
+        render();
+        ">
+
     </div>
 
     `;
+
+    const filtreType =
+    localStorage.getItem(
+        "filtreType"
+    ) || "";
+
+    const filtreDateDebut =
+    localStorage.getItem(
+        "filtreDateDebut"
+    ) || "";
+
+    const filtreDateFin =
+    localStorage.getItem(
+        "filtreDateFin"
+    ) || "";
 
     let mouvements = [];
 
@@ -1772,85 +1792,74 @@ render();
 
     });
 
-const filtreType =
-localStorage.getItem(
-    "filtreType"
-) || "";
-
-const filtreDateDebut =
-localStorage.getItem(
-    "filtreDateDebut"
-) || "";
-
-const filtreDateFin =
-localStorage.getItem(
-    "filtreDateFin"
-) || "";
-
     mouvements
     .reverse()
     .forEach(m => {
 
         if(
             filtreType &&
-            !m.type.includes(
-                filtreType
-            )
+            !String(m.type)
+            .includes(filtreType)
         ){
             return;
         }
 
-let dateMouvement = "";
+        let dateMouvement = "";
 
-if(
-    String(m.date)
-    .includes("/")
-){
+        if(
+            String(m.date)
+            .includes("/")
+        ){
 
-    const morceaux =
-    m.date
-    .split(" ")[0]
-    .split("/");
+            const morceaux =
+            String(m.date)
+            .split(" ")[0]
+            .split("/");
 
-    if(morceaux.length === 3){
+            if(
+                morceaux.length === 3
+            ){
 
-        dateMouvement =
+                dateMouvement =
 
-        morceaux[2] + "-" +
-        morceaux[1].padStart(2,"0") + "-" +
-        morceaux[0].padStart(2,"0");
+                morceaux[2] + "-" +
+                morceaux[1].padStart(2,"0") + "-" +
+                morceaux[0].padStart(2,"0");
 
-    }
+            }
 
-}
-else{
+        }
+        else{
 
-    dateMouvement =
-    String(m.date)
-    .substring(0,10);
+            dateMouvement =
+            String(m.date)
+            .substring(0,10);
 
-}
+        }
 
-if(
-    filtreDateDebut &&
-    dateMouvement <
-    filtreDateDebut
-){
-    return;
-}
+        if(
+            filtreDateDebut &&
+            dateMouvement <
+            filtreDateDebut
+        ){
+            return;
+        }
 
-if(
-    filtreDateFin &&
-    dateMouvement >
-    filtreDateFin
-){
-    return;
-}
+        if(
+            filtreDateFin &&
+            dateMouvement >
+            filtreDateFin
+        ){
+            return;
+        }
+
         html += `
 
         <div class="card">
 
-            <b>${m.article}</b>
+            <b>
+            ${m.article}
+            </b>
 
             <br>
 
@@ -1879,14 +1888,18 @@ if(
 
             <br>
 
-            ${m.fournisseur
-            ? "Fournisseur : " +
-              m.fournisseur +
-              "<br>"
-            : ""}
+            ${
+            m.fournisseur
+            ?
+            "Fournisseur : " +
+            m.fournisseur +
+            "<br>"
+            :
+            ""
+            }
 
             Date :
-            ${new Date(m.date).toLocaleString()}
+            ${m.date}
 
         </div>
 
@@ -1900,7 +1913,7 @@ if(
 
     return;
 
-}
+} 
 if(categorieActive === "DASHBOARD"){
 
     let valeurHDLP = 0;
