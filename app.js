@@ -1854,6 +1854,15 @@ ${f}
 `).join("")}
 
 </select>
+
+<br><br>
+
+<button
+onclick="exportHistoriqueExcel()">
+
+📊 Export Excel
+
+</button>
     </div>
 
     `;
@@ -2299,7 +2308,207 @@ document.getElementById(
 
 }
 
+function exportHistoriqueExcel(){
 
+    const filtreSite =
+    localStorage.getItem(
+        "filtreSite"
+    ) || "";
+
+    const filtreType =
+    localStorage.getItem(
+        "filtreType"
+    ) || "";
+
+    const filtreFournisseur =
+    localStorage.getItem(
+        "filtreFournisseur"
+    ) || "";
+
+    const filtreDateDebut =
+    localStorage.getItem(
+        "filtreDateDebut"
+    ) || "";
+
+    const filtreDateFin =
+    localStorage.getItem(
+        "filtreDateFin"
+    ) || "";
+
+    let exportData = [];
+
+    Object.keys(stock)
+    .forEach(categorie => {
+
+        stock[categorie]
+        .forEach(article => {
+
+            (article.mouvements || [])
+            .forEach(m => {
+
+                if(
+                    filtreSite &&
+                    !categorie.startsWith(
+                        filtreSite
+                    )
+                ){
+                    return;
+                }
+
+                if(
+                    filtreType &&
+                    !String(m.type)
+                    .includes(filtreType)
+                ){
+                    return;
+                }
+
+                if(
+                    filtreFournisseur &&
+                    String(
+                        m.fournisseur || ""
+                    ) !==
+                    filtreFournisseur
+                ){
+                    return;
+                }
+
+                let dateMouvement = "";
+
+                if(
+                    String(m.date)
+                    .includes("/")
+                ){
+
+                    const morceaux =
+                    m.date
+                    .split(" ")[0]
+                    .split("/");
+
+                    if(
+                        morceaux.length === 3
+                    ){
+
+                        dateMouvement =
+
+                        morceaux[2] + "-" +
+                        morceaux[1].padStart(2,"0") + "-" +
+                        morceaux[0].padStart(2,"0");
+
+                    }
+
+                }
+                else{
+
+                    dateMouvement =
+                    String(m.date)
+                    .substring(0,10);
+
+                }
+
+                if(
+                    filtreDateDebut &&
+                    dateMouvement <
+                    filtreDateDebut
+                ){
+                    return;
+                }
+
+                if(
+                    filtreDateFin &&
+                    dateMouvement >
+                    filtreDateFin
+                ){
+                    return;
+                }
+
+                exportData.push({
+
+                    Date:
+                    m.date,
+
+                    Article:
+                    article.article,
+
+                    Code:
+                    article.code,
+
+                    Cave:
+                    categorie,
+
+                    Type:
+                    m.type,
+
+                    Quantite:
+                    m.quantite,
+
+                    Origine:
+                    m.origine,
+
+                    Fournisseur:
+                    m.fournisseur || ""
+
+                });
+
+            });
+
+        });
+
+    });
+
+    if(exportData.length === 0){
+
+        alert(
+            "Aucun mouvement à exporter"
+        );
+
+        return;
+
+    }
+
+    const wb =
+    XLSX.utils.book_new();
+
+    const ws =
+    XLSX.utils.json_to_sheet(
+        exportData
+    );
+
+    XLSX.utils.book_append_sheet(
+        wb,
+        ws,
+        "Historique"
+    );
+
+    const maintenant =
+    new Date();
+
+    const fichier =
+
+    "historique-stock-" +
+
+    maintenant.getFullYear() +
+
+    "-" +
+
+    String(
+        maintenant.getMonth()+1
+    ).padStart(2,"0") +
+
+    "-" +
+
+    String(
+        maintenant.getDate()
+    ).padStart(2,"0") +
+
+    ".xlsx";
+
+    XLSX.writeFile(
+        wb,
+        fichier
+    );
+
+}
 function importerExcel(event){
 
     const file = event.target.files[0];
