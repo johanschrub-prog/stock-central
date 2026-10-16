@@ -1661,7 +1661,7 @@ document.getElementById("search")
 let html = "";
     if(categorieActive === "HISTORIQUE"){
 
-  let html = `
+let html = `
 
 <div class="card">
 
@@ -1693,46 +1693,21 @@ onchange="render()">
 
 <br><br>
 
-<label>Date :</label>
+<label>Date début :</label>
 
 <input
 type="date"
-id="filtreDate"
+id="filtreDateDebut"
 onchange="render()">
 
 <br><br>
 
-<label>Période :</label>
+<label>Date fin :</label>
 
-<select
-id="filtrePeriode"
+<input
+type="date"
+id="filtreDateFin"
 onchange="render()">
-
-    <option value="">
-    Toutes
-    </option>
-
-    <option value="jour">
-    Aujourd'hui
-    </option>
-
-    <option value="7j">
-    7 derniers jours
-    </option>
-
-    <option value="30j">
-    30 derniers jours
-    </option>
-
-    <option value="mois">
-    Ce mois
-    </option>
-
-    <option value="annee">
-    Cette année
-    </option>
-
-</select>
 
 </div>
 
@@ -1775,6 +1750,15 @@ onchange="render()">
     document.getElementById(
         "filtreType"
     )?.value || "";
+    const filtreDateDebut =
+document.getElementById(
+    "filtreDateDebut"
+)?.value || "";
+
+const filtreDateFin =
+document.getElementById(
+    "filtreDateFin"
+)?.value || "";    
     const filtreDate =
 document.getElementById(
     "filtreDate"
@@ -1800,27 +1784,36 @@ document.getElementById(
 
     if(filtreDate){
 
-        const morceaux =
-        (m.date || "")
-        .split(" ")[0]
-        .split("/");
+      const morceaux =
+(m.date || "")
+.split(" ")[0]
+.split("/");
 
-        if(morceaux.length === 3){
+if(morceaux.length === 3){
 
-            const dateMouvement =
+    const dateMouvement =
 
-            morceaux[2] + "-" +
-            morceaux[1].padStart(2,"0") + "-" +
-            morceaux[0].padStart(2,"0");
+    morceaux[2] + "-" +
+    morceaux[1].padStart(2,"0") + "-" +
+    morceaux[0].padStart(2,"0");
 
-            if(
-                dateMouvement !==
-                filtreDate
-            ){
-                return;
-            }
+    if(
+        filtreDateDebut &&
+        dateMouvement <
+        filtreDateDebut
+    ){
+        return;
+    }
 
-        }
+    if(
+        filtreDateFin &&
+        dateMouvement >
+        filtreDateFin
+    ){
+        return;
+    }
+
+}
 
     }
 
