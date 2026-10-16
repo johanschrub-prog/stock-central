@@ -518,21 +518,27 @@ function validerImportHDLP(){
 
         }
 
-        article.mouvements.push({
+  article.mouvements.push({
 
-            date:
-            m.date,
+    date:
+    m.date,
 
-            type:
-            "SORTIE",
+    type:
+    m.type === "REDESCENTE"
+    ? "ENTREE"
+    : "SORTIE",
 
-            quantite:
-            m.quantite,
+    quantite:
+    m.quantite,
 
-            origine:
-            "REMONTEE HDLP"
+    origine:
+    m.type === "REDESCENTE"
+    ? "REDESCENTE HDLP"
+    : "REMONTEE HDLP"
 
-        });
+});
+
+
 
     });
 
@@ -712,13 +718,31 @@ function validerImportRCLP(){
 
         if(!article) return;
 
-        article.stock =
+       if(
+    m.type ===
+    "REDESCENTE"
+){
 
-        Number(article.stock || 0)
+    article.stock =
 
-        -
+    Number(article.stock || 0)
 
-        Number(m.quantite || 0);
+    +
+
+    Number(m.quantite || 0);
+
+}
+else{
+
+    article.stock =
+
+    Number(article.stock || 0)
+
+    -
+
+    Number(m.quantite || 0);
+
+}
 
         if(!article.mouvements){
 
@@ -726,21 +750,25 @@ function validerImportRCLP(){
 
         }
 
-        article.mouvements.push({
+    article.mouvements.push({
 
-            date:
-            m.date,
+    date:
+    m.date,
 
-            type:
-            "SORTIE",
+    type:
+    m.type === "REDESCENTE"
+    ? "ENTREE"
+    : "SORTIE",
 
-            quantite:
-            m.quantite,
+    quantite:
+    m.quantite,
 
-            origine:
-            "REMONTEE RCLP"
+    origine:
+    m.type === "REDESCENTE"
+    ? "REDESCENTE RCLP"
+    : "REMONTEE RCLP"
 
-        });
+});
 
     });
 
@@ -1879,6 +1907,14 @@ Remontées HDLP
 
 <option value="REMONTEE RCLP">
 Remontées RCLP
+</option>
+
+<option value="REDESCENTE HDLP">
+Redescentes HDLP
+</option>
+
+<option value="REDESCENTE RCLP">
+Redescentes RCLP
 </option>
 
 <option value="VENTE BOUTIQUE">
