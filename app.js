@@ -1771,10 +1771,48 @@ RCLP
         );
         render();
         ">
+<br><br>
 
+<label>Fournisseur :</label>
+
+<select
+id="filtreFournisseur"
+onchange="
+localStorage.setItem(
+'filtreFournisseur',
+this.value
+);
+render();
+">
+
+<option value="">
+Tous
+</option>
+
+${fournisseurs.map(f => `
+
+<option
+value="${f}"
+${
+localStorage.getItem(
+'filtreFournisseur'
+) === f
+? 'selected'
+: ''
+}>
+
+${f}
+
+</option>
+
+`).join("")}
+
+</select>
     </div>
 
     `;
+
+
 const filtreSite =
 localStorage.getItem(
     "filtreSite"
@@ -1784,6 +1822,11 @@ localStorage.getItem(
     localStorage.getItem(
         "filtreType"
     ) || "";
+
+    const filtreFournisseur =
+localStorage.getItem(
+    "filtreFournisseur"
+) || "";
 
     const filtreDateDebut =
     localStorage.getItem(
@@ -1826,6 +1869,20 @@ localStorage.getItem(
         });
 
     });
+    const fournisseurs =
+
+[
+    ...new Set(
+
+        mouvements
+        .map(m => m.fournisseur)
+        .filter(f => f)
+
+    )
+
+]
+
+.sort();
 
     mouvements
     .reverse()
@@ -1861,7 +1918,17 @@ if(filtreSite){
         ){
             return;
         }
-
+if(
+    filtreFournisseur &&
+    String(
+        m.fournisseur || ""
+    )
+    .toUpperCase() !==
+    filtreFournisseur
+){
+    return;
+}
+        
         let dateMouvement = "";
 
         if(
