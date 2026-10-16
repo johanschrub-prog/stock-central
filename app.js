@@ -379,7 +379,19 @@ function importRemonteeHDLP(){
 <br>
 
 Type :
+
+<span style="
+font-weight:bold;
+color:${
+m.type === "REDESCENTE"
+? "#28a745"
+: "#dc3545"
+};
+">
+
 ${m.type}
+
+</span>
 
             <br>
 
@@ -528,7 +540,7 @@ function supprimerRemonteesHDLP(){
     );
 
 }
-``
+
 function validerImportHDLP(){
 
     const mouvements =
@@ -538,7 +550,7 @@ function validerImportHDLP(){
         )
     ) || [];
 
-    mouvements.forEach((m,index)=>{
+    mouvements.forEach((m,index) => {
 
         const cave =
 
@@ -568,58 +580,59 @@ function validerImportHDLP(){
 
         if(!article) return;
 
-      if(
-    m.type ===
-    "REDESCENTE"
-){
+        // Gestion remontée / redescente
 
-    article.stock =
+        if(
+            m.type ===
+            "REDESCENTE"
+        ){
 
-    Number(article.stock || 0)
+            article.stock =
 
-    +
+            Number(article.stock || 0)
 
-    Number(m.quantite || 0);
+            +
 
-}
-else{
+            Number(m.quantite || 0);
 
-    article.stock =
+        }
+        else{
 
-    Number(article.stock || 0)
+            article.stock =
 
-    -
+            Number(article.stock || 0)
 
-    Number(m.quantite || 0);
+            -
 
-}
+            Number(m.quantite || 0);
+
+        }
+
         if(!article.mouvements){
 
             article.mouvements = [];
 
         }
 
-  article.mouvements.push({
+        article.mouvements.push({
 
-    date:
-    m.date,
+            date:
+            m.date,
 
-    type:
-    m.type === "REDESCENTE"
-    ? "ENTREE"
-    : "SORTIE",
+            type:
+            m.type === "REDESCENTE"
+            ? "ENTREE"
+            : "SORTIE",
 
-    quantite:
-    m.quantite,
+            quantite:
+            m.quantite,
 
-    origine:
-    m.type === "REDESCENTE"
-    ? "REDESCENTE HDLP"
-    : "REMONTEE HDLP"
+            origine:
+            m.type === "REDESCENTE"
+            ? "REDESCENTE HDLP"
+            : "REMONTEE HDLP"
 
-});
-
-
+        });
 
     });
 
@@ -634,10 +647,11 @@ else{
     );
 
     alert(
-        "Remontées HDLP importées ✅"
+        "Mouvements HDLP importés ✅"
     );
 
 }
+`
 function importRemonteeRCLP(){
 
     const mouvements =
@@ -685,7 +699,19 @@ function importRemonteeRCLP(){
 <br>
 
 Type :
+
+<span style="
+font-weight:bold;
+color:${
+m.type === "REDESCENTE"
+? "#28a745"
+: "#dc3545"
+};
+">
+
 ${m.type}
+
+</span>
 
             <br>
 
