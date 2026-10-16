@@ -1667,7 +1667,36 @@ if(categorieActive === "HISTORIQUE"){
 
         <h2>📜 Historique Global</h2>
 
-        <label>Type :</label>
+       <label>Site :</label>
+
+<select
+id="filtreSite"
+onchange="
+localStorage.setItem(
+'filtreSite',
+this.value
+);
+render();
+">
+
+<option value=""
+${localStorage.getItem('filtreSite') === '' ? 'selected' : ''}>
+Tous
+</option>
+
+<option value="HDLP"
+${localStorage.getItem('filtreSite') === 'HDLP' ? 'selected' : ''}>
+HDLP
+</option>
+
+<option value="RCLP"
+${localStorage.getItem('filtreSite') === 'RCLP' ? 'selected' : ''}>
+RCLP
+</option>
+
+</select>
+
+<br><br>
 
         <select
         id="filtreType"
@@ -1744,7 +1773,11 @@ if(categorieActive === "HISTORIQUE"){
     </div>
 
     `;
-
+const filtreSite =
+localStorage.getItem(
+    "filtreSite"
+) || "";
+    
     const filtreType =
     localStorage.getItem(
         "filtreType"
@@ -1795,6 +1828,16 @@ if(categorieActive === "HISTORIQUE"){
     mouvements
     .reverse()
     .forEach(m => {
+
+        if(
+    filtreSite &&
+    !String(m.cave)
+    .startsWith(
+        filtreSite
+    )
+){
+    return;
+}
 
         if(
             filtreType &&
