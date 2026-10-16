@@ -1759,17 +1759,8 @@ const filtreDateFin =
 document.getElementById(
     "filtreDateFin"
 )?.value || "";    
-    const filtreDate =
-document.getElementById(
-    "filtreDate"
-)?.value || "";
 
-const filtrePeriode =
-document.getElementById(
-    "filtrePeriode"
-)?.value || "";
-
-  mouvements
+mouvements
 .reverse()
 .forEach(m => {
 
@@ -1782,134 +1773,85 @@ document.getElementById(
         return;
     }
 
-    if(filtreDate){
+    const morceaux =
+    (m.date || "")
+    .split(" ")[0]
+    .split("/");
 
-      const morceaux =
-(m.date || "")
-.split(" ")[0]
-.split("/");
+    if(morceaux.length === 3){
 
-if(morceaux.length === 3){
+        const dateMouvement =
 
-    const dateMouvement =
+        morceaux[2] + "-" +
+        morceaux[1].padStart(2,"0") + "-" +
+        morceaux[0].padStart(2,"0");
 
-    morceaux[2] + "-" +
-    morceaux[1].padStart(2,"0") + "-" +
-    morceaux[0].padStart(2,"0");
+        if(
+            filtreDateDebut &&
+            dateMouvement <
+            filtreDateDebut
+        ){
+            return;
+        }
 
-    if(
-        filtreDateDebut &&
-        dateMouvement <
-        filtreDateDebut
-    ){
-        return;
-    }
-
-    if(
-        filtreDateFin &&
-        dateMouvement >
-        filtreDateFin
-    ){
-        return;
-    }
-
-}
-
-    }
-
-    if(filtrePeriode){
-
-        const morceaux =
-        (m.date || "")
-        .split(" ")[0]
-        .split("/");
-
-        if(morceaux.length === 3){
-
-            const dateMouvement =
-            new Date(
-
-                morceaux[2],
-                morceaux[1] - 1,
-                morceaux[0]
-
-            );
-
-            const maintenant =
-            new Date();
-
-            const diffJours =
-
-            (
-                maintenant -
-                dateMouvement
-            )
-
-            /
-
-            (1000 * 60 * 60 * 24);
-
-            if(
-                filtrePeriode === "jour"
-                &&
-                diffJours > 1
-            ){
-                return;
-            }
-
-            if(
-                filtrePeriode === "7j"
-                &&
-                diffJours > 7
-            ){
-                return;
-            }
-
-            if(
-                filtrePeriode === "30j"
-                &&
-                diffJours > 30
-            ){
-                return;
-            }
-
-            if(
-                filtrePeriode === "mois"
-            ){
-
-                if(
-                    dateMouvement.getMonth()
-                    !==
-                    maintenant.getMonth()
-
-                    ||
-
-                    dateMouvement.getFullYear()
-                    !==
-                    maintenant.getFullYear()
-                ){
-                    return;
-                }
-
-            }
-
-            if(
-                filtrePeriode === "annee"
-            ){
-
-                if(
-                    dateMouvement.getFullYear()
-                    !==
-                    maintenant.getFullYear()
-                ){
-                    return;
-                }
-
-            }
-
+        if(
+            filtreDateFin &&
+            dateMouvement >
+            filtreDateFin
+        ){
+            return;
         }
 
     }
+
+    html += `
+
+    <div class="card">
+
+        <b>${m.article}</b>
+
+        <br>
+
+        ${m.code}
+
+        <br>
+
+        Type :
+        ${m.type}
+
+        <br>
+
+        Quantité :
+        ${m.quantite}
+
+        <br>
+
+        Origine :
+        ${m.origine}
+
+        <br>
+
+        Cave :
+        ${m.cave}
+
+        <br>
+
+        ${m.fournisseur
+        ? "Fournisseur : " +
+          m.fournisseur +
+          "<br>"
+        : ""}
+
+        Date :
+        ${m.date}
+
+    </div>
+
+    `;
+
+});
+
+ 
 
     html += `
 
