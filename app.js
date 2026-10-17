@@ -489,8 +489,11 @@ Montant réception (€)
 type="number"
 step="0.01"
 id="montant_${article.id}"
-placeholder="">
-onfocus="this.dataset.auto='0'"
+placeholder=""
+onfocus="this.dataset.auto='0'">
+
+<br><br>
+
 <button
 onclick="
 receptionRapide(
@@ -498,10 +501,9 @@ receptionRapide(
 '${article.id}'
 )
 ">
-
 ✅ Réception
+</button>
 
-                    </button>
 
                 </div>
 
@@ -3090,12 +3092,7 @@ if(recherche){
 
     let resultats = [];
 
-    const dejaVus = new Set();
-
-    Object.keys(stock).forEach(categorie => {
-
-        stock[categorie].forEach(article => {
-
+   Object.keys(stock).forEach(categorie => {
             if(
                 (article.article || "")
                 .toLowerCase()
@@ -3515,15 +3512,13 @@ function exportHistoriqueExcel(){
                     return;
                 }
 
-                if(
-                    filtreFournisseur &&
-                    String(
-                        m.fournisseur || ""
-                    ) !==
-                    filtreFournisseur
-                ){
-                    return;
-                }
+           if(
+    filtreFournisseur &&
+    String(m.fournisseur || "").toUpperCase() !==
+    String(filtreFournisseur).toUpperCase()
+){
+    return;
+}
 
                 let dateMouvement = "";
 
