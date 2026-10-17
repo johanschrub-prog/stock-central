@@ -2609,7 +2609,7 @@ Stock :
 type="number"
 value="${a.stock||0}"
 onchange="
-stock['${categorieActive}']
+stock['${a.cave || categorieActive}']
 .find(x=>x.id==='${a.id}')
 .stock=Number(this.value);
 
@@ -2629,7 +2629,7 @@ step="0.01"
 value="${a.prix||0}"
 
 onchange="
-stock['${categorieActive}']
+stock['${a.cave || categorieActive}']
 .find(x=>x.id==='${a.id}')
 .prix=Number(this.value);
 
