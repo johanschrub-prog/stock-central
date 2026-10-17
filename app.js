@@ -2574,13 +2574,13 @@ const valeurRecherche =
 document.getElementById("search")
 ?.value || "";
 
-const recherche =
+const rechercheCode =
 valeurRecherche.includes(" - ")
 ? valeurRecherche.split(" - ")[0].trim()
-: valeurRecherche.trim();
+: "";
 
-const rechercheMin =
-recherche.toLowerCase();
+const rechercheTexte =
+valeurRecherche.toLowerCase().trim();
     const filtreCave =
 document.getElementById("filtreCave")
 ?.value || "";
@@ -3556,15 +3556,23 @@ liste
 
 const matchRecherche =
 
+!valeurRecherche
+
+||
+
 (a.article || "")
 .toLowerCase()
-.includes(rechercheMin)
+.includes(rechercheTexte)
 
 ||
 
 String(a.code || "")
-.startsWith(recherche);
+.startsWith(rechercheCode)
 
+||
+
+String(a.code || "")
+.startsWith(rechercheTexte);
 const matchCave =
 
 !filtreCave ||
