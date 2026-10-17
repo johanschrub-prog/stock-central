@@ -145,7 +145,24 @@ onclick="document.getElementById('importStock').click()">
 id="search"
 placeholder="Recherche article ou code"
 oninput="render()">
+<select
+id="filtreCave"
+onchange="render()">
 
+<option value="">
+Toutes les caves
+</option>
+
+<option value="HDLP MINI BAR">HDLP MINI BAR</option>
+<option value="HDLP SOFT">HDLP SOFT</option>
+<option value="HDLP BAR">HDLP BAR</option>
+<option value="HDLP SEMINAIRE">HDLP SEMINAIRE</option>
+
+<option value="RCLP ALCOOL">RCLP ALCOOL</option>
+<option value="RCLP SOFT">RCLP SOFT</option>
+<option value="RCLP VIN">RCLP VIN</option>
+
+</select>
 <input
 type="file"
 id="importExcel"
