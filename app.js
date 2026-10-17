@@ -369,18 +369,17 @@ if(
 ){
     return;
 }
-            if(
+           if(
+    String(article.code || "")
+    .toLowerCase()
+    .includes(recherche)
 
-                String(article.article || "")
-                .toLowerCase()
-                .includes(recherche)
+    ||
 
-                ||
-
-                String(article.code || "")
-                .toLowerCase()
-                .includes(recherche)
-
+    String(article.article || "")
+    .toLowerCase()
+    .includes(recherche)
+)
                 ||
 
                 String(article.codeFournisseur || "")
