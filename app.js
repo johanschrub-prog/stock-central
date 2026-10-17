@@ -451,32 +451,51 @@ ${Number(article.prix || 0).toFixed(2)} €
 
                     <br><br>
 
-                 Mode :
-
-<select
-id="mode_${article.id}"
-onchange="calculReception('${article.id}',${article.colisage || 1})">
-
-    <option value="piece">
-        Pièces
-    </option>
-
-    <option value="carton">
-        Cartons
-    </option>
-
-</select>
-
-<br><br>
-
-Quantité :
+               Cartons :
 
 <input
 type="number"
 min="0"
-id="quantite_${article.id}"
-placeholder="Quantité"
-oninput="calculReception('${article.id}',${article.colisage || 1})">
+value="0"
+id="cartons_${article.id}"
+oninput="calculReception(
+'${article.id}',
+${article.colisage || 1},
+${article.prix || 0}
+)">
+
+<br><br>
+
+Pièces :
+
+<input
+type="number"
+min="0"
+value="0"
+id="pieces_${article.id}"
+oninput="calculReception(
+'${article.id}',
+${article.colisage || 1},
+${article.prix || 0}
+)">
+
+<br><br>
+
+<div id="totalPieces_${article.id}">
+Total réception : 0 pièce(s)
+</div>
+
+<br>
+
+Montant réception (€)
+
+<br>
+
+<input
+type="number"
+step="0.01"
+id="montant_${article.id}"
+value="0">
 
 <br><br>
 
@@ -528,36 +547,44 @@ receptionRapide(
     ).innerHTML = html;
 
 }
-function calculReception(id,colisage){
+function calculReception(
+    id,
+    colisage,
+    prix
+){
 
-    const mode =
-    document.getElementById(
-        "mode_" + id
-    ).value;
-
-    const quantite =
-    Number(
+    const cartons = Number(
         document.getElementById(
-            "quantite_" + id
+            "cartons_" + id
         ).value || 0
     );
 
-    let total = quantite;
+    const pieces = Number(
+        document.getElementById(
+            "pieces_" + id
+        ).value || 0
+    );
 
-    if(mode === "carton"){
-
-        total =
-        quantite * colisage;
-
-    }
+    const totalPieces =
+        (cartons * colisage)
+        + pieces;
 
     document.getElementById(
         "totalPieces_" + id
     ).innerHTML =
 
     "Total réception : <b>" +
-    total +
+    totalPieces +
     "</b> pièce(s)";
+
+    const montant =
+        totalPieces *
+        Number(prix || 0);
+
+    document.getElementById(
+        "montant_" + id
+    ).value =
+    montant.toFixed(2);
 
 }
 function receptionRapide(
@@ -585,30 +612,29 @@ function receptionRapide(
         return;
     }
 
-    const quantite =
-    Number(
-        document.getElementById(
-            "quantite_" + id
-        ).value || 0
-    );
+  const cartons =
+Number(
+document.getElementById(
+"cartons_" + id
+).value || 0
+);
 
-    const mode =
-    document.getElementById(
-        "mode_" + id
-    ).value;
+const pieces =
+Number(
+document.getElementById(
+"pieces_" + id
+).value || 0
+);
 
-    let quantiteReelle =
-    quantite;
+const quantiteReelle =
 
-    if(mode === "carton"){
+(cartons *
+Number(article.colisage || 1))
 
-        quantiteReelle =
-        quantite *
-        Number(
-            article.colisage || 1
-        );
++
 
-    }
+pieces;
+
 
     article.stock =
     Number(article.stock || 0)
