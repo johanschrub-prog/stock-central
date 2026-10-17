@@ -240,7 +240,7 @@ function importerPrix(event){
 }
 function ouvrirReceptionRapide(){
 
- document.getElementById("cards").innerHTML = `
+document.getElementById("cards").innerHTML = `
 
 <div class="card">
 
