@@ -3176,14 +3176,20 @@ if(recherche){
         stock[categorie].forEach(article => {
 
          if(
+ if(
     (article.article || "")
-        .toLowerCase()
-        .includes(rechercheMin)
+    .toLowerCase()
+    .includes(rechercheTexte)
 
     ||
 
     String(article.code || "")
-        .startsWith(recherche)
+    .startsWith(rechercheCode)
+
+    ||
+
+    String(article.code || "")
+    .startsWith(rechercheTexte)
 ){
 
                 if(dejaVus.has(article.code)){
