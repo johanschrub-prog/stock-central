@@ -3211,11 +3211,7 @@ if(
                     return;
                 }
 
-                dejaVus.add(article.code);
-
-                let stockHDLP = 0;
-                let stockRCLP = 0;
-                let prix = 0;
+        
 
                 Object.keys(stock).forEach(cat => {
 
@@ -3689,19 +3685,76 @@ Object.keys(stock).forEach(categorie => {
 
     stock[categorie].forEach(article => {
 
-        if(
-            String(article.code).trim() ===
-            String('${a.code}').trim()
-        ){
+        const matchRecherche =
 
-            article.prix = nouveauPrix;
+            (
+                rechercheTexte !== "" &&
+                (article.article || "")
+                .toLowerCase()
+                .trim()
+                === rechercheTexte
+            )
 
+            ||
+
+            (
+                rechercheCode !== "" &&
+                String(article.code || "") === rechercheCode
+            );
+
+        if(!matchRecherche){
+            return;
         }
+
+        if(dejaVus.has(article.code)){
+            return;
+        }
+
+        dejaVus.add(article.code);
+
+        let stockHDLP = 0;
+        let stockRCLP = 0;
+        let prix = 0;
+
+        Object.keys(stock).forEach(cat => {
+
+            stock[cat].forEach(a => {
+
+                if(
+                    String(a.code) ===
+                    String(article.code)
+                ){
+
+                    prix = a.prix || prix;
+
+                    if(cat.startsWith("HDLP")){
+                        stockHDLP += Number(a.stock || 0);
+                    }
+
+                    if(cat.startsWith("RCLP")){
+                        stockRCLP += Number(a.stock || 0);
+                    }
+
+                }
+
+            });
+
+        });
+
+        resultats.push({
+
+            article: article.article,
+            code: article.code,
+            categorie: article.categorie || "",
+            prix: prix,
+            stockHDLP: stockHDLP,
+            stockRCLP: stockRCLP
+
+        });
 
     });
 
 });
-
 save();
 render();
 
