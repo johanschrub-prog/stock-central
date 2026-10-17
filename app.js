@@ -451,18 +451,16 @@ ${Number(article.prix || 0).toFixed(2)} €
 
                     <br><br>
 
-               Cartons :
+             
+
+Cartons :
 
 <input
 type="number"
 min="0"
 id="cartons_${article.id}"
-placeholder="0">
-oninput="calculReception(
-'${article.id}',
-${article.colisage || 1},
-${article.prix || 0}
-)">
+placeholder=""
+oninput="calculReception('${article.id}',${article.colisage || 1},${article.prix || 0})">
 
 <br><br>
 
@@ -472,12 +470,8 @@ Pièces :
 type="number"
 min="0"
 id="pieces_${article.id}"
-placeholder="0">
-oninput="calculReception(
-'${article.id}',
-${article.colisage || 1},
-${article.prix || 0}
-)">
+placeholder=""
+oninput="calculReception('${article.id}',${article.colisage || 1},${article.prix || 0})">
 
 <br><br>
 
@@ -495,26 +489,8 @@ Montant réception (€)
 type="number"
 step="0.01"
 id="montant_${article.id}"
-value="0">
-
-<br><br>
-
-<div id="totalPieces_${article.id}">
-
-Total réception :
-0 pièce(s)
-
-</div>
-
-<br>
-
-Montant réception (€)
-
-<br>
-
-
-<br><br>
-
+placeholder="">
+onfocus="this.dataset.auto='0'"
 <button
 onclick="
 receptionRapide(
@@ -583,12 +559,18 @@ document.getElementById(
 
 if(totalPieces > 0){
 
-    champMontant.value =
-    montant.toFixed(2);
+    if(
+        champMontant.value === "" ||
+        champMontant.dataset.auto !== "0"
+    ){
+        champMontant.value = montant.toFixed(2);
+        champMontant.dataset.auto = "1";
+    }
 
 }else{
 
     champMontant.value = "";
+    champMontant.dataset.auto = "1";
 
 }
 
