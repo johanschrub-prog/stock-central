@@ -134,16 +134,10 @@ onclick="document.getElementById('importStock').click()">
 </button>
 <button onclick="document.getElementById('importExcel').click()">
 📥 Import Inventaire
-   <button onclick="document.getElementById('importPrix').click()">
-💶 Import Prix
+ <button onclick="ouvrirReceptionRapide()">
+📦 Réception rapide
 </button>
 
-<input
-type="file"
-id="importPrix"
-accept=".xlsx"
-style="display:none"
-onchange="importerPrix(event)">
 </button>
 <button onclick="exportStock()">
 💾 Sauvegarde
