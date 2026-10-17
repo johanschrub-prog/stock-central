@@ -153,8 +153,11 @@ onchange="importerPrix(event)">
 </button>
 <input
 id="search"
+list="listeProduits"
 placeholder="Recherche article ou code"
 oninput="render()">
+
+<datalist id="listeProduits"></datalist>
 <select
 id="filtreCave"
 onchange="render()">
