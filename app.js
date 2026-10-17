@@ -2482,6 +2482,10 @@ if(
 
 } 
 if(categorieActive === "DASHBOARD"){
+const recherche =
+document.getElementById("search")
+?.value
+?.toLowerCase() || "";
 
     let valeurHDLP = 0;
     let valeurRCLP = 0;
@@ -2524,7 +2528,128 @@ if(categorieActive === "DASHBOARD"){
     });
 
 document.getElementById("cards").innerHTML = `
+if(recherche){
 
+    let resultats = [];
+
+    const dejaVus = new Set();
+
+    Object.keys(stock).forEach(categorie => {
+
+        stock[categorie].forEach(article => {
+
+            if(
+                (article.article || "")
+                .toLowerCase()
+                .includes(recherche)
+
+                ||
+
+                String(article.code || "")
+                .toLowerCase()
+                .includes(recherche)
+            ){
+
+                if(dejaVus.has(article.code)){
+                    return;
+                }
+
+                dejaVus.add(article.code);
+
+                let stockHDLP = 0;
+                let stockRCLP = 0;
+                let prix = 0;
+
+                Object.keys(stock).forEach(cat => {
+
+                    stock[cat].forEach(a => {
+
+                        if(
+                            String(a.code) ===
+                            String(article.code)
+                        ){
+
+                            prix = a.prix || prix;
+
+                            if(
+                                cat.startsWith("HDLP")
+                            ){
+                                stockHDLP +=
+                                Number(a.stock || 0);
+                            }
+
+                            if(
+                                cat.startsWith("RCLP")
+                            ){
+                                stockRCLP +=
+                                Number(a.stock || 0);
+                            }
+
+                        }
+
+                    });
+
+                });
+
+                resultats.push({
+
+                    article: article.article,
+                    code: article.code,
+                    prix: prix,
+                    stockHDLP: stockHDLP,
+                    stockRCLP: stockRCLP
+
+                });
+
+            }
+
+        });
+
+    });
+
+    let html = "";
+
+    resultats.forEach(r => {
+
+        html += `
+
+        <div class="card">
+
+            <h3>${r.article}</h3>
+
+            Code : ${r.code}
+
+            <br><br>
+
+            Prix :
+            ${Number(r.prix || 0).toFixed(2)} €
+
+            <br><br>
+
+            🏨 HDLP :
+            <b>${r.stockHDLP}</b>
+
+            <br><br>
+
+            🍴 RCLP :
+            <b>${r.stockRCLP}</b>
+
+            <br><br>
+
+            📦 TOTAL :
+            <b>${r.stockHDLP + r.stockRCLP}</b>
+
+        </div>
+
+        `;
+
+    });
+
+    document.getElementById("cards").innerHTML = html;
+
+    return;
+
+}
 <div class="card">
     <h2>🏨 HDLP</h2>
     Valeur du stock :
