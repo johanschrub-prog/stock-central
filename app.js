@@ -2631,7 +2631,13 @@ localStorage.getItem(
 )
 ||
 "";
-
+const filtreStock =
+Number(
+    localStorage.getItem(
+        "filtreStock"
+    ) || 0
+);
+    
 let mouvements = [];
 
 Object.keys(stock)
@@ -3366,6 +3372,7 @@ html += `
 <br><br>
 
 <select
+
 id="filtreCategorie"
 onchange="
 localStorage.setItem(
@@ -3395,7 +3402,23 @@ ${c}
 `).join("")}
 
 </select>
+<br><br>
 
+<b>Stock minimum</b>
+
+<br><br>
+
+<input
+type="number"
+min="0"
+value="${filtreStock}"
+onchange="
+localStorage.setItem(
+'filtreStock',
+this.value
+);
+render();
+">
 </div>
 
 `;
@@ -3425,11 +3448,17 @@ a.cave === filtreCave;
 !filtreCategorie ||
 
 a.categorie === filtreCategorie;
+const matchStock =
 
+Number(a.stock || 0)
+>=
+filtreStock;
+    
 return (
     matchRecherche &&
     matchCave &&
-    matchCategorie
+    matchCategorie &&
+    matchStock
 );
 
 })
