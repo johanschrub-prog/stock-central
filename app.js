@@ -3165,22 +3165,7 @@ if(recherche){
 
     });
 
-                resultats.push({
-
-                    article: article.article,
-                    code: article.code,
-                    prix: prix,
-                    stockHDLP: stockHDLP,
-                    stockRCLP: stockRCLP
-
-                });
-
-            }
-
-        });
-
-    });
-
+           
     let html = "";
 
     resultats.forEach(r => {
