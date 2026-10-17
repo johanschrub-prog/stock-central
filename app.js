@@ -157,6 +157,239 @@ function importerPrix(event){
     );
 
 }
+function ouvrirReceptionRapide(){
+
+    document.getElementById("cards").innerHTML = `
+
+    <div class="card">
+
+        <h2>📦 Réception rapide</h2>
+
+        Fournisseur
+
+        <br>
+
+        <input
+        id="rechercheReception"
+        placeholder="Article, code ou code fournisseur"
+        oninput="rechercherReception()">
+
+        <br><br>
+
+        <div id="resultatsReception"></div>
+
+    </div>
+
+    `;
+
+}
+function rechercherReception(){
+
+    const recherche =
+    document.getElementById(
+        "rechercheReception"
+    )
+    .value
+    .toLowerCase();
+
+    let html = "";
+
+    Object.keys(stock).forEach(categorie => {
+
+        stock[categorie].forEach(article => {
+
+            if(
+
+                String(article.article || "")
+                .toLowerCase()
+                .includes(recherche)
+
+                ||
+
+                String(article.code || "")
+                .toLowerCase()
+                .includes(recherche)
+
+                ||
+
+                String(article.codeFournisseur || "")
+                .toLowerCase()
+                .includes(recherche)
+
+            ){
+
+                html += `
+
+                <div class="card">
+
+                    <b>${article.article}</b>
+
+                    <br>
+
+                    Code :
+                    ${article.code}
+
+                    <br>
+
+                    ${
+                    article.codeFournisseur
+                    ?
+                    `Code fournisseur :
+                    ${article.codeFournisseur}<br>`
+                    :
+                    ""
+                    }
+
+                    <br>
+
+                    Destination :
+
+                    <select
+                    id="destination_${article.id}">
+
+                        <option>
+                        HDLP MINI BAR
+                        </option>
+
+                        <option>
+                        HDLP SOFT
+                        </option>
+
+                        <option>
+                        HDLP BAR
+                        </option>
+
+                        <option>
+                        HDLP SEMINAIRE
+                        </option>
+
+                        <option>
+                        RCLP ALCOOL
+                        </option>
+
+                        <option>
+                        RCLP SOFT
+                        </option>
+
+                        <option>
+                        RCLP VIN
+                        </option>
+
+                    </select>
+
+                    <br><br>
+
+                    Quantité :
+
+                    <input
+                    type="number"
+                    value="1"
+                    id="quantite_${article.id}">
+
+                    <br><br>
+
+                    <button
+                    onclick="
+                    receptionRapide(
+                    '${article.code}',
+                    '${article.id}'
+                    )
+                    ">
+
+                    ✅ Réception
+
+                    </button>
+
+                </div>
+
+                `;
+
+            }
+
+        });
+
+    });
+
+    document.getElementById(
+        "resultatsReception"
+    ).innerHTML = html;
+
+}
+function receptionRapide(
+    code,
+    id
+){
+
+    const destination =
+    document.getElementById(
+        "destination_" + id
+    ).value;
+
+    const quantite =
+    Number(
+        document.getElementById(
+            "quantite_" + id
+        ).value
+    );
+
+    const article =
+
+    stock[destination]
+    ?.find(a =>
+
+        String(a.code)
+        ===
+        String(code)
+
+    );
+
+    if(!article){
+
+        alert(
+            "Article introuvable dans la cave de destination"
+        );
+
+        return;
+
+    }
+
+    article.stock =
+    Number(article.stock || 0)
+    +
+    quantite;
+
+    if(!article.mouvements){
+
+        article.mouvements = [];
+
+    }
+
+    article.mouvements.push({
+
+        date:
+        new Date()
+        .toLocaleString(),
+
+        type:
+        "ENTREE",
+
+        quantite:
+        quantite,
+
+        origine:
+        "RECEPTION RAPIDE"
+
+    });
+
+    save();
+
+    render();
+
+    alert(
+        "Réception enregistrée ✅"
+    );
+
+}
 function importStock(event){
 
     const file =
