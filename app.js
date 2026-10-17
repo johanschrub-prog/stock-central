@@ -3185,6 +3185,18 @@ document.getElementById("search")
     });
 if(recherche){
 
+    const categorieDashboard =
+    localStorage.getItem(
+        "categorieDashboard"
+    ) || "";
+
+    const stockMiniDashboard =
+    Number(
+        localStorage.getItem(
+            "stockMiniDashboard"
+        ) || 0
+    );
+
     let resultats = [];
     const dejaVus = new Set();
 
@@ -3237,16 +3249,33 @@ if(recherche){
                     });
 
                 });
+if(
+    categorieDashboard &&
+    article.categorie !==
+    categorieDashboard
+){
+    return;
+}
 
-                resultats.push({
+if(
+    stockHDLP <
+    stockMiniDashboard
+    &&
+    stockRCLP <
+    stockMiniDashboard
+){
+    return;
+}
+             resultats.push({
 
-                    article: article.article,
-                    code: article.code,
-                    prix: prix,
-                    stockHDLP: stockHDLP,
-                    stockRCLP: stockRCLP
+    article: article.article,
+    code: article.code,
+    categorie: article.categorie || "",
+    prix: prix,
+    stockHDLP: stockHDLP,
+    stockRCLP: stockRCLP
 
-                });
+});
 
             }
 
@@ -3255,7 +3284,61 @@ if(recherche){
     });
 
            
-    let html = "";
+  let html = `
+
+<div class="card">
+
+<b>Catégorie</b>
+
+<br><br>
+
+<select
+onchange="
+localStorage.setItem(
+'categorieDashboard',
+this.value
+);
+render();
+">
+
+<option value="">
+Toutes
+</option>
+
+${categoriesProduits.map(c=>`
+
+<option
+value="${c}"
+${categorieDashboard===c?"selected":""}>
+
+${c}
+
+</option>
+
+`).join("")}
+
+</select>
+
+<br><br>
+
+<b>Stock supérieur à</b>
+
+<br><br>
+
+<input
+type="number"
+value="${stockMiniDashboard}"
+onchange="
+localStorage.setItem(
+'stockMiniDashboard',
+this.value
+);
+render();
+">
+
+</div>
+
+`;
 
     resultats.forEach(r => {
 
@@ -3265,7 +3348,12 @@ if(recherche){
 
             <h3>${r.article}</h3>
 
-            Code : ${r.code}
+           Code : ${r.code}
+
+<br>
+
+Catégorie :
+${r.categorie || "-"}
 
             <br><br>
 
