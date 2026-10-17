@@ -294,59 +294,6 @@ onclick="changerSite('RCLP')">
 </div>
 `;
 
-<button
-class="tab"
-style="${
-siteActif==='DASHBOARD'
-? 'background:#28a745;color:white;'
-: ''
-}"
-onclick="changerSite('DASHBOARD')">
-
-📊 TABLEAU DE BORD
-
-</button>
-
-<button
-class="tab"
-style="${
-siteActif==='HISTORIQUE'
-? 'background:#6f42c1;color:white;'
-: ''
-}"
-onclick="changerSite('HISTORIQUE')">
-
-📜 HISTORIQUE
-
-</button>
-
-<button
-class="tab"
-style="${
-siteActif==='HDLP'
-? 'background:#1976d2;color:white;'
-: ''
-}"
-onclick="changerSite('HDLP')">
-
-🏨 STOCK HDLP
-
-</button>
-
-<button
-class="tab"
-style="${
-siteActif==='RCLP'
-? 'background:#ff9800;color:white;'
-: ''
-}"
-onclick="changerSite('RCLP')">
-
-🍴 STOCK RCLP
-
-</button>
-`;
-
 let html = "";
 
 if(
