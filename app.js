@@ -240,30 +240,44 @@ function importerPrix(event){
 }
 function ouvrirReceptionRapide(){
 
-    document.getElementById("cards").innerHTML = `
+ document.getElementById("cards").innerHTML = `
 
-    <div class="card">
+<div class="card">
 
-        <h2>📦 Réception rapide</h2>
+<h2>📦 Réception rapide</h2>
 
-        Fournisseur
+Fournisseur
 
-        <br>
+<br>
 
-        <input
-        id="rechercheReception"
-        placeholder="Article, code ou code fournisseur"
-        oninput="rechercherReception()">
+<input
+id="fournisseurReception"
+list="listeFournisseurs"
+placeholder="Rechercher un fournisseur"
+oninput="rechercherReception()">
 
-        <br><br>
+<datalist id="listeFournisseurs"></datalist>
 
-        <div id="resultatsReception"></div>
+<br><br>
 
-    </div>
+Article / Code / Code fournisseur
 
-    `;
+<br>
 
-}
+<input
+id="rechercheReception"
+placeholder="Code article, code fournisseur ou article"
+oninput="rechercherReception()">
+
+<br><br>
+
+<div id="resultatsReception"></div>
+
+</div>
+
+`;
+
+mettreAJourListeFournisseurs();
 function rechercherReception(){
 
     const recherche =
