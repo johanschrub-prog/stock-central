@@ -286,116 +286,50 @@ function importerPrix(event){
     );
 
 }
+
+<div class="card">
 function ouvrirReceptionRapide(){
-let analyseCategorie = "";
+
 document.getElementById("cards").innerHTML = `
-if(categorieDashboard){
 
-    const dejaVus = new Set();
+<div class="card">
 
-    Object.keys(stock).forEach(cat => {
+<h2>📦 Réception rapide</h2>
 
-        stock[cat].forEach(article => {
+Fournisseur
 
-            if(
-                article.categorie !==
-                categorieDashboard
-            ){
-                return;
-            }
+<br>
 
-            if(
-                dejaVus.has(article.code)
-            ){
-                return;
-            }
+<input
+id="fournisseurReception"
+list="listeFournisseurs"
+placeholder="Rechercher un fournisseur"
+oninput="rechercherReception()">
 
-            dejaVus.add(article.code);
+<datalist id="listeFournisseurs"></datalist>
 
-            let stockHDLP = 0;
-            let stockRCLP = 0;
+<br><br>
 
-            Object.keys(stock).forEach(c => {
+Article / Code / Code fournisseur
 
-                stock[c].forEach(a => {
+<br>
 
-                    if(
-                        String(a.code) ===
-                        String(article.code)
-                    ){
+<input
+id="rechercheReception"
+placeholder="Code article, code fournisseur ou article"
+oninput="rechercherReception()">
 
-                        if(
-                            c.startsWith("HDLP")
-                        ){
-                            stockHDLP +=
-                            Number(
-                                a.stock || 0
-                            );
-                        }
+<br><br>
 
-                        if(
-                            c.startsWith("RCLP")
-                        ){
-                            stockRCLP +=
-                            Number(
-                                a.stock || 0
-                            );
-                        }
+<div id="resultatsReception"></div>
 
-                    }
+</div>
 
-                });
+`;
 
-            });
-
-            if(
-                stockHDLP <
-                stockMiniDashboard
-
-                &&
-
-                stockRCLP <
-                stockMiniDashboard
-            ){
-                return;
-            }
-
-            analyseCategorie += `
-
-            <div class="card">
-
-            <b>
-            ${article.article}
-            </b>
-
-            <br><br>
-
-            HDLP :
-            <b>${stockHDLP}</b>
-
-            <br><br>
-
-            RCLP :
-            <b>${stockRCLP}</b>
-
-            <br><br>
-
-            TOTAL :
-            <b>
-            ${stockHDLP + stockRCLP}
-            </b>
-
-            </div>
-
-            `;
-
-        });
-
-    });
+mettreAJourListeFournisseurs();
 
 }
-${analyseCategorie}
-<div class="card">
 
 <h2>📦 Réception rapide</h2>
 
@@ -3502,6 +3436,86 @@ ${r.categorie || "-"}
     return;
 
 }
+    let analyseCategorie = "";
+if(categorieDashboard){
+
+    const dejaVus = new Set();
+
+    Object.keys(stock).forEach(cat => {
+
+        stock[cat].forEach(article => {
+
+            if(article.categorie !== categorieDashboard){
+                return;
+            }
+
+            if(dejaVus.has(article.code)){
+                return;
+            }
+
+            dejaVus.add(article.code);
+
+            let stockHDLP = 0;
+            let stockRCLP = 0;
+
+            Object.keys(stock).forEach(c => {
+
+                stock[c].forEach(a => {
+
+                    if(String(a.code) === String(article.code)){
+
+                        if(c.startsWith("HDLP")){
+                            stockHDLP += Number(a.stock || 0);
+                        }
+
+                        if(c.startsWith("RCLP")){
+                            stockRCLP += Number(a.stock || 0);
+                        }
+
+                    }
+
+                });
+
+            });
+
+            if(
+                stockHDLP < stockMiniDashboard
+                &&
+                stockRCLP < stockMiniDashboard
+            ){
+                return;
+            }
+
+            analyseCategorie += `
+
+            <div class="card">
+
+                <b>${article.article}</b>
+
+                <br><br>
+
+                🏨 HDLP :
+                <b>${stockHDLP}</b>
+
+                <br><br>
+
+                🍴 RCLP :
+                <b>${stockRCLP}</b>
+
+                <br><br>
+
+                📦 TOTAL :
+                <b>${stockHDLP + stockRCLP}</b>
+
+            </div>
+
+            `;
+
+        });
+
+    });
+
+}
 document.getElementById("cards").innerHTML = `
 <div class="card">
 
@@ -3607,7 +3621,7 @@ ${(valeurHDLP + valeurRCLP).toFixed(2)} €
 </strong>
 
 </div>
-
+${analyseCategorie}
 `;
 
 renderOnglets();
