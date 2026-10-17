@@ -139,7 +139,8 @@ function importerFournisseurs(event){
                         Number(
                             ligne.PRIX_ACHAT || 0
                         );
-
+article.categorie =
+ligne.CATEGORIE || "";
                         trouve = true;
                         maj++;
 
@@ -151,38 +152,36 @@ function importerFournisseurs(event){
 
             if(!trouve){
 
-                stock["HDLP BAR"].push({
+           stock["HDLP BAR"].push({
 
-                    id:
-                    crypto.randomUUID(),
+    id: crypto.randomUUID(),
 
-                    code: code,
+    code: code,
 
-                    article:
-                    ligne.ARTICLE ||
-                    "NOUVEL ARTICLE",
+    article:
+    ligne.ARTICLE || "NOUVEL ARTICLE",
 
-                    stock: 0,
+    categorie:
+    ligne.CATEGORIE || "",
 
-                    prix:
-                    Number(
-                        ligne.PRIX_ACHAT || 0
-                    ),
+    stock: 0,
 
-                    fournisseur:
-                    ligne.FOURNISSEUR || "",
+    prix:
+    Number(ligne.PRIX_ACHAT || 0),
 
-                    codeFournisseur:
-                    ligne.CODE_FOURNISSEUR || "",
+    fournisseur:
+    ligne.FOURNISSEUR || "",
 
-                    colisage:
-                    Number(
-                        ligne.COLISAGE || 1
-                    ),
+    codeFournisseur:
+    ligne.CODE_FOURNISSEUR || "",
 
-                    mouvements: []
+    colisage:
+    Number(ligne.COLISAGE || 1),
 
-                });
+    mouvements: []
+
+});
+
 
                 nouveaux++;
 
@@ -338,7 +337,19 @@ mettreAJourListeFournisseurs();
     );
 
     if(!liste) return;
+const categoriesProduits =
 
+[
+    ...new Set(
+
+        Object.values(stock)
+        .flat()
+        .map(a => a.categorie)
+        .filter(c => c)
+
+    )
+
+].sort();
     const fournisseurs =
     new Set();
 
@@ -2622,6 +2633,11 @@ document.getElementById("search")
     const filtreCave =
 document.getElementById("filtreCave")
 ?.value || "";
+    const filtreCategorie =
+document.getElementById(
+    "filtreCategorie"
+)?.value || "";
+
 let mouvements = [];
 
 Object.keys(stock)
@@ -3344,8 +3360,17 @@ const matchCave =
 !filtreCave ||
 
 a.cave === filtreCave;
+    const matchCategorie =
 
-return matchRecherche && matchCave;
+!filtreCategorie ||
+
+a.categorie === filtreCategorie;
+
+return (
+    matchRecherche &&
+    matchCave &&
+    matchCategorie
+);
 
 })
 .forEach(a=>{
@@ -3787,11 +3812,14 @@ stock = {
 
     code: code,
 
-    article:
-    row.ARTICLE || "",
+   article:
+row.ARTICLE || "",
 
-    stock:
-    ancien?.stock || 0,
+categorie:
+ancien?.categorie || "",
+
+stock:
+ancien?.stock || 0,
 
     prix:
     ancien?.prix || 0,
