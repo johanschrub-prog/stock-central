@@ -3180,9 +3180,10 @@ if(
 
     (
         rechercheTexte !== "" &&
-        (article.article || "")
-        .toLowerCase()
-        .includes(rechercheTexte)
+(article.article || "")
+.toLowerCase()
+.trim()
+=== rechercheTexte
     )
 
     ||
@@ -3192,9 +3193,21 @@ if(
         String(article.code || "") === rechercheCode
     )
 
-)
+){
 
-                if(dejaVus.has(article.code)){
+    if(dejaVus.has(article.code)){
+        return;
+    }
+
+    dejaVus.add(article.code);
+
+    let stockHDLP = 0;
+    let stockRCLP = 0;
+    let prix = 0;
+
+    // reste du code...
+
+}
                     return;
                 }
 
