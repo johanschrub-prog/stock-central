@@ -287,7 +287,7 @@ function importerPrix(event){
 
 }
 
-<div class="card">
+
 function ouvrirReceptionRapide(){
 
 document.getElementById("cards").innerHTML = `
@@ -331,85 +331,7 @@ mettreAJourListeFournisseurs();
 
 }
 
-<h2>📦 Réception rapide</h2>
 
-Fournisseur
-
-<br>
-
-<input
-id="fournisseurReception"
-list="listeFournisseurs"
-placeholder="Rechercher un fournisseur"
-oninput="rechercherReception()">
-
-<datalist id="listeFournisseurs"></datalist>
-
-<br><br>
-
-Article / Code / Code fournisseur
-
-<br>
-
-<input
-id="rechercheReception"
-placeholder="Code article, code fournisseur ou article"
-oninput="rechercherReception()">
-
-<br><br>
-
-<div id="resultatsReception"></div>
-
-</div>
-
-`;
-
-mettreAJourListeFournisseurs();
-
-}
-    
-    function mettreAJourListeFournisseurs(){
-
-    const liste =
-    document.getElementById(
-        "listeFournisseurs"
-    );
-
-    if(!liste) return;
-
-    const fournisseurs =
-    new Set();
-
-    Object.keys(stock).forEach(categorie => {
-
-        stock[categorie].forEach(article => {
-
-            if(article.fournisseur){
-
-                fournisseurs.add(
-                    article.fournisseur
-                );
-
-            }
-
-        });
-
-    });
-
-    liste.innerHTML =
-
-    [...fournisseurs]
-    .sort()
-
-    .map(f =>
-
-        `<option value="${f}"></option>`
-
-    )
-
-    .join("");
-
-}
 function rechercherReception(){
  const fournisseur =
 
