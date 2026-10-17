@@ -1835,7 +1835,14 @@ if(categorieActive === "TOUS_HDLP"){
 
         if(cat.startsWith("HDLP")){
 
-            liste.push(...(stock[cat] || []));
+          (stock[cat] || []).forEach(a => {
+
+    liste.push({
+        ...a,
+        cave: cat
+    });
+
+});
 
         }
 
@@ -1848,7 +1855,14 @@ else if(categorieActive === "TOUS_RCLP"){
 
         if(cat.startsWith("RCLP")){
 
-            liste.push(...(stock[cat] || []));
+         (stock[cat] || []).forEach(a => {
+
+    liste.push({
+        ...a,
+        cave: cat
+    });
+
+});
 
         }
 
@@ -2482,8 +2496,20 @@ html += `
 
 Code : ${a.code}
 
-<br><br>
+${
+categorieActive === "TOUS_HDLP"
+||
+categorieActive === "TOUS_RCLP"
+?
+`
+<br>
+Cave : <b>${a.cave}</b>
+`
+:
+""
+}
 
+<br><br>
 Stock :
 <input
 type="number"
