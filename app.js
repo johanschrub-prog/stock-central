@@ -451,25 +451,65 @@ ${Number(article.prix || 0).toFixed(2)} €
 
                     <br><br>
 
-                    Quantité :
+                 Mode :
 
-                   <input
+<select
+id="mode_${article.id}"
+onchange="calculReception('${article.id}',${article.colisage || 1})">
+
+    <option value="piece">
+        Pièces
+    </option>
+
+    <option value="carton">
+        Cartons
+    </option>
+
+</select>
+
+<br><br>
+
+Quantité :
+
+<input
 type="number"
 min="0"
 id="quantite_${article.id}"
-placeholder="Quantité">
+placeholder="Quantité"
+oninput="calculReception('${article.id}',${article.colisage || 1})">
 
-                    <br><br>
+<br><br>
 
-                    <button
-                    onclick="
-                    receptionRapide(
-                    '${article.code}',
-                    '${article.id}'
-                    )
-                    ">
+<div id="totalPieces_${article.id}">
 
-                    ✅ Réception
+Total réception :
+0 pièce(s)
+
+</div>
+
+<br>
+
+Montant réception (€)
+
+<br>
+
+<input
+type="number"
+step="0.01"
+id="montant_${article.id}"
+placeholder="Montant total facture">
+
+<br><br>
+
+<button
+onclick="
+receptionRapide(
+'${article.code}',
+'${article.id}'
+)
+">
+
+✅ Réception
 
                     </button>
 
@@ -488,6 +528,38 @@ placeholder="Quantité">
     ).innerHTML = html;
 
 }
+function calculReception(id,colisage){
+
+    const mode =
+    document.getElementById(
+        "mode_" + id
+    ).value;
+
+    const quantite =
+    Number(
+        document.getElementById(
+            "quantite_" + id
+        ).value || 0
+    );
+
+    let total = quantite;
+
+    if(mode === "carton"){
+
+        total =
+        quantite * colisage;
+
+    }
+
+    document.getElementById(
+        "totalPieces_" + id
+    ).innerHTML =
+
+    "Total réception : <b>" +
+    total +
+    "</b> pièce(s)";
+
+}
 function receptionRapide(
     code,
     id
@@ -498,38 +570,91 @@ function receptionRapide(
         "destination_" + id
     ).value;
 
-    const quantite =
-    Number(
-        document.getElementById(
-            "quantite_" + id
-        ).value
-    );
-
     const article =
-
     stock[destination]
     ?.find(a =>
-
-        String(a.code)
-        ===
-        String(code)
-
+        String(a.code) === String(code)
     );
 
     if(!article){
 
         alert(
-            "Article introuvable dans la cave de destination"
+            "Article introuvable dans la destination"
         );
 
         return;
+    }
+
+    const quantite =
+    Number(
+        document.getElementById(
+            "quantite_" + id
+        ).value || 0
+    );
+
+    const mode =
+    document.getElementById(
+        "mode_" + id
+    ).value;
+
+    let quantiteReelle =
+    quantite;
+
+    if(mode === "carton"){
+
+        quantiteReelle =
+        quantite *
+        Number(
+            article.colisage || 1
+        );
 
     }
 
     article.stock =
     Number(article.stock || 0)
     +
-    quantite;
+    quantiteReelle;
+
+    const montant =
+    Number(
+        document.getElementById(
+            "montant_" + id
+        ).value || 0
+    );
+
+    if(
+        montant > 0 &&
+        quantiteReelle > 0
+    ){
+
+        const nouveauPrix =
+        montant /
+        quantiteReelle;
+
+        Object.keys(stock)
+        .forEach(categorie => {
+
+            stock[categorie]
+            .forEach(a => {
+
+                if(
+                    String(a.code)
+                    ===
+                    String(article.code)
+                ){
+
+                    a.prix =
+                    Number(
+                        nouveauPrix.toFixed(2)
+                    );
+
+                }
+
+            });
+
+        });
+
+    }
 
     if(!article.mouvements){
 
@@ -547,20 +672,25 @@ function receptionRapide(
         "ENTREE",
 
         quantite:
-        quantite,
+        quantiteReelle,
 
         origine:
-        "RECEPTION RAPIDE"
+        "RECEPTION RAPIDE",
+
+        fournisseur:
+        article.fournisseur || ""
 
     });
 
     save();
 
-    render();
-
     alert(
-        "Réception enregistrée ✅"
+        "✅ Réception enregistrée\n\n" +
+        quantiteReelle +
+        " pièce(s) ajoutée(s)"
     );
+
+    rechercherReception();
 
 }
 function importStock(event){
