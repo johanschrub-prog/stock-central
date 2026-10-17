@@ -57,9 +57,16 @@ function mettreAJourSuggestions(){
 
     });
 
-    const uniques =
-    [...new Set(propositions)]
-    .sort();
+  const uniques =
+[...new Set(propositions)]
+.sort((a, b) => {
+
+    const codeA = parseInt(a.split(" - ")[0]) || 0;
+    const codeB = parseInt(b.split(" - ")[0]) || 0;
+
+    return codeA - codeB;
+
+});
 
     suggestions.innerHTML =
     uniques.map(p =>
@@ -2546,9 +2553,8 @@ if(recherche){
 
                 ||
 
-                String(article.code || "")
-                .toLowerCase()
-                .includes(recherche)
+             String(article.code || "")
+.startsWith(recherche)
             ){
 
                 if(dejaVus.has(article.code)){
@@ -2722,9 +2728,8 @@ const matchRecherche =
 
 ||
 
-String(a.code||"")
-.toLowerCase()
-.includes(recherche);
+String(a.code || "")
+.startsWith(recherche);
 
 const matchCave =
 
