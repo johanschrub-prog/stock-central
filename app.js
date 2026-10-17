@@ -340,12 +340,19 @@ document
     )
     .value
     .toLowerCase();
-
+const dejaVus = new Set();
     let html = "";
 
     Object.keys(stock).forEach(categorie => {
 
         stock[categorie].forEach(article => {
+            
+            if(dejaVus.has(String(article.code))){
+    return;
+}
+
+dejaVus.add(String(article.code));
+
 if(
     fournisseur &&
     String(article.fournisseur || "")
