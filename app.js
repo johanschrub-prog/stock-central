@@ -2574,9 +2574,30 @@ const valeurRecherche =
 document.getElementById("search")
 ?.value || "";
 
-const rechercheCode =
+const rechercheTexte =
+
 valeurRecherche.includes(" - ")
-? valeurRecherche.split(" - ")[0].trim()
+
+? valeurRecherche
+    .split(" - ")
+    .slice(1)
+    .join(" - ")
+    .toLowerCase()
+    .trim()
+
+: valeurRecherche
+    .toLowerCase()
+    .trim();
+
+const rechercheCode =
+
+valeurRecherche.includes(" - ")
+
+? valeurRecherche
+    .split(" - ")[0]
+    .trim()
+
+: valeurRecherche.trim();
 : "";
 
 const rechercheTexte =
