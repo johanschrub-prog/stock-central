@@ -456,8 +456,8 @@ ${Number(article.prix || 0).toFixed(2)} €
 <input
 type="number"
 min="0"
-value="0"
 id="cartons_${article.id}"
+placeholder="0">
 oninput="calculReception(
 '${article.id}',
 ${article.colisage || 1},
@@ -471,8 +471,8 @@ Pièces :
 <input
 type="number"
 min="0"
-value="0"
 id="pieces_${article.id}"
+placeholder="0">
 oninput="calculReception(
 '${article.id}',
 ${article.colisage || 1},
@@ -512,11 +512,6 @@ Montant réception (€)
 
 <br>
 
-<input
-type="number"
-step="0.01"
-id="montant_${article.id}"
-placeholder="Montant total facture">
 
 <br><br>
 
@@ -581,10 +576,21 @@ function calculReception(
         totalPieces *
         Number(prix || 0);
 
-    document.getElementById(
-        "montant_" + id
-    ).value =
+ const champMontant =
+document.getElementById(
+    "montant_" + id
+);
+
+if(totalPieces > 0){
+
+    champMontant.value =
     montant.toFixed(2);
+
+}else{
+
+    champMontant.value = "";
+
+}
 
 }
 function receptionRapide(
