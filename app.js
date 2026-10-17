@@ -3341,6 +3341,46 @@ renderOnglets();
 return;
 
 }
+    if(
+    categorieActive === "TOUS_HDLP" ||
+    categorieActive === "TOUS_RCLP"
+){
+
+html += `
+
+<div class="card">
+
+<b>Catégorie</b>
+
+<br><br>
+
+<select
+id="filtreCategorie"
+onchange="render()">
+
+<option value="">
+Toutes
+</option>
+
+${categoriesProduits.map(c => `
+
+<option
+value="${c}"
+${filtreCategorie === c ? "selected" : ""}>
+
+${c}
+
+</option>
+
+`).join("")}
+
+</select>
+
+</div>
+
+`;
+
+}
 liste
 .filter(a=>{
 
@@ -3389,7 +3429,10 @@ html += `
 <br>
 
 Code : ${a.code}
+<br>
 
+Catégorie :
+<b>${a.categorie || "-"}</b>
 ${
 categorieActive === "TOUS_HDLP"
 ||
