@@ -2569,26 +2569,6 @@ else{
     liste = stock[categorieActive] || [];
 
 }
-
-const valeurRecherche =
-document.getElementById("search")
-?.value || "";
-
-const rechercheTexte =
-
-valeurRecherche.includes(" - ")
-
-? valeurRecherche
-    .split(" - ")
-    .slice(1)
-    .join(" - ")
-    .toLowerCase()
-    .trim()
-
-: valeurRecherche
-    .toLowerCase()
-    .trim();
-
 const valeurRecherche =
 document.getElementById("search")
 ?.value || "";
@@ -3584,12 +3564,6 @@ valeurRecherche === ""
 (a.article || "")
 .toLowerCase()
 .includes(rechercheTexte)
-
-||
-
-String(a.code || "")
-.includes(rechercheCode);
-`
 
 ||
 
