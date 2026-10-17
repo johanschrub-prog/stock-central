@@ -278,8 +278,76 @@ oninput="rechercherReception()">
 `;
 
 mettreAJourListeFournisseurs();
-function rechercherReception(){
+    function mettreAJourListeFournisseurs(){
 
+    const liste =
+    document.getElementById(
+        "listeFournisseurs"
+    );
+
+    if(!liste) return;
+
+    const fournisseurs =
+    new Set();
+
+    Object.keys(stock).forEach(categorie => {
+
+        stock[categorie].forEach(article => {
+
+            if(article.fournisseur){
+
+                fournisseurs.add(
+                    article.fournisseur
+                );
+
+            }
+
+        });
+
+    });
+
+    liste.innerHTML =
+
+    [...fournisseurs]
+    .sort()
+
+    .map(f =>
+
+        `<option value="${f}"></option>`
+
+    )
+
+    .join("");
+
+}
+function rechercherReception(){
+ const fournisseur =
+
+document
+.getElementById(
+    "fournisseurReception"
+)
+?.value
+?.toLowerCase() || "";
+
+if(
+
+fournisseur
+
+&&
+
+String(
+    article.fournisseur || ""
+)
+.toLowerCase()
+
+!==
+
+fournisseur
+
+){
+    return;
+}
     const recherche =
     document.getElementById(
         "rechercheReception"
