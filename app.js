@@ -2423,7 +2423,13 @@ function validerTransfert(){
 
         return;
     }
-
+if(
+    quantite >
+    Number(articleTransfertActif.stock || 0)
+){
+    alert("Stock insuffisant");
+    return;
+}
     articleTransfertActif.stock =
 
     Number(
@@ -3091,17 +3097,21 @@ document.getElementById("search")
 if(recherche){
 
     let resultats = [];
+    const dejaVus = new Set();
 
-   Object.keys(stock).forEach(categorie => {
+    Object.keys(stock).forEach(categorie => {
+
+        stock[categorie].forEach(article => {
+
             if(
                 (article.article || "")
-                .toLowerCase()
-                .includes(recherche)
+                    .toLowerCase()
+                    .includes(recherche)
 
                 ||
 
-             String(article.code || "")
-.startsWith(recherche)
+                String(article.code || "")
+                    .startsWith(recherche)
             ){
 
                 if(dejaVus.has(article.code)){
@@ -3125,18 +3135,12 @@ if(recherche){
 
                             prix = a.prix || prix;
 
-                            if(
-                                cat.startsWith("HDLP")
-                            ){
-                                stockHDLP +=
-                                Number(a.stock || 0);
+                            if(cat.startsWith("HDLP")){
+                                stockHDLP += Number(a.stock || 0);
                             }
 
-                            if(
-                                cat.startsWith("RCLP")
-                            ){
-                                stockRCLP +=
-                                Number(a.stock || 0);
+                            if(cat.startsWith("RCLP")){
+                                stockRCLP += Number(a.stock || 0);
                             }
 
                         }
@@ -3144,6 +3148,22 @@ if(recherche){
                     });
 
                 });
+
+                resultats.push({
+
+                    article: article.article,
+                    code: article.code,
+                    prix: prix,
+                    stockHDLP: stockHDLP,
+                    stockRCLP: stockRCLP
+
+                });
+
+            }
+
+        });
+
+    });
 
                 resultats.push({
 
@@ -3512,7 +3532,7 @@ function exportHistoriqueExcel(){
                     return;
                 }
 
-           if(
+        if(
     filtreFournisseur &&
     String(m.fournisseur || "").toUpperCase() !==
     String(filtreFournisseur).toUpperCase()
