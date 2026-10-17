@@ -34,6 +34,87 @@ JSON.stringify(stock)
 );
 
 }
+function importerPrix(event){
+
+    const fichier =
+    event.target.files[0];
+
+    if(!fichier) return;
+
+    const reader = new FileReader();
+
+    reader.onload = function(e){
+
+        const data =
+        new Uint8Array(
+            e.target.result
+        );
+
+        const wb =
+        XLSX.read(data,{
+            type:'array'
+        });
+
+        const ws =
+        wb.Sheets[
+            wb.SheetNames[0]
+        ];
+
+        const lignes =
+        XLSX.utils.sheet_to_json(ws);
+
+        let maj = 0;
+
+        lignes.forEach(ligne => {
+
+            const code =
+            String(
+                ligne.Code || ""
+            ).trim();
+
+            const prix =
+            Number(
+                ligne.Prix || 0
+            );
+
+            Object.keys(stock)
+            .forEach(categorie => {
+
+                stock[categorie]
+                .forEach(article => {
+
+                    if(
+                        String(article.code)
+                        === code
+                    ){
+
+                        article.prix = prix;
+                        maj++;
+
+                    }
+
+                });
+
+            });
+
+        });
+
+        save();
+
+        render();
+
+        alert(
+            maj +
+            " prix mis à jour"
+        );
+
+    };
+
+    reader.readAsArrayBuffer(
+        fichier
+    );
+
+}
 function importStock(event){
 
     const file =
