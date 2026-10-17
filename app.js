@@ -2609,12 +2609,29 @@ Stock :
 type="number"
 value="${a.stock||0}"
 onchange="
-stock['${a.cave || categorieActive}']
-.find(x=>x.id==='${a.id}')
-.stock=Number(this.value);
+
+Object.keys(stock).forEach(categorie => {
+
+    stock[categorie].forEach(article => {
+
+        if(
+            String(article.code)
+            ===
+            String('${a.code}')
+        ){
+
+            article.prix =
+            Number(this.value);
+
+        }
+
+    });
+
+});
 
 save();
 render();
+
 "
 >
 
