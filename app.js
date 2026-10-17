@@ -1879,6 +1879,9 @@ const recherche =
 document.getElementById("search")
 ?.value
 ?.toLowerCase() || "";
+    const filtreCave =
+document.getElementById("filtreCave")
+?.value || "";
 let mouvements = [];
 
 Object.keys(stock)
@@ -2465,7 +2468,9 @@ return;
 
 }
 liste
-.filter(a=>
+.filter(a=>{
+
+const matchRecherche =
 
 (a.article||"")
 .toLowerCase()
@@ -2476,9 +2481,17 @@ liste
 (a.code||"")
 .toString()
 .toLowerCase()
-.includes(recherche)
+.includes(recherche);
 
-)
+const matchCave =
+
+!filtreCave ||
+
+a.cave === filtreCave;
+
+return matchRecherche && matchCave;
+
+})
 .forEach(a=>{
 
 const valeur =
