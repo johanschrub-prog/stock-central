@@ -76,6 +76,87 @@ function mettreAJourSuggestions(){
     ).join("");
 
 }
+function importerFournisseurs(event){
+
+    const fichier =
+    event.target.files[0];
+
+    if(!fichier) return;
+
+    const reader =
+    new FileReader();
+
+    reader.onload = function(e){
+
+        const workbook =
+        XLSX.read(
+            e.target.result,
+            {type:"array"}
+        );
+
+        const sheet =
+        workbook.Sheets[
+            workbook.SheetNames[0]
+        ];
+
+        const lignes =
+        XLSX.utils.sheet_to_json(sheet);
+
+        let maj = 0;
+
+        lignes.forEach(ligne => {
+
+            const code =
+            String(
+                ligne.CODE || ""
+            ).trim();
+
+            Object.keys(stock)
+            .forEach(categorie => {
+
+                stock[categorie]
+                .forEach(article => {
+
+                    if(
+                        String(article.code)
+                        === code
+                    ){
+
+                        article.fournisseur =
+                        ligne.FOURNISSEUR || "";
+
+                        article.codeFournisseur =
+                        ligne.CODE_FOURNISSEUR || "";
+
+                        article.colisage =
+                        Number(
+                            ligne.COLISAGE || 1
+                        );
+
+                        maj++;
+
+                    }
+
+                });
+
+            });
+
+        });
+
+        save();
+
+        alert(
+            maj +
+            " articles mis à jour"
+        );
+
+    };
+
+    reader.readAsArrayBuffer(
+        fichier
+    );
+
+}
 function importerPrix(event){
 
     const fichier =
