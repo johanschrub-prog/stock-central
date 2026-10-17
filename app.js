@@ -34,6 +34,41 @@ JSON.stringify(stock)
 );
 
 }
+function mettreAJourSuggestions(){
+
+    const suggestions =
+    document.getElementById(
+        "listeProduits"
+    );
+
+    if(!suggestions) return;
+
+    const produits = [];
+
+    Object.keys(stock).forEach(categorie => {
+
+        stock[categorie].forEach(article => {
+
+            produits.push(
+                article.article
+            );
+
+        });
+
+    });
+
+    const uniques =
+    [...new Set(produits)]
+    .sort();
+
+    suggestions.innerHTML =
+    uniques.map(p =>
+
+        `<option value="${p}"></option>`
+
+    ).join("");
+
+}
 function importerPrix(event){
 
     const fichier =
@@ -3068,7 +3103,7 @@ importerFeuille(
 );
 
         save();
-
+mettreAJourSuggestions();
      changerSite("DASHBOARD");
 
         alert("Import terminé");
@@ -3077,5 +3112,6 @@ importerFeuille(
 
        reader.readAsArrayBuffer(file);
 
-}
-changerSite("DASHBOARD");
+}mettreAJourSuggestions();
+
+changerSite("DASHBOARD");changerSite("DASHBOARD");
