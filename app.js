@@ -2633,10 +2633,16 @@ document.getElementById("search")
     const filtreCave =
 document.getElementById("filtreCave")
 ?.value || "";
-    const filtreCategorie =
+  const filtreCategorie =
 document.getElementById(
     "filtreCategorie"
-)?.value || "";
+)?.value
+||
+localStorage.getItem(
+    "filtreCategorie"
+)
+||
+"";
 
 let mouvements = [];
 
@@ -3356,9 +3362,17 @@ html += `
 
 <select
 id="filtreCategorie"
-onchange="render()">
+onchange="
+localStorage.setItem(
+'filtreCategorie',
+this.value
+);
+render();
+"
 
-<option value="">
+<option value=""
+${filtreCategorie === "" ? "selected" : ""}
+>
 Toutes
 </option>
 
@@ -3429,10 +3443,14 @@ html += `
 <br>
 
 Code : ${a.code}
+
 <br>
 
 Catégorie :
 <b>${a.categorie || "-"}</b>
+
+
+
 ${
 categorieActive === "TOUS_HDLP"
 ||
