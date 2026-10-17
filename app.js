@@ -338,12 +338,12 @@ function changerSite(site){
 
     if(site === "HDLP"){
 
-        categorieActive = "HDLP MINI BAR";
+        categorieActive = "TOUS_HDLP";
 
     }
     else if(site === "RCLP"){
 
-        categorieActive = "RCLP ALCOOL";
+        categorieActive = "TOUS_RCLP";
 
     }
     else if(site === "HISTORIQUE"){
@@ -1827,8 +1827,39 @@ new Date().toISOString(),
 }
 function render(){
 
-const liste =
-stock[categorieActive] || [];
+let liste = [];
+
+if(categorieActive === "TOUS_HDLP"){
+
+    Object.keys(stock).forEach(cat => {
+
+        if(cat.startsWith("HDLP")){
+
+            liste.push(...(stock[cat] || []));
+
+        }
+
+    });
+
+}
+else if(categorieActive === "TOUS_RCLP"){
+
+    Object.keys(stock).forEach(cat => {
+
+        if(cat.startsWith("RCLP")){
+
+            liste.push(...(stock[cat] || []));
+
+        }
+
+    });
+
+}
+else{
+
+    liste = stock[categorieActive] || [];
+
+}
 
 const recherche =
 document.getElementById("search")
