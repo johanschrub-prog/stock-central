@@ -2526,8 +2526,6 @@ document.getElementById("search")
         });
 
     });
-
-document.getElementById("cards").innerHTML = `
 if(recherche){
 
     let resultats = [];
@@ -2650,6 +2648,8 @@ if(recherche){
     return;
 
 }
+document.getElementById("cards").innerHTML = `
+
 <div class="card">
     <h2>🏨 HDLP</h2>
     Valeur du stock :
