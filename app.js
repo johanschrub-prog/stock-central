@@ -369,24 +369,23 @@ if(
 ){
     return;
 }
-           if(
+      if(
     String(article.code || "")
     .toLowerCase()
-    .includes(recherche)
+  .includes(rechercheMin)
 
     ||
 
     String(article.article || "")
     .toLowerCase()
-    .includes(recherche)
-)
-                ||
+ .includes(rechercheMin)
 
-                String(article.codeFournisseur || "")
-                .toLowerCase()
-                .includes(recherche)
+    ||
 
-            ){
+    String(article.codeFournisseur || "")
+    .toLowerCase()
+  .includes(rechercheMin)
+){
 
                 html += `
 
@@ -3104,13 +3103,7 @@ if(
 } 
 if(categorieActive === "DASHBOARD"){
     
-const recherche =
-(
-document.getElementById("search")
-?.value || ""
-)
-.split(" - ")[0]
-.toLowerCase();
+
 const categorieDashboard =
 localStorage.getItem(
     "categorieDashboard"
@@ -3570,7 +3563,7 @@ const matchRecherche =
 ||
 
 String(a.code || "")
-.startsWith(recherche);
+.startsWith(recherche)
 
 const matchCave =
 
@@ -4108,6 +4101,7 @@ mettreAJourSuggestions();
 
        reader.readAsArrayBuffer(file);
 
-}mettreAJourSuggestions();
+}
+mettreAJourSuggestions();
 
 changerSite("DASHBOARD");changerSite("DASHBOARD");
