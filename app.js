@@ -369,22 +369,22 @@ if(
 ){
     return;
 }
-      if(
+    if(
     String(article.code || "")
     .toLowerCase()
-  .includes(rechercheMin)
+    .includes(recherche)
 
     ||
 
     String(article.article || "")
     .toLowerCase()
- .includes(rechercheMin)
+    .includes(recherche)
 
     ||
 
     String(article.codeFournisseur || "")
     .toLowerCase()
-  .includes(rechercheMin)
+    .includes(recherche)
 ){
 
                 html += `
@@ -3175,16 +3175,16 @@ if(recherche){
 
         stock[categorie].forEach(article => {
 
-            if(
-                (article.article || "")
-                    .toLowerCase()
-                    .includes(recherche)
+         if(
+    (article.article || "")
+        .toLowerCase()
+        .includes(rechercheMin)
 
-                ||
+    ||
 
-                String(article.code || "")
-                    .startsWith(recherche)
-            ){
+    String(article.code || "")
+        .startsWith(recherche)
+){
 
                 if(dejaVus.has(article.code)){
                     return;
@@ -3556,14 +3556,14 @@ liste
 
 const matchRecherche =
 
-(a.article||"")
+(a.article || "")
 .toLowerCase()
-.includes(recherche)
+.includes(rechercheMin)
 
 ||
 
 String(a.code || "")
-.startsWith(recherche)
+.startsWith(recherche);
 
 const matchCave =
 
