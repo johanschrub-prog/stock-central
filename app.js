@@ -3177,15 +3177,22 @@ if(valeurRecherche.trim() !== ""){
         stock[categorie].forEach(article => {
 
 if(
-    (article.article || "")
-    .toLowerCase()
-    .includes(rechercheTexte)
+
+    (
+        rechercheTexte !== "" &&
+        (article.article || "")
+        .toLowerCase()
+        .includes(rechercheTexte)
+    )
 
     ||
 
-    String(article.code || "")
-    .includes(rechercheCode)
-){
+    (
+        rechercheCode !== "" &&
+        String(article.code || "") === rechercheCode
+    )
+
+)
 
                 if(dejaVus.has(article.code)){
                     return;
@@ -3561,14 +3568,20 @@ valeurRecherche === ""
 
 ||
 
-(a.article || "")
-.toLowerCase()
-.includes(rechercheTexte)
+(
+    rechercheTexte !== "" &&
+    (a.article || "")
+    .toLowerCase()
+    .includes(rechercheTexte)
+)
 
 ||
 
-String(a.code || "")
-.startsWith(rechercheTexte);
+(
+    rechercheCode !== "" &&
+    String(a.code || "") === rechercheCode
+);
+
 const matchCave =
 
 !filtreCave ||
