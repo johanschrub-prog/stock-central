@@ -3230,12 +3230,13 @@ if(
 }
 
 if(
-    stockHDLP <
-    stockMiniDashboard
-    &&
-    stockRCLP <
-    stockMiniDashboard
+    stockHDLP >= stockMiniDashboard
+    ||
+    stockRCLP >= stockMiniDashboard
 ){
+    // afficher l'article
+}
+else{
     return;
 }
              resultats.push({
