@@ -3102,9 +3102,12 @@ if(
 if(categorieActive === "DASHBOARD"){
     
 const recherche =
+(
 document.getElementById("search")
-?.value
-?.toLowerCase() || "";
+?.value || ""
+)
+.split(" - ")[0]
+.toLowerCase();
 const categorieDashboard =
 localStorage.getItem(
     "categorieDashboard"
