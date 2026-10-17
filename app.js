@@ -2589,19 +2589,19 @@ valeurRecherche.includes(" - ")
     .toLowerCase()
     .trim();
 
+const valeurRecherche =
+document.getElementById("search")
+?.value || "";
+
 const rechercheCode =
-
 valeurRecherche.includes(" - ")
-
-? valeurRecherche
-    .split(" - ")[0]
-    .trim()
-
-: valeurRecherche.trim();
+? valeurRecherche.split(" - ")[0].trim()
 : "";
 
 const rechercheTexte =
-valeurRecherche.toLowerCase().trim();
+valeurRecherche.includes(" - ")
+? valeurRecherche.split(" - ").slice(1).join(" - ").toLowerCase().trim()
+: valeurRecherche.toLowerCase().trim();
     const filtreCave =
 document.getElementById("filtreCave")
 ?.value || "";
@@ -3196,7 +3196,7 @@ if(valeurRecherche.trim() !== ""){
 
         stock[categorie].forEach(article => {
 
-  if(
+if(
     (article.article || "")
     .toLowerCase()
     .includes(rechercheTexte)
@@ -3204,12 +3204,7 @@ if(valeurRecherche.trim() !== ""){
     ||
 
     String(article.code || "")
-    .startsWith(rechercheCode)
-
-    ||
-
-    String(article.code || "")
-    .startsWith(rechercheTexte)
+    .includes(rechercheCode)
 ){
 
                 if(dejaVus.has(article.code)){
@@ -3582,7 +3577,7 @@ liste
 
 const matchRecherche =
 
-!valeurRecherche
+valeurRecherche === ""
 
 ||
 
@@ -3593,7 +3588,8 @@ const matchRecherche =
 ||
 
 String(a.code || "")
-.startsWith(rechercheCode)
+.includes(rechercheCode);
+`
 
 ||
 
