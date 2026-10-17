@@ -3154,7 +3154,7 @@ Number(
         });
 
     });
-if(recherche){
+if(valeurRecherche.trim() !== ""){
 
     const categorieDashboard =
     localStorage.getItem(
@@ -3175,8 +3175,7 @@ if(recherche){
 
         stock[categorie].forEach(article => {
 
-         if(
- if(
+  if(
     (article.article || "")
     .toLowerCase()
     .includes(rechercheTexte)
