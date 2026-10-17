@@ -383,7 +383,24 @@ if(
 
                     Code :
                     ${article.code}
+<br>
 
+Fournisseur :
+${article.fournisseur || "-"}
+
+<br>
+
+Code fournisseur :
+${article.codeFournisseur || "-"}
+
+<br>
+
+Colisage :
+${article.colisage || 1}
+<br>
+
+Prix actuel :
+${Number(article.prix || 0).toFixed(2)} €
                     <br>
 
                     ${
@@ -436,10 +453,11 @@ if(
 
                     Quantité :
 
-                    <input
-                    type="number"
-                    value="1"
-                    id="quantite_${article.id}">
+                   <input
+type="number"
+min="0"
+id="quantite_${article.id}"
+placeholder="Quantité">
 
                     <br><br>
 
