@@ -3221,24 +3221,7 @@ if(recherche){
                     });
 
                 });
-if(
-    categorieDashboard &&
-    article.categorie !==
-    categorieDashboard
-){
-    return;
-}
 
-if(
-    stockHDLP >= stockMiniDashboard
-    ||
-    stockRCLP >= stockMiniDashboard
-){
-    // afficher l'article
-}
-else{
-    return;
-}
              resultats.push({
 
     article: article.article,
@@ -3259,57 +3242,7 @@ else{
            
   let html = `
 
-<div class="card">
 
-<b>Catégorie</b>
-
-<br><br>
-
-<select
-onchange="
-localStorage.setItem(
-'categorieDashboard',
-this.value
-);
-render();
-">
-
-<option value="">
-Toutes
-</option>
-
-${categoriesProduits.map(c=>`
-
-<option
-value="${c}"
-${categorieDashboard===c?"selected":""}>
-
-${c}
-
-</option>
-
-`).join("")}
-
-</select>
-
-<br><br>
-
-<b>Stock supérieur à</b>
-
-<br><br>
-
-<input
-type="number"
-value="${stockMiniDashboard}"
-onchange="
-localStorage.setItem(
-'stockMiniDashboard',
-this.value
-);
-render();
-">
-
-</div>
 
 `;
 
