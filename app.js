@@ -2609,19 +2609,39 @@ Stock :
 type="number"
 value="${a.stock||0}"
 onchange="
+stock['${a.cave || categorieActive}']
+.find(x=>x.id==='${a.id}')
+.stock=Number(this.value);
+
+save();
+render();
+"
+>
+
+
+<br><br>
+
+Prix :
+
+<input
+type="number"
+step="0.01"
+value="${a.prix || 0}"
+
+onchange="
+
+const nouveauPrix = Number(this.value);
 
 Object.keys(stock).forEach(categorie => {
 
     stock[categorie].forEach(article => {
 
         if(
-            String(article.code).trim()
-            ===
+            String(article.code).trim() ===
             String('${a.code}').trim()
         ){
 
-            article.prix =
-            Number(this.value);
+            article.prix = nouveauPrix;
 
         }
 
@@ -2635,21 +2655,7 @@ render();
 "
 >
 
-
-<br><br>
-
-Prix :
-
-<input
-type="number"
-step="0.01"
-value="${a.prix||0}"
-
-stock['${a.cave || categorieActive}']
->
-
 <br>
-
 <div class="valeur"
 style="
 color:${Number(a.stock) < 0 ? '#dc3545' : '#1976d2'};
