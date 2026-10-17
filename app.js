@@ -278,6 +278,9 @@ oninput="rechercherReception()">
 `;
 
 mettreAJourListeFournisseurs();
+
+}
+    
     function mettreAJourListeFournisseurs(){
 
     const liste =
@@ -330,24 +333,7 @@ document
 ?.value
 ?.toLowerCase() || "";
 
-if(
 
-fournisseur
-
-&&
-
-String(
-    article.fournisseur || ""
-)
-.toLowerCase()
-
-!==
-
-fournisseur
-
-){
-    return;
-}
     const recherche =
     document.getElementById(
         "rechercheReception"
@@ -360,7 +346,13 @@ fournisseur
     Object.keys(stock).forEach(categorie => {
 
         stock[categorie].forEach(article => {
-
+if(
+    fournisseur &&
+    String(article.fournisseur || "")
+    .toLowerCase() !== fournisseur
+){
+    return;
+}
             if(
 
                 String(article.article || "")
