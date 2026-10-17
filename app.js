@@ -43,14 +43,14 @@ function mettreAJourSuggestions(){
 
     if(!suggestions) return;
 
-    const produits = [];
+    let propositions = [];
 
     Object.keys(stock).forEach(categorie => {
 
         stock[categorie].forEach(article => {
 
-            produits.push(
-                article.article
+            propositions.push(
+                `${article.code} - ${article.article}`
             );
 
         });
@@ -58,7 +58,7 @@ function mettreAJourSuggestions(){
     });
 
     const uniques =
-    [...new Set(produits)]
+    [...new Set(propositions)]
     .sort();
 
     suggestions.innerHTML =
