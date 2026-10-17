@@ -78,18 +78,15 @@ function mettreAJourSuggestions(){
 }
 function importerFournisseurs(event){
 
-    const fichier =
-    event.target.files[0];
+    const fichier = event.target.files[0];
 
     if(!fichier) return;
 
-    const reader =
-    new FileReader();
+    const reader = new FileReader();
 
     reader.onload = function(e){
 
-        const workbook =
-        XLSX.read(
+        const workbook = XLSX.read(
             e.target.result,
             {type:"array"}
         );
@@ -103,24 +100,29 @@ function importerFournisseurs(event){
         XLSX.utils.sheet_to_json(sheet);
 
         let maj = 0;
+        let nouveaux = 0;
 
         lignes.forEach(ligne => {
 
             const code =
-            String(
-                ligne.CODE || ""
-            ).trim();
+            String(ligne.CODE || "").trim();
 
-            Object.keys(stock)
-            .forEach(categorie => {
+            if(!code) return;
 
-                stock[categorie]
-                .forEach(article => {
+            let trouve = false;
+
+            Object.keys(stock).forEach(categorie => {
+
+                stock[categorie].forEach(article => {
 
                     if(
-                        String(article.code)
+                        String(article.code).trim()
                         === code
                     ){
+
+                        article.article =
+                        ligne.ARTICLE ||
+                        article.article;
 
                         article.fournisseur =
                         ligne.FOURNISSEUR || "";
@@ -133,6 +135,12 @@ function importerFournisseurs(event){
                             ligne.COLISAGE || 1
                         );
 
+                        article.prix =
+                        Number(
+                            ligne.PRIX_ACHAT || 0
+                        );
+
+                        trouve = true;
                         maj++;
 
                     }
@@ -141,20 +149,61 @@ function importerFournisseurs(event){
 
             });
 
+            if(!trouve){
+
+                stock["HDLP BAR"].push({
+
+                    id:
+                    crypto.randomUUID(),
+
+                    code: code,
+
+                    article:
+                    ligne.ARTICLE ||
+                    "NOUVEL ARTICLE",
+
+                    stock: 0,
+
+                    prix:
+                    Number(
+                        ligne.PRIX_ACHAT || 0
+                    ),
+
+                    fournisseur:
+                    ligne.FOURNISSEUR || "",
+
+                    codeFournisseur:
+                    ligne.CODE_FOURNISSEUR || "",
+
+                    colisage:
+                    Number(
+                        ligne.COLISAGE || 1
+                    ),
+
+                    mouvements: []
+
+                });
+
+                nouveaux++;
+
+            }
+
         });
 
         save();
+        mettreAJourSuggestions();
+        render();
 
         alert(
-            maj +
-            " articles mis à jour"
+            "✅ " + maj +
+            " article(s) mis à jour\n\n" +
+            "🆕 " + nouveaux +
+            " nouvel(le)(s) article(s) créé(s)"
         );
 
     };
 
-    reader.readAsArrayBuffer(
-        fichier
-    );
+    reader.readAsArrayBuffer(fichier);
 
 }
 function importerPrix(event){
