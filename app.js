@@ -3400,14 +3400,16 @@ if(categorieDashboard){
 
             });
 
-            if(
-                stockHDLP < stockMiniDashboard
-                &&
-                stockRCLP < stockMiniDashboard
-            ){
-                return;
-            }
-
+       if(
+    stockHDLP >= stockMiniDashboard
+    ||
+    stockRCLP >= stockMiniDashboard
+){
+    // afficher l'article
+}
+else{
+    return;
+}
             analyseCategorie += `
 
             <div class="card">
