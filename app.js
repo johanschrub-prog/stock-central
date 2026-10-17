@@ -2571,13 +2571,17 @@ else{
 
 }
 
-const recherche =
-(
+const valeurRecherche =
 document.getElementById("search")
-?.value || ""
-)
-.split(" - ")[0]
-.toLowerCase();
+?.value || "";
+
+const recherche =
+valeurRecherche.includes(" - ")
+? valeurRecherche.split(" - ")[0].trim()
+: valeurRecherche.trim();
+
+const rechercheMin =
+recherche.toLowerCase();
     const filtreCave =
 document.getElementById("filtreCave")
 ?.value || "";
