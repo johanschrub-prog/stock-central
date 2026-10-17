@@ -1992,9 +1992,12 @@ else{
 }
 
 const recherche =
+(
 document.getElementById("search")
-?.value
-?.toLowerCase() || "";
+?.value || ""
+)
+.split(" - ")[0]
+.toLowerCase();
     const filtreCave =
 document.getElementById("filtreCave")
 ?.value || "";
@@ -2719,8 +2722,7 @@ const matchRecherche =
 
 ||
 
-(a.code||"")
-.toString()
+String(a.code||"")
 .toLowerCase()
 .includes(recherche);
 
