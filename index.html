@@ -115,6 +115,16 @@ onchange="importStock(event)">
 onclick="document.getElementById('importStock').click()">
 📂 Reprendre
 </button>
+    <button onclick="document.getElementById('importFournisseurs').click()">
+🏷️ Import Fournisseurs
+</button>
+
+<input
+type="file"
+id="importFournisseurs"
+accept=".xlsx"
+style="display:none"
+onchange="importerFournisseurs(event)">
     <button onclick="importCommandeHDLP()">
 🚚 Commandes HDLP
 </button>
