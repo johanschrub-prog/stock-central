@@ -337,19 +337,7 @@ mettreAJourListeFournisseurs();
     );
 
     if(!liste) return;
-const categoriesProduits =
 
-[
-    ...new Set(
-
-        Object.values(stock)
-        .flat()
-        .map(a => a.categorie)
-        .filter(c => c)
-
-    )
-
-].sort();
     const fournisseurs =
     new Set();
 
@@ -2676,6 +2664,22 @@ Object.keys(stock)
 
 });
 
+const categoriesProduits =
+
+[
+    ...new Set(
+
+        Object.values(stock)
+        .flat()
+        .map(a => a.categorie)
+        .filter(c => c)
+
+    )
+
+]
+
+.sort();
+
 const fournisseurs =
 
 [
@@ -2690,6 +2694,7 @@ const fournisseurs =
 ]
 
 .sort();
+
     
 let html = "";
 if(categorieActive === "HISTORIQUE"){
