@@ -2610,18 +2610,18 @@ type="number"
 value="${a.stock||0}"
 onchange="
 
-const nouveauPrix = Number(this.value);
-
-let compteur = 0;
-
 Object.keys(stock).forEach(categorie => {
 
     stock[categorie].forEach(article => {
 
-        if(String(article.code) === String('${a.code}')){
+        if(
+            String(article.code).trim()
+            ===
+            String('${a.code}').trim()
+        ){
 
-            article.prix = nouveauPrix;
-            compteur++;
+            article.prix =
+            Number(this.value);
 
         }
 
@@ -2629,18 +2629,10 @@ Object.keys(stock).forEach(categorie => {
 
 });
 
-console.log(
-    'Code :',
-    '${a.code}',
-    'Articles modifiés :',
-    compteur
-);
-
 save();
 render();
 
 "
-`
 >
 
 
@@ -2653,14 +2645,7 @@ type="number"
 step="0.01"
 value="${a.prix||0}"
 
-onchange="
 stock['${a.cave || categorieActive}']
-.find(x=>x.id==='${a.id}')
-.prix=Number(this.value);
-
-save();
-render();
-"
 >
 
 <br>
