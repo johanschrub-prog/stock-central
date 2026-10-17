@@ -287,9 +287,114 @@ function importerPrix(event){
 
 }
 function ouvrirReceptionRapide(){
-
+let analyseCategorie = "";
 document.getElementById("cards").innerHTML = `
+if(categorieDashboard){
 
+    const dejaVus = new Set();
+
+    Object.keys(stock).forEach(cat => {
+
+        stock[cat].forEach(article => {
+
+            if(
+                article.categorie !==
+                categorieDashboard
+            ){
+                return;
+            }
+
+            if(
+                dejaVus.has(article.code)
+            ){
+                return;
+            }
+
+            dejaVus.add(article.code);
+
+            let stockHDLP = 0;
+            let stockRCLP = 0;
+
+            Object.keys(stock).forEach(c => {
+
+                stock[c].forEach(a => {
+
+                    if(
+                        String(a.code) ===
+                        String(article.code)
+                    ){
+
+                        if(
+                            c.startsWith("HDLP")
+                        ){
+                            stockHDLP +=
+                            Number(
+                                a.stock || 0
+                            );
+                        }
+
+                        if(
+                            c.startsWith("RCLP")
+                        ){
+                            stockRCLP +=
+                            Number(
+                                a.stock || 0
+                            );
+                        }
+
+                    }
+
+                });
+
+            });
+
+            if(
+                stockHDLP <
+                stockMiniDashboard
+
+                &&
+
+                stockRCLP <
+                stockMiniDashboard
+            ){
+                return;
+            }
+
+            analyseCategorie += `
+
+            <div class="card">
+
+            <b>
+            ${article.article}
+            </b>
+
+            <br><br>
+
+            HDLP :
+            <b>${stockHDLP}</b>
+
+            <br><br>
+
+            RCLP :
+            <b>${stockRCLP}</b>
+
+            <br><br>
+
+            TOTAL :
+            <b>
+            ${stockHDLP + stockRCLP}
+            </b>
+
+            </div>
+
+            `;
+
+        });
+
+    });
+
+}
+${analyseCategorie}
 <div class="card">
 
 <h2>📦 Réception rapide</h2>
@@ -3139,11 +3244,22 @@ if(
 
 } 
 if(categorieActive === "DASHBOARD"){
+    
 const recherche =
 document.getElementById("search")
 ?.value
 ?.toLowerCase() || "";
+const categorieDashboard =
+localStorage.getItem(
+    "categorieDashboard"
+) || "";
 
+const stockMiniDashboard =
+Number(
+    localStorage.getItem(
+        "stockMiniDashboard"
+    ) || 0
+);
     let valeurHDLP = 0;
     let valeurRCLP = 0;
 
@@ -3387,7 +3503,59 @@ ${r.categorie || "-"}
 
 }
 document.getElementById("cards").innerHTML = `
+<div class="card">
 
+<h2>📂 Analyse par catégorie</h2>
+
+Catégorie
+
+<br><br>
+
+<select
+onchange="
+localStorage.setItem(
+'categorieDashboard',
+this.value
+);
+render();
+">
+
+<option value="">
+Sélectionner
+</option>
+
+${categoriesProduits.map(c=>`
+
+<option
+value="${c}"
+${categorieDashboard===c?"selected":""}>
+
+${c}
+
+</option>
+
+`).join("")}
+
+</select>
+
+<br><br>
+
+Stock supérieur à
+
+<br><br>
+
+<input
+type="number"
+value="${stockMiniDashboard}"
+onchange="
+localStorage.setItem(
+'stockMiniDashboard',
+this.value
+);
+render();
+">
+
+</div>
 <div class="card">
     <h2>🏨 HDLP</h2>
     Valeur du stock :
