@@ -3246,22 +3246,7 @@ Object.keys(stock).forEach(categorie => {
 
 });
 
-    article: article.article,
-    code: article.code,
-    categorie: article.categorie || "",
-    prix: prix,
-    stockHDLP: stockHDLP,
-    stockRCLP: stockRCLP
-
-});
-
-            }
-
-        });
-
-    });
-
-           
+            
   let html = `
 
 
@@ -3531,7 +3516,7 @@ this.value
 );
 render();
 ">
-"
+
 
 <option value=""
 ${filtreCategorie === "" ? "selected" : ""}
