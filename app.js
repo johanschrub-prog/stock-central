@@ -3172,73 +3172,79 @@ if(valeurRecherche.trim() !== ""){
     let resultats = [];
     const dejaVus = new Set();
 
-    Object.keys(stock).forEach(categorie => {
+Object.keys(stock).forEach(categorie => {
 
-        stock[categorie].forEach(article => {
+    stock[categorie].forEach(article => {
 
-if(
+        const matchRecherche =
 
-    (
-        rechercheTexte !== "" &&
-(article.article || "")
-.toLowerCase()
-.trim()
-=== rechercheTexte
-    )
+            (
+                rechercheTexte !== "" &&
+                (article.article || "")
+                .toLowerCase()
+                .includes(rechercheTexte)
+            )
 
-    ||
+            ||
 
-    (
-        rechercheCode !== "" &&
-        String(article.code || "") === rechercheCode
-    )
+            (
+                rechercheCode !== "" &&
+                String(article.code || "") === rechercheCode
+            );
 
-){
+        if(!matchRecherche){
+            return;
+        }
 
-    if(dejaVus.has(article.code)){
-        return;
-    }
+        if(dejaVus.has(article.code)){
+            return;
+        }
 
-    dejaVus.add(article.code);
+        dejaVus.add(article.code);
 
-    let stockHDLP = 0;
-    let stockRCLP = 0;
-    let prix = 0;
+        let stockHDLP = 0;
+        let stockRCLP = 0;
+        let prix = 0;
 
-    // reste du code...
+        Object.keys(stock).forEach(cat => {
 
-}
-                    return;
+            stock[cat].forEach(a => {
+
+                if(
+                    String(a.code) ===
+                    String(article.code)
+                ){
+
+                    prix = a.prix || prix;
+
+                    if(cat.startsWith("HDLP")){
+                        stockHDLP += Number(a.stock || 0);
+                    }
+
+                    if(cat.startsWith("RCLP")){
+                        stockRCLP += Number(a.stock || 0);
+                    }
+
                 }
 
-        
+            });
 
-                Object.keys(stock).forEach(cat => {
+        });
 
-                    stock[cat].forEach(a => {
+        resultats.push({
 
-                        if(
-                            String(a.code) ===
-                            String(article.code)
-                        ){
+            article: article.article,
+            code: article.code,
+            categorie: article.categorie || "",
+            prix: prix,
+            stockHDLP: stockHDLP,
+            stockRCLP: stockRCLP
 
-                            prix = a.prix || prix;
+        });
 
-                            if(cat.startsWith("HDLP")){
-                                stockHDLP += Number(a.stock || 0);
-                            }
+    });
 
-                            if(cat.startsWith("RCLP")){
-                                stockRCLP += Number(a.stock || 0);
-                            }
-
-                        }
-
-                    });
-
-                });
-
-             resultats.push({
+});
 
     article: article.article,
     code: article.code,
@@ -3685,80 +3691,22 @@ Object.keys(stock).forEach(categorie => {
 
     stock[categorie].forEach(article => {
 
-        const matchRecherche =
-
-            (
-                rechercheTexte !== "" &&
-                (article.article || "")
-                .toLowerCase()
-                .trim()
-                === rechercheTexte
-            )
-
-            ||
-
-            (
-                rechercheCode !== "" &&
-                String(article.code || "") === rechercheCode
-            );
-
-        if(!matchRecherche){
-            return;
+        if(
+            String(article.code).trim() ===
+            String('${a.code}').trim()
+        ){
+            article.prix = nouveauPrix;
         }
-
-        if(dejaVus.has(article.code)){
-            return;
-        }
-
-        dejaVus.add(article.code);
-
-        let stockHDLP = 0;
-        let stockRCLP = 0;
-        let prix = 0;
-
-        Object.keys(stock).forEach(cat => {
-
-            stock[cat].forEach(a => {
-
-                if(
-                    String(a.code) ===
-                    String(article.code)
-                ){
-
-                    prix = a.prix || prix;
-
-                    if(cat.startsWith("HDLP")){
-                        stockHDLP += Number(a.stock || 0);
-                    }
-
-                    if(cat.startsWith("RCLP")){
-                        stockRCLP += Number(a.stock || 0);
-                    }
-
-                }
-
-            });
-
-        });
-
-        resultats.push({
-
-            article: article.article,
-            code: article.code,
-            categorie: article.categorie || "",
-            prix: prix,
-            stockHDLP: stockHDLP,
-            stockRCLP: stockRCLP
-
-        });
 
     });
 
 });
+
 save();
 render();
 
 "
+
 >
 
 <br>
