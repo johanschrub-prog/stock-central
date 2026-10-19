@@ -2814,11 +2814,10 @@ localStorage.getItem(
 ||
 "";
 const filtreStock =
-Number(
-    localStorage.getItem(
-        "filtreStock"
-    ) || 0
-);
+localStorage.getItem(
+    "filtreStock"
+) ?? "";
+
     
 let mouvements = [];
 
@@ -3763,7 +3762,7 @@ ${c}
 
 <input
 type="number"
-min="0"
+placeholder="Aucun filtre"
 value="${filtreStock}"
 onchange="
 localStorage.setItem(
@@ -3812,9 +3811,13 @@ a.cave === filtreCave;
 a.categorie === filtreCategorie;
 const matchStock =
 
+filtreStock === ""
+
+||
+
 Number(a.stock || 0)
 >=
-filtreStock;
+Number(filtreStock);
     
 return (
     matchRecherche &&
