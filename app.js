@@ -2404,6 +2404,111 @@ function transfererArticle(id){
     "block";
 
 }
+function transfertCoupe(id){
+
+    const article =
+    (stock[categorieActive] || [])
+    .find(a => a.id === id);
+
+    if(!article) return;
+
+    const quantite =
+    Number(
+        prompt(
+            "Quantité à transférer en coupes ?",
+            "1"
+        )
+    );
+
+    if(
+        isNaN(quantite)
+        ||
+        quantite <= 0
+    ){
+        return;
+    }
+
+    if(
+        Number(article.stock || 0)
+        < quantite
+    ){
+        alert("Stock insuffisant");
+        return;
+    }
+
+    const champagneCoupe =
+
+    Object.values(stock)
+    .flat()
+    .find(a =>
+        String(a.code) === "185"
+    );
+
+    if(!champagneCoupe){
+
+        alert(
+            "Article code 185 introuvable"
+        );
+
+        return;
+    }
+
+    article.stock -= quantite;
+
+    champagneCoupe.stock =
+    Number(
+        champagneCoupe.stock || 0
+    ) + quantite;
+
+    article.mouvements =
+    article.mouvements || [];
+
+    champagneCoupe.mouvements =
+    champagneCoupe.mouvements || [];
+
+    article.mouvements.push({
+
+        date:
+        new Date().toLocaleString(),
+
+        type:
+        "TRANSFERT COUPE",
+
+        quantite:
+        quantite,
+
+        origine:
+        "VERS CODE 185"
+
+    });
+
+    champagneCoupe.mouvements.push({
+
+        date:
+        new Date().toLocaleString(),
+
+        type:
+        "TRANSFERT COUPE",
+
+        quantite:
+        quantite,
+
+        origine:
+        article.article
+
+    });
+
+    save();
+
+    render();
+
+    alert(
+        "✅ " +
+        quantite +
+        " transférée(s) vers Champagne Coupe"
+    );
+
+}
 function fermerTransfert(){
 
     document.getElementById(
@@ -3753,6 +3858,22 @@ onclick="transfererArticle('${a.id}')">
 🔄 Transférer
 
 </button>
+${
+String(a.cave || categorieActive)
+.includes("RCLP")
+?
+`
+<button
+onclick="transfertCoupe('${a.id}')">
+
+🥂 Coupe
+
+</button>
+`
+:
+""
+}
+
 </div>
 `;
 
