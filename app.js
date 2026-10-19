@@ -286,7 +286,32 @@ function importerPrix(event){
     );
 
 }
+function mettreAJourListeFournisseurs(){
 
+    const fournisseurs = [
+        ...new Set(
+            Object.values(stock)
+            .flat()
+            .map(a => a.fournisseur)
+            .filter(f => f && f.trim() !== "")
+        )
+    ].sort();
+
+    const liste =
+    document.getElementById(
+        "listeFournisseurs"
+    );
+
+    if(!liste) return;
+
+    liste.innerHTML =
+    fournisseurs.map(f =>
+
+        `<option value="${f}"></option>`
+
+    ).join("");
+
+}
 
 function ouvrirReceptionRapide(){
 
@@ -4043,25 +4068,28 @@ stock = {
             String(a.code) === String(code)
         );
 
-      stock[categorie].push({
+stock[categorie].push({
 
-    id:
-    ancien?.id ||
-    crypto.randomUUID(),
+    id: ancien?.id || crypto.randomUUID(),
 
     code: code,
 
-   article:
-row.ARTICLE || "",
+    article: row.ARTICLE || "",
 
-categorie:
-ancien?.categorie || "",
+    categorie: ancien?.categorie || "",
 
-stock:
-ancien?.stock || 0,
+    stock: ancien?.stock || 0,
 
-    prix:
-    ancien?.prix || 0,
+    prix: ancien?.prix || 0,
+
+    fournisseur:
+    ancien?.fournisseur || "",
+
+    codeFournisseur:
+    ancien?.codeFournisseur || "",
+
+    colisage:
+    ancien?.colisage || 1,
 
     mouvements:
     ancien?.mouvements || []
