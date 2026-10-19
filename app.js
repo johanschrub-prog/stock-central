@@ -345,9 +345,18 @@ Code fournisseur
 
 <input
 id="codeFournisseurReception"
-type="text"
-placeholder="Rechercher un code fournisseur"
-oninput="rechercherReception()">
+type="number"
+inputmode="numeric"
+pattern="[0-9]*"
+placeholder="🔢 Code fournisseur"
+oninput="rechercherReception()"
+style="
+width:100%;
+padding:15px;
+font-size:22px;
+font-weight:bold;
+box-sizing:border-box;
+">
 
 <br><br>
 
