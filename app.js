@@ -505,12 +505,17 @@ if(
 
                 <div class="card">
 
-                    <b>${article.article}</b>
+                   <b>${article.article}</b>
 
-                    <br>
+<br>
 
-                    Code :
-                    ${article.code}
+Code :
+${article.code}
+
+${
+codeFournisseurRecherche === ""
+?
+`
 <br>
 
 Fournisseur :
@@ -525,23 +530,17 @@ ${article.codeFournisseur || "-"}
 
 Colisage :
 ${article.colisage || 1}
+
 <br>
 
 Prix actuel :
 ${Number(article.prix || 0).toFixed(2)} €
+`
+:
+""
+}
                     <br>
-
-                    ${
-                    article.codeFournisseur
-                    ?
-                    `Code fournisseur :
-                    ${article.codeFournisseur}<br>`
-                    :
-                    ""
-                    }
-
-                    <br>
-
+                   
                     Destination :
 
                     <select
