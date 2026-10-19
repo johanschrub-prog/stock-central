@@ -335,6 +335,8 @@ oninput="rechercherReception()">
 
 <datalist id="listeFournisseurs"></datalist>
 
+</div>
+
 <br><br>
 
 Code fournisseur
@@ -375,6 +377,24 @@ mettreAJourListeFournisseurs();
 
 
 function rechercherReception(){
+const fournisseur =
+
+document
+.getElementById(
+    "fournisseurReception"
+)
+?.value
+?.toLowerCase() || "";
+
+const codeFournisseurRecherche =
+
+document
+.getElementById(
+    "codeFournisseurReception"
+)
+?.value
+?.toLowerCase() || "";
+
 const blocFournisseur =
 document.getElementById(
     "blocFournisseur"
@@ -385,7 +405,7 @@ document.getElementById(
     "blocRechercheArticle"
 );
 
-if(codeFournisseurRecherche){
+if(codeFournisseurRecherche !== ""){
 
     blocFournisseur.style.display =
     "none";
@@ -403,15 +423,6 @@ else{
     "";
 
 }
-    const fournisseur =
-
-document
-.getElementById(
-    "fournisseurReception"
-)
-?.value
-?.toLowerCase() || "";
-const codeFournisseurRecherche =
 
 document
 .getElementById(
