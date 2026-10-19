@@ -321,6 +321,8 @@ document.getElementById("cards").innerHTML = `
 
 <h2>📦 Réception rapide</h2>
 
+<div id="blocFournisseur">
+
 Fournisseur
 
 <br>
@@ -335,6 +337,20 @@ oninput="rechercherReception()">
 
 <br><br>
 
+Code fournisseur
+
+<br>
+
+<input
+id="codeFournisseurReception"
+type="text"
+placeholder="Rechercher un code fournisseur"
+oninput="rechercherReception()">
+
+<br><br>
+
+<div id="blocRechercheArticle">
+
 Article / Code / Code fournisseur
 
 <br>
@@ -343,6 +359,7 @@ Article / Code / Code fournisseur
 id="rechercheReception"
 placeholder="Code article, code fournisseur ou article"
 oninput="rechercherReception()">
+</div>
 
 <br><br>
 
@@ -358,11 +375,47 @@ mettreAJourListeFournisseurs();
 
 
 function rechercherReception(){
- const fournisseur =
+const blocFournisseur =
+document.getElementById(
+    "blocFournisseur"
+);
+
+const blocRechercheArticle =
+document.getElementById(
+    "blocRechercheArticle"
+);
+
+if(codeFournisseurRecherche){
+
+    blocFournisseur.style.display =
+    "none";
+
+    blocRechercheArticle.style.display =
+    "none";
+
+}
+else{
+
+    blocFournisseur.style.display =
+    "";
+
+    blocRechercheArticle.style.display =
+    "";
+
+}
+    const fournisseur =
 
 document
 .getElementById(
     "fournisseurReception"
+)
+?.value
+?.toLowerCase() || "";
+const codeFournisseurRecherche =
+
+document
+.getElementById(
+    "codeFournisseurReception"
 )
 ?.value
 ?.toLowerCase() || "";
@@ -394,7 +447,8 @@ if(
 ){
     return;
 }
-    if(
+const matchRecherche =
+
     String(article.code || "")
     .toLowerCase()
     .includes(recherche)
@@ -409,7 +463,22 @@ if(
 
     String(article.codeFournisseur || "")
     .toLowerCase()
-    .includes(recherche)
+    .includes(recherche);
+
+const matchCodeFournisseur =
+
+    codeFournisseurRecherche === ""
+
+    ||
+
+    String(article.codeFournisseur || "")
+    .toLowerCase()
+    .includes(codeFournisseurRecherche);
+
+if(
+    matchRecherche
+    &&
+    matchCodeFournisseur
 ){
 
                 html += `
