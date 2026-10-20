@@ -1096,11 +1096,13 @@ onclick="changerSite('RCLP')">
 
 </div>
 
-<div style="width:100%;display:flex;gap:10px;">
+<div style="width:100%;">
 
 <button
 class="tab"
-style="${
+style="
+width:100%;
+${
 siteActif==='VENTES'
 ? 'background:#e91e63;color:white;'
 : ''
