@@ -1071,6 +1071,19 @@ onclick="changerSite('HISTORIQUE')">
 <button
 class="tab"
 style="${
+siteActif==='VENTES'
+? 'background:#e91e63;color:white;'
+: ''
+}"
+onclick="changerSite('VENTES')">
+
+📈 VENTES BOUTIQUE
+
+</button>
+
+<button
+class="tab"
+style="${
 siteActif==='HDLP'
 ? 'background:#1976d2;color:white;'
 : ''
@@ -1152,6 +1165,11 @@ function changerSite(site){
     else if(site === "HISTORIQUE"){
 
         categorieActive = "HISTORIQUE";
+
+    }
+    else if(site === "VENTES"){
+
+        categorieActive = "VENTES";
 
     }
     else{
@@ -3388,6 +3406,13 @@ if(
     return;
 
 } 
+    if(categorieActive === "VENTES"){
+
+    renderVentesBoutique();
+
+    return;
+
+}
 if(categorieActive === "DASHBOARD"){
     
 
@@ -4319,7 +4344,189 @@ stock = {
 "RCLP VIN": []
 
 };
-       
+       function renderVentesBoutique(){
+
+    const ventes =
+    JSON.parse(
+        localStorage.getItem(
+            "ventesBoutique"
+        )
+    ) || [];
+
+    let html = `
+
+    <div class="card">
+
+    <h2>📈 Ventes Boutique</h2>
+
+    Date début
+
+    <br><br>
+
+    <input
+    type="date"
+    id="dateDebutVente">
+
+    <br><br>
+
+    Date fin
+
+    <br><br>
+
+    <input
+    type="date"
+    id="dateFinVente">
+
+    <br><br>
+
+    <button
+    onclick="calculerStatsBoutique()">
+
+    📊 Afficher
+
+    </button>
+
+    </div>
+
+    <div id="resultatStatsBoutique"></div>
+
+    `;
+
+    document.getElementById(
+        "cards"
+    ).innerHTML = html;
+
+}
+        function calculerStatsBoutique(){
+
+    const ventes =
+    JSON.parse(
+        localStorage.getItem(
+            "ventesBoutique"
+        )
+    ) || [];
+
+    const debut =
+    document.getElementById(
+        "dateDebutVente"
+    ).value;
+
+    const fin =
+    document.getElementById(
+        "dateFinVente"
+    ).value;
+
+    let total = 0;
+
+    const articles = {};
+
+    ventes.forEach(v => {
+
+        let dateVente = "";
+
+        if(
+            String(v.date)
+            .includes("/")
+        ){
+
+            const p =
+            v.date
+            .split(" ")[0]
+            .split("/");
+
+            dateVente =
+            p[2] + "-" +
+            p[1].padStart(2,"0") + "-" +
+            p[0].padStart(2,"0");
+
+        }
+        else{
+
+            dateVente =
+            String(v.date)
+            .substring(0,10);
+
+        }
+
+        if(
+            debut &&
+            dateVente < debut
+        ){
+            return;
+        }
+
+        if(
+            fin &&
+            dateVente > fin
+        ){
+            return;
+        }
+
+        total += Number(
+            v.quantite || 0
+        );
+
+        if(
+            !articles[v.article]
+        ){
+
+            articles[v.article] = 0;
+
+        }
+
+        articles[v.article] +=
+        Number(v.quantite || 0);
+
+    });
+
+    let top =
+    Object.entries(articles)
+
+    .sort(
+        (a,b)=>b[1]-a[1]
+    )
+
+    .slice(0,10);
+
+    let html = `
+
+    <div class="card">
+
+    <h2>📊 Résultat</h2>
+
+    Quantité vendue :
+
+    <b>${total}</b>
+
+    <br><br>
+
+    <h3>🏆 Top ventes</h3>
+
+    `;
+
+    top.forEach(t => {
+
+        html +=
+
+        t[0] +
+
+        " : <b>" +
+
+        t[1] +
+
+        "</b><br>";
+
+    });
+
+    html += "</div>";
+
+    document.getElementById(
+        "resultatStatsBoutique"
+    ).innerHTML =
+    html;
+
+}
+``
      function importerFeuille(
     nomFeuille,
     categorie
