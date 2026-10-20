@@ -3748,13 +3748,18 @@ analyseOuverte
 `
 
 <div style="
+width:100%;
 display:flex;
 gap:10px;
 align-items:end;
 margin-top:15px;
 ">
 
-<div style="flex:1;">
+
+<div style="
+flex:1;
+width:50%;
+">
 
 <b>Catégorie</b>
 
