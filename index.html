@@ -172,7 +172,13 @@ function toggleOutils(){
     
 <button
 id="flecheOutils"
-onclick="toggleOutils()">
+onclick="toggleOutils()"
+style="
+width:100%;
+min-height:60px;
+font-size:20px;
+font-weight:bold;
+">
 
 ▶️ Outils
 
@@ -186,68 +192,37 @@ width:100%;
 margin-top:10px;
 ">
 
-<button
-onclick="document.getElementById('importStock').click()">
-📂 Reprendre
-</button>
-
-<button
-onclick="document.getElementById('importFournisseurs').click()">
-🏷️ Import Fournisseurs
-</button>
-
-<button onclick="importCommandeHDLP()">
-🚚 Commandes HDLP
-</button>
-
-<button onclick="importCommandeRCLP()">
-🚚 Commandes RCLP
-</button>
-
-<button onclick="importRemonteeHDLP()">
-📥 Remontées HDLP
-</button>
-
-<button onclick="importRemonteeRCLP()">
-📥 Remontées RCLP
-</button>
-
-<button onclick="importVentesBoutique()">
-🛍️ Ventes Boutique
-</button>
-
-<button onclick="document.getElementById('importExcel').click()">
-📥 Import Inventaire
-</button>
-
-<button onclick="ouvrirReceptionRapide()">
-📦 Réception rapide
-</button>
-
-<button onclick="exportStock()">
-💾 Sauvegarde
-</button>
-
-<button onclick="remettreStocksAZero()">
-🧹 Remise à zéro des stocks
-</button>
-
-
-
+...
 </div>
+
+<div
+style="
+width:100%;
+display:flex;
+gap:10px;
+margin-top:10px;
+">
+
 <input
 id="search"
 list="listeProduits"
 placeholder="Recherche article ou code"
 onclick="this.select()"
-oninput="render()">
+oninput="render()"
+style="
+flex:1;
+">
 
-
-<datalist id="listeProduits"></datalist>
 <select
 id="filtreCave"
-onchange="render()">
+onchange="render()"
+style="
+flex:1;
+">
 
+<option value="">
+Toutes les caves
+</option>
 <option value="">
 Toutes les caves
 </option>
