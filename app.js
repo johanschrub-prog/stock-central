@@ -3749,16 +3749,12 @@ analyseOuverte
 
 <div style="
 width:100%;
-display:flex;
-gap:10px;
-align-items:end;
 margin-top:15px;
 ">
 
-
 <div style="
-flex:1;
-width:50%;
+width:100%;
+margin-bottom:15px;
 ">
 
 <b>Catégorie</b>
@@ -3800,7 +3796,10 @@ ${c}
 
 </div>
 
-<div style="flex:1;">
+<div style="
+width:100%;
+margin-bottom:15px;
+"><div style="flex:1;">
 
 <b>Stock supérieur à</b>
 
