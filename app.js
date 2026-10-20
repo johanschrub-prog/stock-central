@@ -3727,12 +3727,15 @@ box-sizing:border-box;
 document.getElementById("cards").innerHTML = `
 
 <div style="
+margin-left:-10px;
+margin-right:-10px;
 background:white;
 border-radius:12px;
 box-shadow:0 2px 6px rgba(0,0,0,.15);
 margin-bottom:10px;
 overflow:hidden;
 ">
+
 
 <button
 onclick="toggleAnalyse()"
