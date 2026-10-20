@@ -4546,6 +4546,8 @@ Object.keys(stock).forEach(categorie => {
 
 });
 
+            const ventesJour = {};
+            
     const debut =
     document.getElementById(
         "dateDebutVente"
@@ -4666,7 +4668,7 @@ Number(v.quantite || 0);
     });
 
     html += "</div>";
-const ventesJour = {};
+
     document.getElementById(
         "resultatStatsBoutique"
     ).innerHTML =
