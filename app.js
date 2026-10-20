@@ -3731,6 +3731,7 @@ background:white;
 border-radius:12px;
 box-shadow:0 2px 6px rgba(0,0,0,.15);
 margin-bottom:10px;
+overflow:hidden;
 ">
 
 <button
@@ -3740,11 +3741,15 @@ width:100%;
 min-height:80px;
 font-size:22px;
 font-weight:bold;
-border:1px solid #ddd;
-border-radius:8px;
+border:none;
+border-radius:0;
 background:#f8f9fa;
 cursor:pointer;
+margin:0;
+display:block;
+box-sizing:border-box;
 ">
+
 
 ${analyseOuverte ? "🔽" : "▶️"} Analyse par catégorie
 
@@ -3756,10 +3761,11 @@ analyseOuverte
 `
 
 <div style="
+padding:15px;
 display:flex;
 gap:10px;
 width:100%;
-margin-top:15px;
+box-sizing:border-box;
 align-items:flex-end;
 ">
 
