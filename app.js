@@ -2159,16 +2159,29 @@ function validerImportCommandeHDLP(){
 
         Number(c.quantite || 0);
 
-        if(prixUnitaire > 0){
+       if(prixUnitaire > 0){
 
-            article.prix =
+    Object.keys(stock).forEach(categorie => {
 
-            Number(
-                prixUnitaire.toFixed(2)
-            );
+        stock[categorie].forEach(a => {
 
-        }
+            if(
+                String(a.code).trim() ===
+                String(article.code).trim()
+            ){
 
+                a.prix =
+                Number(
+                    prixUnitaire.toFixed(2)
+                );
+
+            }
+
+        });
+
+    });
+
+}
         if(!article.mouvements){
 
             article.mouvements = [];
@@ -2414,15 +2427,29 @@ function validerImportCommandeRCLP(){
 
         Number(c.quantite || 0);
 
-        if(prixUnitaire > 0){
+     if(prixUnitaire > 0){
 
-            article.prix =
+    Object.keys(stock).forEach(categorie => {
 
-            Number(
-                prixUnitaire.toFixed(2)
-            );
+        stock[categorie].forEach(a => {
 
-        }
+            if(
+                String(a.code).trim() ===
+                String(article.code).trim()
+            ){
+
+                a.prix =
+                Number(
+                    prixUnitaire.toFixed(2)
+                );
+
+            }
+
+        });
+
+    });
+
+}
 
         if(!article.mouvements){
 
