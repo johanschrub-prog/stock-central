@@ -3722,6 +3722,7 @@ if(categorieDashboard){
 
 }
 document.getElementById("cards").innerHTML = `
+
 <div class="card">
 
 <button
@@ -3731,9 +3732,9 @@ width:100%;
 min-height:80px;
 font-size:22px;
 font-weight:bold;
-border:none;
+border:1px solid #ddd;
 border-radius:8px;
-background:#ddd;
+background:#f8f9fa;
 cursor:pointer;
 ">
 
@@ -3764,6 +3765,7 @@ style="
 width:100%;
 height:50px;
 font-size:18px;
+box-sizing:border-box;
 "
 onchange="
 localStorage.setItem(
@@ -3781,7 +3783,7 @@ ${categoriesProduits.map(c=>`
 
 <option
 value="${c}"
-${categorieDashboard===c?"selected":""}>
+${categorieDashboard===c ? "selected" : ""}>
 
 ${c}
 
@@ -3807,7 +3809,7 @@ height:50px;
 font-size:18px;
 box-sizing:border-box;
 "
-value="${stockMiniDashboard}"
+value="${stockMiniDashboard || ""}"
 onchange="
 localStorage.setItem(
 'stockMiniDashboard',
@@ -3820,6 +3822,12 @@ render();
 
 </div>
 
+`
+:
+""
+}
+
+</div>
 
 <div class="card">
     <h2>🏨 HDLP</h2>
@@ -3872,7 +3880,9 @@ ${(valeurHDLP + valeurRCLP).toFixed(2)} €
 </strong>
 
 </div>
+
 ${analyseCategorie}
+
 `;
 
 renderOnglets();
