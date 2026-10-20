@@ -1071,19 +1071,6 @@ onclick="changerSite('HISTORIQUE')">
 <button
 class="tab"
 style="${
-siteActif==='VENTES'
-? 'background:#e91e63;color:white;'
-: ''
-}"
-onclick="changerSite('VENTES')">
-
-📈 VENTES BOUTIQUE
-
-</button>
-
-<button
-class="tab"
-style="${
 siteActif==='HDLP'
 ? 'background:#1976d2;color:white;'
 : ''
@@ -1108,6 +1095,24 @@ onclick="changerSite('RCLP')">
 </button>
 
 </div>
+
+<div style="width:100%;display:flex;gap:10px;">
+
+<button
+class="tab"
+style="${
+siteActif==='VENTES'
+? 'background:#e91e63;color:white;'
+: ''
+}"
+onclick="changerSite('VENTES')">
+
+📈 VENTES BOUTIQUE
+
+</button>
+
+</div>
+
 `;
 
 let html = "";
