@@ -1134,16 +1134,25 @@ if(
         ? `background:${couleur};color:white;`
         : "";
 
-        html += `
-        <button
-        class="tab"
-        style="${style}"
-        onclick="changerCategorie('${c}')">
+  html += `
+<button
+class="tab"
+style="
+${style}
+font-size:22px;
+padding:20px;
+min-height:80px;
+font-weight:bold;
+margin:5px;
+width:100%;
+"
+onclick="changerCategorie('${c}')">
 
-        ${c}
+${c}
 
-        </button>
-        `;
+</button>
+`;
+
     });
 
 }
