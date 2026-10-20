@@ -4497,7 +4497,15 @@ mettreAJourSuggestions();
 
     </div>
 
-    <div id="resultatStatsBoutique"></div>
+   <div id="resultatStatsBoutique"></div>
+
+<div class="card">
+
+<h2>📈 Evolution des ventes</h2>
+
+<canvas id="graphVentes"></canvas>
+
+</div>
 
     `;
 
@@ -4597,7 +4605,14 @@ Object.keys(stock).forEach(categorie => {
         total += Number(
             v.quantite || 0
         );
+if(!ventesJour[dateVente]){
 
+    ventesJour[dateVente] = 0;
+
+}
+
+ventesJour[dateVente] +=
+Number(v.quantite || 0);
         if(
             !articles[v.article]
         ){
@@ -4651,12 +4666,76 @@ Object.keys(stock).forEach(categorie => {
     });
 
     html += "</div>";
-
+const ventesJour = {};
     document.getElementById(
         "resultatStatsBoutique"
     ).innerHTML =
     html;
+const labels =
+Object.keys(ventesJour)
+.sort();
 
+const data =
+labels.map(
+    jour => ventesJour[jour]
+);
+
+const canvas =
+document.getElementById(
+    "graphVentes"
+);
+
+if(canvas){
+
+    const ancien =
+    Chart.getChart(canvas);
+
+    if(ancien){
+
+        ancien.destroy();
+
+    }
+
+    new Chart(canvas,{
+
+        type:"bar",
+
+        data:{
+
+            labels: labels,
+
+            datasets:[{
+
+                label:
+                "Quantités vendues",
+
+                data: data,
+
+                borderWidth:1
+
+            }]
+
+        },
+
+        options:{
+
+            responsive:true,
+
+            scales:{
+
+                y:{
+
+                    beginAtZero:true
+
+                }
+
+            }
+
+        }
+
+    });
+
+}
 }
 mettreAJourSuggestions();
 
