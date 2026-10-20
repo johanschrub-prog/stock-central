@@ -3120,18 +3120,11 @@ Transferts
 <input
 id="filtreArticle"
 value="${
-localStorage.getItem(
-'filtreArticle'
-) || ''
+localStorage.getItem('filtreArticle') || ''
 }"
 placeholder="Code ou nom article"
-oninput="
-localStorage.setItem(
-'filtreArticle',
-this.value
-);
-render();
-">
+oninput="filtrerHistoriqueArticle(this)">
+
 
 <br><br>
 <button
@@ -4426,6 +4419,27 @@ mettreAJourSuggestions();
     };
 
        reader.readAsArrayBuffer(file);
+
+}
+let timerFiltreArticle;
+
+function filtrerHistoriqueArticle(champ){
+
+    clearTimeout(
+        timerFiltreArticle
+    );
+
+    localStorage.setItem(
+        'filtreArticle',
+        champ.value
+    );
+
+    timerFiltreArticle =
+    setTimeout(() => {
+
+        render();
+
+    }, 300);
 
 }
 mettreAJourSuggestions();
