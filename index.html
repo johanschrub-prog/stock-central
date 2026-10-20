@@ -109,13 +109,40 @@ id="importStock"
 accept=".json"
 style="display:none"
 onchange="importStock(event)">
+<script>
+let outilsOuverts = false;
+
+function toggleOutils(){
+
+    outilsOuverts = !outilsOuverts;
+
+    document.getElementById("blocOutils").style.display =
+        outilsOuverts ? "block" : "none";
+
+    document.getElementById("flecheOutils").innerHTML =
+        outilsOuverts ? "🔽 Outils" : "▶️ Outils";
+
+}
+</script>
+<button
+id="flecheOutils"
+onclick="toggleOutils()">
+
+▶️ Outils
+
+</button>
+
+<div
+id="blocOutils"
+style="display:none;">
 
 <button
-    
 onclick="document.getElementById('importStock').click()">
 📂 Reprendre
 </button>
-    <button onclick="document.getElementById('importFournisseurs').click()">
+
+<button
+onclick="document.getElementById('importFournisseurs').click()">
 🏷️ Import Fournisseurs
 </button>
 
@@ -125,36 +152,44 @@ id="importFournisseurs"
 accept=".xlsx"
 style="display:none"
 onchange="importerFournisseurs(event)">
-    <button onclick="importCommandeHDLP()">
+
+<button onclick="importCommandeHDLP()">
 🚚 Commandes HDLP
 </button>
 
 <button onclick="importCommandeRCLP()">
 🚚 Commandes RCLP
 </button>
-    <button onclick="importRemonteeHDLP()">
+
+<button onclick="importRemonteeHDLP()">
 📥 Remontées HDLP
 </button>
 
 <button onclick="importRemonteeRCLP()">
 📥 Remontées RCLP
 </button>
-    <button onclick="importVentesBoutique()">
+
+<button onclick="importVentesBoutique()">
 🛍️ Ventes Boutique
 </button>
+
 <button onclick="document.getElementById('importExcel').click()">
 📥 Import Inventaire
- <button onclick="ouvrirReceptionRapide()">
+</button>
+
+<button onclick="ouvrirReceptionRapide()">
 📦 Réception rapide
 </button>
 
-</button>
 <button onclick="exportStock()">
 💾 Sauvegarde
 </button>
-    <button onclick="remettreStocksAZero()">
+
+<button onclick="remettreStocksAZero()">
 🧹 Remise à zéro des stocks
 </button>
+
+</div>
 <input
 id="search"
 list="listeProduits"
