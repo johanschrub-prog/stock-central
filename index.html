@@ -88,15 +88,13 @@ input{
 
     width:100%;
 
-}
-#blocOutils{
-
     display:flex;
+
     flex-wrap:wrap;
+
     justify-content:space-between;
 
 }
-
 #blocOutils button{
 
     width:48%;
@@ -192,7 +190,52 @@ width:100%;
 margin-top:10px;
 ">
 
-...
+<button
+onclick="document.getElementById('importStock').click()">
+📂 Reprendre
+</button>
+
+<button
+onclick="document.getElementById('importFournisseurs').click()">
+🏷️ Import Fournisseurs
+</button>
+
+<button onclick="importCommandeHDLP()">
+🚚 Commandes HDLP
+</button>
+
+<button onclick="importCommandeRCLP()">
+🚚 Commandes RCLP
+</button>
+
+<button onclick="importRemonteeHDLP()">
+📥 Remontées HDLP
+</button>
+
+<button onclick="importRemonteeRCLP()">
+📥 Remontées RCLP
+</button>
+
+<button onclick="importVentesBoutique()">
+🛍️ Ventes Boutique
+</button>
+
+<button onclick="document.getElementById('importExcel').click()">
+📥 Import Inventaire
+</button>
+
+<button onclick="ouvrirReceptionRapide()">
+📦 Réception rapide
+</button>
+
+<button onclick="exportStock()">
+💾 Sauvegarde
+</button>
+
+<button onclick="remettreStocksAZero()">
+🧹 Remise à zéro des stocks
+</button>
+
 </div>
 
 <div
@@ -223,9 +266,7 @@ flex:1;
 <option value="">
 Toutes les caves
 </option>
-<option value="">
-Toutes les caves
-</option>
+
 
 <option value="HDLP MINI BAR">HDLP MINI BAR</option>
 <option value="HDLP SOFT">HDLP SOFT</option>
