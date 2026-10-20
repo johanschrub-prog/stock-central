@@ -3155,6 +3155,10 @@ Ventes Boutique
 Commandes HDLP
 </option>
 
+<option value="RECEPTION RAPIDE">
+Réceptions rapides
+</option>
+
 <option value="COMMANDE RCLP">
 Commandes RCLP
 </option>
