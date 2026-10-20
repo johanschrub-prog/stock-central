@@ -3817,7 +3817,7 @@ ${c}
 </div>
 
 <div style="
-width:120px;
+width:100px;
 flex-shrink:0;
 ">
 
