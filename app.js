@@ -4508,12 +4508,35 @@ mettreAJourSuggestions();
 }
         function calculerStatsBoutique(){
 
-    const ventes =
-    JSON.parse(
-        localStorage.getItem(
-            "ventesBoutique"
-        )
-    ) || [];
+  let ventes = [];
+
+Object.keys(stock).forEach(categorie => {
+
+    stock[categorie].forEach(article => {
+
+        (article.mouvements || []).forEach(m => {
+
+            if(m.origine === "VENTE BOUTIQUE"){
+
+                ventes.push({
+
+                    article: article.article,
+
+                    code: article.code,
+
+                    quantite: Number(m.quantite || 0),
+
+                    date: m.date
+
+                });
+
+            }
+
+        });
+
+    });
+
+});
 
     const debut =
     document.getElementById(
