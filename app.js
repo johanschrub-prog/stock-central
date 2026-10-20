@@ -6,6 +6,11 @@ localStorage.getItem(STORAGE_KEY)
 ) || {};
 let articleTransfertActif = null;
 
+let analyseOuverte =
+localStorage.getItem(
+    "analyseOuverte"
+) === "1";
+
 
 let categorieActive = "";
 
@@ -32,6 +37,18 @@ localStorage.setItem(
 STORAGE_KEY,
 JSON.stringify(stock)
 );
+
+}
+function toggleAnalyse(){
+
+    analyseOuverte = !analyseOuverte;
+
+    localStorage.setItem(
+        "analyseOuverte",
+        analyseOuverte ? "1" : "0"
+    );
+
+    render();
 
 }
 function mettreAJourSuggestions(){
@@ -3711,13 +3728,84 @@ else{
 document.getElementById("cards").innerHTML = `
 <div class="card">
 
-<h2>📂 Analyse par catégorie</h2>
+<button
+onclick="toggleAnalyse()"
+style="
+width:100%;
+min-height:60px;
+font-size:20px;
+font-weight:bold;
+border:none;
+border-radius:8px;
+background:#ddd;
+cursor:pointer;
+">
+
+${analyseOuverte ? "🔽" : "▶️"} Analyse par catégorie
+
+</button>
+
+${
+analyseOuverte
+?
+`
+
+<br><br>
 
 Catégorie
 
 <br><br>
 
 <select
+onchange="
+localStorage.setItem(
+'categorieDashboard',
+this.value
+);
+render();
+">
+
+<option value="">
+Sélectionner
+</option>
+
+${categoriesProduits.map(c=>`
+
+<option
+value="${c}"
+${categorieDashboard===c?"selected":""}>
+
+${c}
+
+</option>
+
+`).join("")}
+
+</select>
+
+<br><br>
+
+Stock supérieur à
+
+<br><br>
+
+<input
+type="number"
+value="${stockMiniDashboard}"
+onchange="
+localStorage.setItem(
+'stockMiniDashboard',
+this.value
+);
+render();
+">
+
+`
+:
+""
+}
+
+</div>
 onchange="
 localStorage.setItem(
 'categorieDashboard',
