@@ -124,6 +124,7 @@ function toggleOutils(){
 
 }
 </script>
+    
 <button
 id="flecheOutils"
 onclick="toggleOutils()">
@@ -132,24 +133,13 @@ onclick="toggleOutils()">
 
 </button>
 
-<style>
-
-#blocOutils button{
-
-    width:100%;
-    min-height:80px;
-
-    font-size:22px;
-
-    font-weight:bold;
-
-    margin-bottom:12px;
-
-    border-radius:12px;
-
-}
-
-</style>
+<div
+id="blocOutils"
+style="
+display:none;
+width:100%;
+margin-top:10px;
+">
 
 <button
 onclick="document.getElementById('importStock').click()">
@@ -160,13 +150,6 @@ onclick="document.getElementById('importStock').click()">
 onclick="document.getElementById('importFournisseurs').click()">
 🏷️ Import Fournisseurs
 </button>
-
-<input
-type="file"
-id="importFournisseurs"
-accept=".xlsx"
-style="display:none"
-onchange="importerFournisseurs(event)">
 
 <button onclick="importCommandeHDLP()">
 🚚 Commandes HDLP
@@ -203,6 +186,8 @@ onchange="importerFournisseurs(event)">
 <button onclick="remettreStocksAZero()">
 🧹 Remise à zéro des stocks
 </button>
+
+
 
 </div>
 <input
