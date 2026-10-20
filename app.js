@@ -3726,7 +3726,12 @@ box-sizing:border-box;
 }
 document.getElementById("cards").innerHTML = `
 
-<div class="card">
+<div style="
+background:white;
+border-radius:12px;
+box-shadow:0 2px 6px rgba(0,0,0,.15);
+margin-bottom:10px;
+">
 
 <button
 onclick="toggleAnalyse()"
