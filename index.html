@@ -78,6 +78,13 @@ input{
     width:100%;
 
 }
+#blocOutils{
+
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:space-between;
+
+}
 
 #blocOutils button{
 
@@ -142,8 +149,9 @@ function toggleOutils(){
 
     outilsOuverts = !outilsOuverts;
 
-    document.getElementById("blocOutils").style.display =
-        outilsOuverts ? "block" : "none";
+   document.getElementById("blocOutils").style.display =
+    outilsOuverts ? "flex" : "none";
+
 
     document.getElementById("flecheOutils").innerHTML =
         outilsOuverts ? "🔽 Outils" : "▶️ Outils";
