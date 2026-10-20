@@ -3728,8 +3728,8 @@ document.getElementById("cards").innerHTML = `
 onclick="toggleAnalyse()"
 style="
 width:100%;
-min-height:60px;
-font-size:20px;
+min-height:80px;
+font-size:22px;
 font-weight:bold;
 border:none;
 border-radius:8px;
@@ -3746,13 +3746,25 @@ analyseOuverte
 ?
 `
 
-<br><br>
+<div style="
+display:flex;
+gap:10px;
+align-items:end;
+margin-top:15px;
+">
 
-Catégorie
+<div style="flex:1;">
+
+<b>Catégorie</b>
 
 <br><br>
 
 <select
+style="
+width:100%;
+height:50px;
+font-size:18px;
+"
 onchange="
 localStorage.setItem(
 'categorieDashboard',
@@ -3779,14 +3791,22 @@ ${c}
 
 </select>
 
-<br><br>
+</div>
 
-Stock supérieur à
+<div style="flex:1;">
+
+<b>Stock supérieur à</b>
 
 <br><br>
 
 <input
 type="number"
+style="
+width:100%;
+height:50px;
+font-size:18px;
+box-sizing:border-box;
+"
 value="${stockMiniDashboard}"
 onchange="
 localStorage.setItem(
@@ -3796,10 +3816,7 @@ this.value
 render();
 ">
 
-`
-:
-""
-}
+</div>
 
 </div>
 
