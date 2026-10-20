@@ -3115,7 +3115,25 @@ Transferts
 </select>
 
 <br><br>
+<label>Article / Code :</label>
 
+<input
+id="filtreArticle"
+value="${
+localStorage.getItem(
+'filtreArticle'
+) || ''
+}"
+placeholder="Code ou nom article"
+oninput="
+localStorage.setItem(
+'filtreArticle',
+this.value
+);
+render();
+">
+
+<br><br>
 <button
 onclick="exportHistoriqueExcel()">
 
@@ -3146,7 +3164,10 @@ localStorage.getItem(
 localStorage.getItem(
     "filtreFournisseur"
 ) || "";
-
+const filtreArticle =
+localStorage.getItem(
+    "filtreArticle"
+) || "";
     const filtreDateDebut =
     localStorage.getItem(
         "filtreDateDebut"
@@ -3161,7 +3182,28 @@ localStorage.getItem(
     mouvements
     .reverse()
     .forEach(m => {
+if(filtreArticle){
 
+    const recherche =
+    filtreArticle.toLowerCase();
+
+    const matchArticle =
+    String(m.article || "")
+    .toLowerCase()
+    .includes(recherche);
+
+    const matchCode =
+    String(m.code || "")
+    .includes(recherche);
+
+    if(
+        !matchArticle &&
+        !matchCode
+    ){
+        return;
+    }
+
+}
 if(filtreSite){
 
     const cave =
