@@ -350,6 +350,7 @@ inputmode="numeric"
 pattern="[0-9]*"
 placeholder="🔢 Code fournisseur"
 oninput="rechercherReception()"
+onfocus="this.select()"
 style="
 width:100%;
 padding:15px;
