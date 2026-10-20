@@ -3693,7 +3693,10 @@ if(categorieDashboard){
 }
             analyseCategorie += `
 
-            <div class="card">
+           <div class="card" style="
+width:100%;
+box-sizing:border-box;
+">
 
                 <b>${article.article}</b>
 
@@ -3748,13 +3751,15 @@ analyseOuverte
 `
 
 <div style="
+display:flex;
+gap:10px;
 width:100%;
 margin-top:15px;
+align-items:flex-end;
 ">
 
 <div style="
-width:100%;
-margin-bottom:15px;
+flex:1;
 ">
 
 <b>Catégorie</b>
@@ -3797,9 +3802,8 @@ ${c}
 </div>
 
 <div style="
-width:100%;
-margin-bottom:15px;
-"><div style="flex:1;">
+width:180px;
+">
 
 <b>Stock supérieur à</b>
 
