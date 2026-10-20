@@ -4676,19 +4676,31 @@ Number(v.quantite || 0);
 
     `;
 
-    top.forEach(t => {
+  top.forEach(t => {
 
-        html +=
+    const pourcentage =
 
-        t[0] +
+    total > 0
 
-        " : <b>" +
+    ? ((t[1] / total) * 100)
+      .toFixed(1)
 
-        t[1] +
+    : 0;
 
-        "</b><br>";
+    html += `
 
-    });
+    ${t[0]}
+    :
+
+    <b>${t[1]}</b>
+
+    (${pourcentage}%)
+
+    <br>
+
+    `;
+
+});
 
     html += "</div>";
 
