@@ -3123,7 +3123,13 @@ value="${
 localStorage.getItem('filtreArticle') || ''
 }"
 placeholder="Code ou nom article"
-oninput="filtrerHistoriqueArticle(this)">
+onchange="
+localStorage.setItem(
+'filtreArticle',
+this.value
+);
+render();
+"
 
 
 <br><br>
@@ -4421,27 +4427,7 @@ mettreAJourSuggestions();
        reader.readAsArrayBuffer(file);
 
 }
-let timerFiltreArticle;
 
-function filtrerHistoriqueArticle(champ){
-
-    clearTimeout(
-        timerFiltreArticle
-    );
-
-    localStorage.setItem(
-        'filtreArticle',
-        champ.value
-    );
-
-    timerFiltreArticle =
-    setTimeout(() => {
-
-        render();
-
-    }, 300);
-
-}
 mettreAJourSuggestions();
 
 changerSite("DASHBOARD");changerSite("DASHBOARD");
