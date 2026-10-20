@@ -4561,6 +4561,7 @@ Object.keys(stock).forEach(categorie => {
     let total = 0;
 
     const articles = {};
+const categoriesVentes = {};
 
     ventes.forEach(v => {
 
@@ -4625,7 +4626,29 @@ Number(v.quantite || 0);
 
         articles[v.article] +=
         Number(v.quantite || 0);
+let categorieArticle = "";
 
+Object.values(stock)
+.flat()
+.forEach(a => {
+
+    if(String(a.code) === String(v.code)){
+
+        categorieArticle =
+        a.categorie || "Sans catégorie";
+
+    }
+
+});
+
+if(!categoriesVentes[categorieArticle]){
+
+    categoriesVentes[categorieArticle] = 0;
+
+}
+
+categoriesVentes[categorieArticle] +=
+Number(v.quantite || 0);
     });
 
     let top =
@@ -4674,13 +4697,10 @@ Number(v.quantite || 0);
     ).innerHTML =
     html;
 const labels =
-Object.keys(ventesJour)
-.sort();
+Object.keys(categoriesVentes);
 
 const data =
-labels.map(
-    jour => ventesJour[jour]
-);
+Object.values(categoriesVentes);
 
 const canvas =
 document.getElementById(
@@ -4708,12 +4728,19 @@ if(canvas){
 
             datasets:[{
 
-                label:
-                "Quantités vendues",
+                label:"Quantités vendues",
 
-                data: data,
+                data:data,
 
-                borderWidth:1
+                backgroundColor:[
+                    "#1976d2",
+                    "#ff9800",
+                    "#28a745",
+                    "#e91e63",
+                    "#9c27b0",
+                    "#795548",
+                    "#607d8b"
+                ]
 
             }]
 
@@ -4723,12 +4750,18 @@ if(canvas){
 
             responsive:true,
 
+            plugins:{
+
+                legend:{
+                    display:false
+                }
+
+            },
+
             scales:{
 
                 y:{
-
                     beginAtZero:true
-
                 }
 
             }
@@ -4738,6 +4771,7 @@ if(canvas){
     });
 
 }
+
 }
 mettreAJourSuggestions();
 
