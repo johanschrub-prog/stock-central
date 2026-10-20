@@ -3774,6 +3774,7 @@ align-items:flex-end;
 
 <div style="
 flex:1;
+min-width:0;
 ">
 
 <b>Catégorie</b>
@@ -3816,7 +3817,8 @@ ${c}
 </div>
 
 <div style="
-width:180px;
+width:120px;
+flex-shrink:0;
 ">
 
 <b>Stock supérieur à</b>
