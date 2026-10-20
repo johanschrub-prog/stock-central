@@ -3455,10 +3455,8 @@ localStorage.getItem(
 ) || "";
 
 const stockMiniDashboard =
-Number(
-    localStorage.getItem(
-        "stockMiniDashboard"
-    ) || 0
+localStorage.getItem(
+    "stockMiniDashboard"
 );
     let valeurHDLP = 0;
     let valeurRCLP = 0;
@@ -3685,14 +3683,12 @@ if(categorieDashboard){
 
             });
 
-       if(
-    stockHDLP >= stockMiniDashboard
-    ||
-    stockRCLP >= stockMiniDashboard
+  if(
+    stockMiniDashboard !== null &&
+    stockMiniDashboard !== "" &&
+    stockHDLP < Number(stockMiniDashboard) &&
+    stockRCLP < Number(stockMiniDashboard)
 ){
-    // afficher l'article
-}
-else{
     return;
 }
             analyseCategorie += `
@@ -3806,50 +3802,8 @@ render();
 }
 
 </div>
-onchange="
-localStorage.setItem(
-'categorieDashboard',
-this.value
-);
-render();
-">
 
-<option value="">
-Sélectionner
-</option>
 
-${categoriesProduits.map(c=>`
-
-<option
-value="${c}"
-${categorieDashboard===c?"selected":""}>
-
-${c}
-
-</option>
-
-`).join("")}
-
-</select>
-
-<br><br>
-
-Stock supérieur à
-
-<br><br>
-
-<input
-type="number"
-value="${stockMiniDashboard}"
-onchange="
-localStorage.setItem(
-'stockMiniDashboard',
-this.value
-);
-render();
-">
-
-</div>
 <div class="card">
     <h2>🏨 HDLP</h2>
     Valeur du stock :
