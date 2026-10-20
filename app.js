@@ -4658,7 +4658,7 @@ Number(v.quantite || 0);
         (a,b)=>b[1]-a[1]
     )
 
-    .slice(0,10);
+    .slice(0,35);
 
     let html = `
 
