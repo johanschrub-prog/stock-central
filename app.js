@@ -3147,7 +3147,7 @@ localStorage.setItem(
 this.value
 );
 render();
-"
+">
 
 
 <br><br>
@@ -4344,7 +4344,116 @@ stock = {
 "RCLP VIN": []
 
 };
-       function renderVentesBoutique(){
+     
+
+     function importerFeuille(
+    nomFeuille,
+    categorie
+){
+
+    const sheet =
+    workbook.Sheets[nomFeuille];
+
+    if(!sheet) return;
+
+    const rows =
+    XLSX.utils.sheet_to_json(
+        sheet,
+        {defval:""}
+    );
+
+    rows.forEach(row=>{
+
+        const code =
+        row.NA ||
+        row.CODE ||
+        "";
+
+        const ancien =
+        ancienStock[categorie]
+        ?.find(a =>
+            String(a.code) === String(code)
+        );
+
+stock[categorie].push({
+
+    id: ancien?.id || crypto.randomUUID(),
+
+    code: code,
+
+    article: row.ARTICLE || "",
+
+    categorie: ancien?.categorie || "",
+
+    stock: ancien?.stock || 0,
+
+    prix: ancien?.prix || 0,
+
+    fournisseur:
+    ancien?.fournisseur || "",
+
+    codeFournisseur:
+    ancien?.codeFournisseur || "",
+
+    colisage:
+    ancien?.colisage || 1,
+
+    mouvements:
+    ancien?.mouvements || []
+
+});
+
+    });
+
+}
+
+ importerFeuille(
+    "INVENTAIRE HDLP CAVE MINI BAR",
+    "HDLP MINI BAR"
+);
+
+importerFeuille(
+    "INVENTAIRE HDLP CAVE SOFT",
+    "HDLP SOFT"
+);
+
+importerFeuille(
+    "INVENTAIRE CAVE BAR",
+    "HDLP BAR"
+);
+
+importerFeuille(
+    "INVENTAIRE CAVE SEMINAIRE",
+    "HDLP SEMINAIRE"
+);
+
+importerFeuille(
+    "INVENTAIRE RCLP CAVE ALCOOL",
+    "RCLP ALCOOL"
+);
+
+importerFeuille(
+    "INVENTAIRE RCLP CAVE SOFT",
+    "RCLP SOFT"
+);
+
+importerFeuille(
+    "INVENTAIRE RCLP CAVE VIN",
+    "RCLP VIN"
+);
+
+        save();
+mettreAJourSuggestions();
+     changerSite("DASHBOARD");
+
+        alert("Import terminé");
+
+    };
+
+       reader.readAsArrayBuffer(file);
+
+}
+  function renderVentesBoutique(){
 
     const ventes =
     JSON.parse(
@@ -4526,115 +4635,6 @@ stock = {
     html;
 
 }
-``
-     function importerFeuille(
-    nomFeuille,
-    categorie
-){
-
-    const sheet =
-    workbook.Sheets[nomFeuille];
-
-    if(!sheet) return;
-
-    const rows =
-    XLSX.utils.sheet_to_json(
-        sheet,
-        {defval:""}
-    );
-
-    rows.forEach(row=>{
-
-        const code =
-        row.NA ||
-        row.CODE ||
-        "";
-
-        const ancien =
-        ancienStock[categorie]
-        ?.find(a =>
-            String(a.code) === String(code)
-        );
-
-stock[categorie].push({
-
-    id: ancien?.id || crypto.randomUUID(),
-
-    code: code,
-
-    article: row.ARTICLE || "",
-
-    categorie: ancien?.categorie || "",
-
-    stock: ancien?.stock || 0,
-
-    prix: ancien?.prix || 0,
-
-    fournisseur:
-    ancien?.fournisseur || "",
-
-    codeFournisseur:
-    ancien?.codeFournisseur || "",
-
-    colisage:
-    ancien?.colisage || 1,
-
-    mouvements:
-    ancien?.mouvements || []
-
-});
-
-    });
-
-}
-
- importerFeuille(
-    "INVENTAIRE HDLP CAVE MINI BAR",
-    "HDLP MINI BAR"
-);
-
-importerFeuille(
-    "INVENTAIRE HDLP CAVE SOFT",
-    "HDLP SOFT"
-);
-
-importerFeuille(
-    "INVENTAIRE CAVE BAR",
-    "HDLP BAR"
-);
-
-importerFeuille(
-    "INVENTAIRE CAVE SEMINAIRE",
-    "HDLP SEMINAIRE"
-);
-
-importerFeuille(
-    "INVENTAIRE RCLP CAVE ALCOOL",
-    "RCLP ALCOOL"
-);
-
-importerFeuille(
-    "INVENTAIRE RCLP CAVE SOFT",
-    "RCLP SOFT"
-);
-
-importerFeuille(
-    "INVENTAIRE RCLP CAVE VIN",
-    "RCLP VIN"
-);
-
-        save();
-mettreAJourSuggestions();
-     changerSite("DASHBOARD");
-
-        alert("Import terminé");
-
-    };
-
-       reader.readAsArrayBuffer(file);
-
-}
-
 mettreAJourSuggestions();
 
 changerSite("DASHBOARD");changerSite("DASHBOARD");
