@@ -5580,9 +5580,9 @@ function renderFournisseurs(){
         }
 
     });
-
     
-
+saveFournisseurs();
+    
     document.getElementById("cards").innerHTML = `
 
     <div class="card">
@@ -5657,10 +5657,10 @@ this.value
 
         <input
         value="${f.numeroClient || ''}"
-       onchange="
+  onchange="
 modifierFournisseur(
 '${f.id}',
-'nom',
+'numeroClient',
 this.value
 )">
 
@@ -5670,10 +5670,10 @@ this.value
 
         <input
         value="${f.representant || ''}"
-       onchange="
+ onchange="
 modifierFournisseur(
 '${f.id}',
-'nom',
+'representant',
 this.value
 )">
 
@@ -5684,9 +5684,10 @@ this.value
         <input
         value="${f.portable || ''}"
       onchange="
+onchange="
 modifierFournisseur(
 '${f.id}',
-'nom',
+'portable',
 this.value
 )">
 
@@ -5696,10 +5697,10 @@ this.value
 
         <input
         value="${f.bureau || ''}"
-  onchange="
+onchange="
 modifierFournisseur(
 '${f.id}',
-'nom',
+'bureau',
 this.value
 )">
 
@@ -5710,10 +5711,10 @@ this.value
         <input
         type="email"
         value="${f.email || ''}"
-     onchange="
+  onchange="
 modifierFournisseur(
 '${f.id}',
-'nom',
+'email',
 this.value
 )">
 
