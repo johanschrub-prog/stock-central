@@ -605,7 +605,17 @@ ${article.codeFournisseur || "-"}
 <br>
 
 Colisage :
-${article.colisage || 1}
+
+<input
+type="number"
+min="1"
+id="colisage_${article.id}"
+value="${article.colisage || 1}"
+style="
+width:100%;
+margin-top:5px;
+margin-bottom:10px;
+">
 
 <br>
 
@@ -626,7 +636,7 @@ type="number"
 min="0"
 id="cartons_${article.id}"
 placeholder=""
-oninput="calculReception('${article.id}',${article.colisage || 1},${article.prix || 0})">
+oninput="calculReception('${article.id}',${article.prix || 0})"
 
 <br><br>
 
@@ -637,7 +647,7 @@ type="number"
 min="0"
 id="pieces_${article.id}"
 placeholder=""
-oninput="calculReception('${article.id}',${article.colisage || 1},${article.prix || 0})">
+oninput="calculReception('${article.id}',${article.prix || 0})"
 
 <br><br>
 
@@ -714,9 +724,14 @@ if(
 }
 function calculReception(
     id,
-    colisage,
     prix
 ){
+    
+const colisage = Number(
+    document.getElementById(
+        "colisage_" + id
+    ).value || 1
+);
 
     const cartons = Number(
         document.getElementById(
@@ -843,10 +858,15 @@ document.getElementById(
 ).value || 0
 );
 
+const colisage = Number(
+    document.getElementById(
+        "colisage_" + id
+    ).value || 1
+);
+
 const quantiteReelle =
 
-(cartons *
-Number(article.colisage || 1))
+(cartons * colisage)
 +
 pieces;
 
@@ -894,7 +914,24 @@ nouveauPrix.toFixed(2)
 });
 
 }
+article.colisage = colisage;
 
+Object.keys(stock).forEach(categorie => {
+
+    stock[categorie].forEach(a => {
+
+        if(
+            String(a.code) ===
+            String(article.code)
+        ){
+
+            a.colisage = colisage;
+
+        }
+
+    });
+
+});
 article.mouvements =
 article.mouvements || [];
 
