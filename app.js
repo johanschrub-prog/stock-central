@@ -663,7 +663,33 @@ receptionRapide(
     document.getElementById(
         "resultatsReception"
     ).innerHTML = html;
+const cartes =
+document.querySelectorAll(
+    "#resultatsReception .card"
+);
 
+if(
+    codeFournisseurRecherche !== "" &&
+    cartes.length === 1
+){
+
+    const champCartons =
+    cartes[0].querySelector(
+        "input[id^='cartons_']"
+    );
+
+    if(champCartons){
+
+        setTimeout(() => {
+
+            champCartons.focus();
+            champCartons.select();
+
+        },100);
+
+    }
+
+}
 }
 function calculReception(
     id,
@@ -727,27 +753,68 @@ function receptionRapide(
     id
 ){
 
-    const destination =
-    document.getElementById(
-        "destination_" + id
-    ).value;
+const destinations = [
 
-    const article =
-    stock[destination]
-    ?.find(a =>
-        String(a.code) === String(code)
+"HDLP MINI BAR",
+"HDLP SOFT",
+"HDLP BAR",
+"HDLP SEMINAIRE",
+"RCLP ALCOOL",
+"RCLP SOFT",
+"RCLP VIN"
+
+];
+
+let choix = prompt(
+
+"Destination :\n\n" +
+
+destinations
+.map((d,i)=>
+(i+1) + " - " + d
+)
+.join("\n")
+
+);
+
+if(
+    choix === null
+){
+    return;
+}
+
+const destination =
+destinations[
+    Number(choix) - 1
+];
+
+if(!destination){
+
+    alert(
+        "Destination invalide"
     );
 
-    if(!article){
+    return;
 
-        alert(
-            "Article introuvable dans la destination"
-        );
+}
 
-        return;
-    }
+const article =
+stock[destination]
+?.find(a =>
+String(a.code) === String(code)
+);
 
-  const cartons =
+if(!article){
+
+    alert(
+        "Article absent de cette cave"
+    );
+
+    return;
+
+}
+
+const cartons =
 Number(
 document.getElementById(
 "cartons_" + id
@@ -765,93 +832,110 @@ const quantiteReelle =
 
 (cartons *
 Number(article.colisage || 1))
-
 +
-
 pieces;
 
+article.stock =
+Number(article.stock || 0)
++
+quantiteReelle;
 
-    article.stock =
-    Number(article.stock || 0)
-    +
-    quantiteReelle;
+const montant =
+Number(
+document.getElementById(
+"montant_" + id
+).value || 0
+);
 
-    const montant =
-    Number(
-        document.getElementById(
-            "montant_" + id
-        ).value || 0
-    );
+if(
+montant > 0 &&
+quantiteReelle > 0
+){
 
-    if(
-        montant > 0 &&
-        quantiteReelle > 0
-    ){
+const nouveauPrix =
+montant / quantiteReelle;
 
-        const nouveauPrix =
-        montant /
-        quantiteReelle;
+Object.keys(stock)
+.forEach(categorie => {
 
-        Object.keys(stock)
-        .forEach(categorie => {
+stock[categorie]
+.forEach(a => {
 
-            stock[categorie]
-            .forEach(a => {
+if(
+String(a.code)
+===
+String(article.code)
+){
 
-                if(
-                    String(a.code)
-                    ===
-                    String(article.code)
-                ){
+a.prix =
+Number(
+nouveauPrix.toFixed(2)
+);
 
-                    a.prix =
-                    Number(
-                        nouveauPrix.toFixed(2)
-                    );
+}
 
-                }
+});
 
-            });
+});
 
-        });
+}
 
-    }
+article.mouvements =
+article.mouvements || [];
 
-    if(!article.mouvements){
+article.mouvements.push({
 
-        article.mouvements = [];
+date:
+new Date()
+.toLocaleString(),
 
-    }
+type:
+"ENTREE",
 
-    article.mouvements.push({
+quantite:
+quantiteReelle,
 
-        date:
-        new Date()
-        .toLocaleString(),
+origine:
+"RECEPTION RAPIDE",
 
-        type:
-        "ENTREE",
+fournisseur:
+article.fournisseur || ""
 
-        quantite:
-        quantiteReelle,
+});
 
-        origine:
-        "RECEPTION RAPIDE",
+save();
 
-        fournisseur:
-        article.fournisseur || ""
+alert(
+"✅ Réception enregistrée\n\n" +
+quantiteReelle +
+" pièce(s)"
+);
 
-    });
+document.getElementById(
+"codeFournisseurReception"
+).value = "";
 
-    save();
+document.getElementById(
+"rechercheReception"
+).value = "";
 
-    alert(
-        "✅ Réception enregistrée\n\n" +
-        quantiteReelle +
-        " pièce(s) ajoutée(s)"
-    );
+rechercherReception();
 
-    rechercherReception();
+setTimeout(() => {
+
+const champ =
+document.getElementById(
+"codeFournisseurReception"
+);
+
+if(champ){
+
+champ.focus();
+champ.select();
+
+}
+
+},100);
 
 }
 function importStock(event){
