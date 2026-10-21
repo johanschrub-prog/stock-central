@@ -41,6 +41,24 @@ JSON.stringify(stock)
 );
 
 }
+function modifierFournisseur(
+    id,
+    champ,
+    valeur
+){
+
+    const fournisseur =
+    fournisseurs.find(
+        f => f.id === id
+    );
+
+    if(!fournisseur) return;
+
+    fournisseur[champ] = valeur;
+
+    saveFournisseurs();
+
+}
 function toggleAnalyse(){
 
     analyseOuverte = !analyseOuverte;
@@ -5563,7 +5581,7 @@ function renderFournisseurs(){
 
     });
 
-    saveFournisseurs();
+    
 
     document.getElementById("cards").innerHTML = `
 
@@ -5626,10 +5644,12 @@ function afficherFournisseurs(){
 
         <input
         value="${f.nom || ''}"
-        onchange="
-        f.nom=this.value;
-        saveFournisseurs();
-        ">
+       onchange="
+modifierFournisseur(
+'${f.id}',
+'nom',
+this.value
+)">
 
         <br><br>
 
@@ -5637,10 +5657,12 @@ function afficherFournisseurs(){
 
         <input
         value="${f.numeroClient || ''}"
-        onchange="
-        f.numeroClient=this.value;
-        saveFournisseurs();
-        ">
+       onchange="
+modifierFournisseur(
+'${f.id}',
+'nom',
+this.value
+)">
 
         <br><br>
 
@@ -5648,10 +5670,12 @@ function afficherFournisseurs(){
 
         <input
         value="${f.representant || ''}"
-        onchange="
-        f.representant=this.value;
-        saveFournisseurs();
-        ">
+       onchange="
+modifierFournisseur(
+'${f.id}',
+'nom',
+this.value
+)">
 
         <br><br>
 
@@ -5659,10 +5683,12 @@ function afficherFournisseurs(){
 
         <input
         value="${f.portable || ''}"
-        onchange="
-        f.portable=this.value;
-        saveFournisseurs();
-        ">
+      onchange="
+modifierFournisseur(
+'${f.id}',
+'nom',
+this.value
+)">
 
         <br><br>
 
@@ -5670,10 +5696,12 @@ function afficherFournisseurs(){
 
         <input
         value="${f.bureau || ''}"
-        onchange="
-        f.bureau=this.value;
-        saveFournisseurs();
-        ">
+  onchange="
+modifierFournisseur(
+'${f.id}',
+'nom',
+this.value
+)">
 
         <br><br>
 
@@ -5682,10 +5710,12 @@ function afficherFournisseurs(){
         <input
         type="email"
         value="${f.email || ''}"
-        onchange="
-        f.email=this.value;
-        saveFournisseurs();
-        ">
+     onchange="
+modifierFournisseur(
+'${f.id}',
+'nom',
+this.value
+)">
 
         <br><br>
 
