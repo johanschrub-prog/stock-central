@@ -2226,13 +2226,20 @@ function importCommandeHDLP(){
 
     <br>
 
-    <button
-    onclick="validerImportCommandeHDLP()">
+   <button
+onclick="validerImportCommandeHDLP()">
 
-    ✅ Importer les réceptions
+✅ Importer les réceptions
 
-    </button>
+</button>
 
+<button
+style="background:#dc3545;margin-left:10px;"
+onclick="annulerCommandeHDLP()">
+
+❌ Annuler réception
+
+</button>
     </div>
 
     `;
@@ -2243,7 +2250,29 @@ function importCommandeHDLP(){
     html;
 
 }
+function annulerCommandeHDLP(){
 
+    if(
+        !confirm(
+            "Annuler toutes les réceptions HDLP en attente ?"
+        )
+    ){
+        return;
+    }
+
+    localStorage.removeItem(
+        "commandeHDLP"
+    );
+
+    changerSite(
+        "DASHBOARD"
+    );
+
+    alert(
+        "Réceptions HDLP annulées ✅"
+    );
+
+}
 function validerImportCommandeHDLP(){
 
     const commandes =
@@ -2495,12 +2524,20 @@ function importCommandeRCLP(){
 
     <br>
 
-    <button
-    onclick="validerImportCommandeRCLP()">
+   <button
+onclick="validerImportCommandeRCLP()">
 
-    ✅ Importer les réceptions
+✅ Importer les réceptions
 
-    </button>
+</button>
+
+<button
+style="background:#dc3545;margin-left:10px;"
+onclick="annulerCommandeRCLP()">
+
+❌ Annuler réception
+
+</button>
 
     </div>
 
@@ -2510,6 +2547,29 @@ function importCommandeRCLP(){
     .getElementById("cards")
     .innerHTML =
     html;
+
+}
+function annulerCommandeRCLP(){
+
+    if(
+        !confirm(
+            "Annuler toutes les réceptions RCLP en attente ?"
+        )
+    ){
+        return;
+    }
+
+    localStorage.removeItem(
+        "commandeRCLP"
+    );
+
+    changerSite(
+        "DASHBOARD"
+    );
+
+    alert(
+        "Réceptions RCLP annulées ✅"
+    );
 
 }
 function validerImportCommandeRCLP(){
