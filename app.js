@@ -814,7 +814,7 @@ function receptionRapide(
 
 
 const article =
-stock[cave]
+stock[destination]
 ?.find(a =>
 String(a.code) === String(code)
 );
