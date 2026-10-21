@@ -623,6 +623,19 @@ margin-bottom:10px;
 
 <br>
 
+Code fournisseur :
+
+<input
+type="text"
+id="codeFournisseur_${article.id}"
+value="${article.codeFournisseur || ''}"
+style="
+width:100%;
+margin-top:5px;
+margin-bottom:10px;
+">
+
+
 ${
 codeFournisseurRecherche === ""
 ?
@@ -929,6 +942,29 @@ nouveauPrix.toFixed(2)
 });
 
 }
+const nouveauCodeFournisseur =
+document.getElementById(
+    "codeFournisseur_" + id
+)?.value || "";
+
+Object.keys(stock).forEach(categorie => {
+
+    stock[categorie].forEach(a => {
+
+        if(
+            String(a.code) ===
+            String(article.code)
+        ){
+
+            a.codeFournisseur =
+            nouveauCodeFournisseur;
+
+        }
+
+    });
+
+});
+
 article.colisage = colisage;
 
 Object.keys(stock).forEach(categorie => {
