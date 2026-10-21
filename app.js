@@ -5683,8 +5683,7 @@ this.value
 
         <input
         value="${f.portable || ''}"
-      onchange="
-onchange="
+     onchange="
 modifierFournisseur(
 '${f.id}',
 'portable',
