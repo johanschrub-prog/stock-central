@@ -5,7 +5,9 @@ JSON.parse(
 localStorage.getItem(STORAGE_KEY)
 ) || {};
 let articleTransfertActif = null;
-
+let fournisseurs = JSON.parse(
+    localStorage.getItem("Fournisseurs")
+) || [];
 let analyseOuverte =
 localStorage.getItem(
     "analyseOuverte"
@@ -49,6 +51,14 @@ function toggleAnalyse(){
     );
 
     render();
+
+}
+function saveFournisseurs(){
+
+    localStorage.setItem(
+        "Fournisseurs",
+        JSON.stringify(fournisseurs)
+    );
 
 }
 function mettreAJourSuggestions(){
@@ -1335,6 +1345,19 @@ onclick="changerSite('ARTICLES')">
 📦 ARTICLES
 
 </button>
+<button
+class="tab"
+style="
+${
+siteActif==='FOURNISSEURS'
+? 'background:#009688;color:white;'
+: ''
+}"
+onclick="changerSite('FOURNISSEURS')">
+
+🚚 FOURNISSEURS
+
+</button>
 
 </div>
 
@@ -1417,6 +1440,11 @@ function changerSite(site){
         categorieActive = "ARTICLES";
 
     }
+        else if(site === "FOURNISSEURS"){
+
+    categorieActive = "FOURNISSEURS";
+
+}
     else{
 
         categorieActive = "DASHBOARD";
@@ -3729,6 +3757,13 @@ if(
     return;
 
 }
+if(categorieActive === "FOURNISSEURS"){
+
+    renderFournisseurs();
+
+    return;
+
+}    
 if(categorieActive === "DASHBOARD"){
     
 
@@ -5481,6 +5516,155 @@ function nouvelArticle(){
     save();
 
     afficherArticlesMaster();
+
+}
+function renderFournisseurs(){
+
+    document.getElementById("cards").innerHTML = `
+
+    <div class="card">
+
+        <h2>🚚 Fournisseurs</h2>
+
+        <input
+        id="rechercheFournisseur"
+        placeholder="Rechercher fournisseur"
+        oninput="afficherFournisseurs()">
+
+        <br><br>
+
+        <button onclick="nouveauFournisseur()">
+        ➕ Nouveau fournisseur
+        </button>
+
+        <br><br>
+
+        <div id="listeFournisseurs"></div>
+
+    </div>
+
+    `;
+
+    afficherFournisseurs();
+
+}
+function afficherFournisseurs(){
+
+    const recherche =
+
+    document.getElementById(
+        "rechercheFournisseur"
+    )?.value?.toLowerCase() || "";
+
+    let html = "";
+
+    fournisseurs.forEach(f => {
+
+        if(
+            recherche &&
+            !f.nom.toLowerCase().includes(recherche)
+        ){
+            return;
+        }
+
+        html += `
+
+        <div class="card">
+
+        <b>${f.nom}</b>
+
+        <br><br>
+
+        Numéro client
+
+        <input
+        value="${f.numeroClient || ''}"
+        onchange="
+f.numeroClient=this.value;
+saveFournisseurs();
+">
+
+        <br><br>
+
+        Représentant
+
+        <input
+        value="${f.representant || ''}"
+        onchange="
+f.representant=this.value;
+saveFournisseurs();
+">
+
+        <br><br>
+
+        Portable
+
+        <input
+        value="${f.portable || ''}"
+        onchange="
+f.portable=this.value;
+saveFournisseurs();
+">
+
+        <br><br>
+
+        Téléphone bureau
+
+        <input
+        value="${f.bureau || ''}"
+        onchange="
+f.bureau=this.value;
+saveFournisseurs();
+">
+
+        <br><br>
+
+        Email
+
+        <input
+        value="${f.email || ''}"
+        onchange="
+f.email=this.value;
+saveFournisseurs();
+">
+
+        </div>
+
+        `;
+
+    });
+
+    document.getElementById(
+        "listeFournisseurs"
+    ).innerHTML = html;
+
+}
+function nouveauFournisseur(){
+
+    const nom =
+    prompt("Nom du fournisseur");
+
+    if(!nom) return;
+
+    fournisseurs.push({
+
+        nom: nom,
+
+        numeroClient: "",
+
+        representant: "",
+
+        portable: "",
+
+        bureau: "",
+
+        email: ""
+
+    });
+
+    saveFournisseurs();
+
+    afficherFournisseurs();
 
 }
 mettreAJourSuggestions();
