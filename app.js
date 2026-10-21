@@ -54,6 +54,55 @@ function modifierFournisseur(
 
     if(!fournisseur) return;
 
+    valeur = String(valeur).trim();
+
+    // Validation email
+    if(champ === "email"){
+
+        if(
+            valeur !== "" &&
+            !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(valeur)
+        ){
+            alert("Adresse email invalide");
+            return;
+        }
+
+    }
+
+    // Validation téléphone
+    if(
+        champ === "portable" ||
+        champ === "bureau"
+    ){
+
+        valeur = valeur.replace(
+            /[^0-9+ ]/g,
+            ""
+        );
+
+    }
+if(champ === "nom"){
+
+    const existe =
+    fournisseurs.some(
+        f =>
+        f.id !== id &&
+        String(f.nom)
+        .toUpperCase()
+        ===
+        valeur.toUpperCase()
+    );
+
+    if(existe){
+
+        alert(
+            "Ce fournisseur existe déjà"
+        );
+
+        return;
+    }
+
+}
     fournisseur[champ] = valeur;
 
     saveFournisseurs();
@@ -5681,9 +5730,11 @@ this.value
 
         Portable
 
-        <input
-        value="${f.portable || ''}"
-     onchange="
+      <input
+type="tel"
+inputmode="numeric"
+value="${f.portable || ''}"
+onchange="
 modifierFournisseur(
 '${f.id}',
 'portable',
@@ -5694,8 +5745,10 @@ this.value
 
         Téléphone bureau
 
-        <input
-        value="${f.bureau || ''}"
+     <input
+type="tel"
+inputmode="numeric"
+value="${f.bureau || ''}"
 onchange="
 modifierFournisseur(
 '${f.id}',
@@ -5707,16 +5760,15 @@ this.value
 
         Adresse mail
 
-        <input
-        type="email"
-        value="${f.email || ''}"
-  onchange="
+    <input
+type="email"
+value="${f.email || ''}"
+onchange="
 modifierFournisseur(
 '${f.id}',
 'email',
 this.value
 )">
-
         <br><br>
 
         <button
