@@ -753,50 +753,10 @@ function receptionRapide(
     id
 ){
 
-const destinations = [
-
-"HDLP MINI BAR",
-"HDLP SOFT",
-"HDLP BAR",
-"HDLP SEMINAIRE",
-"RCLP ALCOOL",
-"RCLP SOFT",
-"RCLP VIN"
-
-];
-
-let choix = prompt(
-
-"Destination :\n\n" +
-
-destinations
-.map((d,i)=>
-(i+1) + " - " + d
-)
-.join("\n")
-
-);
-
-if(
-    choix === null
-){
-    return;
-}
-
 const destination =
-destinations[
-    Number(choix) - 1
-];
-
-if(!destination){
-
-    alert(
-        "Destination invalide"
-    );
-
-    return;
-
-}
+document.getElementById(
+    "destination_" + id
+).value;
 
 const article =
 stock[destination]
