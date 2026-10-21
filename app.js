@@ -5728,7 +5728,7 @@ this.value
 
         <br><br>
 
-      Portable
+  Portable
 
 <div style="
 display:flex;
@@ -5747,25 +5747,32 @@ modifierFournisseur(
 this.value
 )">
 
-<a
-href="tel:${f.portable || ''}"
+<button
+type="button"
+onclick="window.location.href='tel:${f.portable || ''}'"
 style="
-font-size:24px;
-text-decoration:none;
+width:55px;
+height:55px;
+font-size:26px;
+padding:0;
 ">
-📞
-</a>
+☎
+</button>
 
-<a
-href="sms:${f.portable || ''}"
+<button
+type="button"
+onclick="window.location.href='sms:${f.portable || ''}'"
 style="
-font-size:24px;
-text-decoration:none;
+width:55px;
+height:55px;
+font-size:26px;
+padding:0;
 ">
 💬
-</a>
+</button>
 
 </div>
+
 
 
         <br><br>
@@ -5785,7 +5792,7 @@ this.value
 
         <br><br>
 
-    Adresse mail
+   Adresse mail
 
 <div style="
 display:flex;
@@ -5804,14 +5811,17 @@ modifierFournisseur(
 this.value
 )">
 
-<a
-href="mailto:${f.email || ''}"
+<button
+type="button"
+onclick="window.location.href='mailto:${f.email || ''}'"
 style="
-font-size:24px;
-text-decoration:none;
+width:55px;
+height:55px;
+font-size:26px;
+padding:0;
 ">
-📧
-</a>
+✉
+</button>
 
 </div>
         <br><br>
