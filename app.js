@@ -5728,18 +5728,45 @@ this.value
 
         <br><br>
 
-        Portable
+      Portable
 
-      <input
+<div style="
+display:flex;
+gap:8px;
+align-items:center;
+">
+
+<input
 type="tel"
-inputmode="numeric"
 value="${f.portable || ''}"
+style="flex:1;"
 onchange="
 modifierFournisseur(
 '${f.id}',
 'portable',
 this.value
 )">
+
+<a
+href="tel:${f.portable || ''}"
+style="
+font-size:24px;
+text-decoration:none;
+">
+📞
+</a>
+
+<a
+href="sms:${f.portable || ''}"
+style="
+font-size:24px;
+text-decoration:none;
+">
+💬
+</a>
+
+</div>
+
 
         <br><br>
 
@@ -5758,17 +5785,35 @@ this.value
 
         <br><br>
 
-        Adresse mail
+    Adresse mail
 
-    <input
+<div style="
+display:flex;
+gap:8px;
+align-items:center;
+">
+
+<input
 type="email"
 value="${f.email || ''}"
+style="flex:1;"
 onchange="
 modifierFournisseur(
 '${f.id}',
 'email',
 this.value
 )">
+
+<a
+href="mailto:${f.email || ''}"
+style="
+font-size:24px;
+text-decoration:none;
+">
+📧
+</a>
+
+</div>
         <br><br>
 
         <button
