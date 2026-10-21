@@ -636,7 +636,7 @@ type="number"
 min="0"
 id="cartons_${article.id}"
 placeholder=""
-oninput="calculReception('${article.id}',${article.prix || 0})"
+oninput="calculReception('${article.id}',${article.prix || 0})">
 
 <br><br>
 
@@ -647,7 +647,7 @@ type="number"
 min="0"
 id="pieces_${article.id}"
 placeholder=""
-oninput="calculReception('${article.id}',${article.prix || 0})"
+oninput="calculReception('${article.id}',${article.prix || 0})">
 
 <br><br>
 
@@ -727,10 +727,15 @@ function calculReception(
     prix
 ){
     
+const champColisage =
+document.getElementById(
+    "colisage_" + id
+);
+
 const colisage = Number(
-    document.getElementById(
-        "colisage_" + id
-    ).value || 1
+    champColisage
+    ? champColisage.value
+    : 1
 );
 
     const cartons = Number(
@@ -858,10 +863,15 @@ document.getElementById(
 ).value || 0
 );
 
+const champColisage =
+document.getElementById(
+    "colisage_" + id
+);
+
 const colisage = Number(
-    document.getElementById(
-        "colisage_" + id
-    ).value || 1
+    champColisage
+    ? champColisage.value
+    : article.colisage || 1
 );
 
 const quantiteReelle =
