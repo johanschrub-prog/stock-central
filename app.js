@@ -5736,6 +5736,14 @@ gap:8px;
 align-items:center;
 ">
 
+Portable
+
+<div style="
+display:flex;
+gap:8px;
+align-items:center;
+">
+
 <input
 type="tel"
 value="${f.portable || ''}"
@@ -5751,24 +5759,32 @@ this.value
 type="button"
 onclick="window.location.href='tel:${f.portable || ''}'"
 style="
-width:55px;
+width:70px;
 height:55px;
-font-size:26px;
-padding:0;
+font-size:16px;
+font-weight:bold;
+background:#28a745;
+color:white;
+border:none;
+border-radius:8px;
 ">
-☎
+TEL
 </button>
 
 <button
 type="button"
 onclick="window.location.href='sms:${f.portable || ''}'"
 style="
-width:55px;
+width:70px;
 height:55px;
-font-size:26px;
-padding:0;
+font-size:16px;
+font-weight:bold;
+background:#2196f3;
+color:white;
+border:none;
+border-radius:8px;
 ">
-💬
+SMS
 </button>
 
 </div>
@@ -5792,7 +5808,7 @@ this.value
 
         <br><br>
 
-   Adresse mail
+  Adresse mail
 
 <div style="
 display:flex;
@@ -5815,12 +5831,16 @@ this.value
 type="button"
 onclick="window.location.href='mailto:${f.email || ''}'"
 style="
-width:55px;
+width:70px;
 height:55px;
-font-size:26px;
-padding:0;
+font-size:16px;
+font-weight:bold;
+background:#ff9800;
+color:white;
+border:none;
+border-radius:8px;
 ">
-✉
+MAIL
 </button>
 
 </div>
