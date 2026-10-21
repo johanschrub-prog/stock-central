@@ -1321,25 +1321,7 @@ siteActif==='VENTES'
 ? 'background:#e91e63;color:white;'
 : ''
 }"
-onclick="changerSite('VENTES')">
 
-📈 VENTES BOUTIQUE
-
-</button>
-
-</div>
-
-<div style="width:100%;">
-
-<button
-class="tab"
-style="
-width:100%;
-${
-siteActif==='VENTES'
-? 'background:#e91e63;color:white;'
-: ''
-}"
 onclick="changerSite('VENTES')">
 
 📈 VENTES BOUTIQUE
