@@ -1336,6 +1336,24 @@ class="tab"
 style="
 width:100%;
 ${
+siteActif==='VENTES'
+? 'background:#e91e63;color:white;'
+: ''
+}"
+onclick="changerSite('VENTES')">
+
+📈 VENTES BOUTIQUE
+
+</button>
+
+</div>
+
+<div style="width:100%;display:flex;gap:10px;">
+
+<button
+class="tab"
+style="
+${
 siteActif==='ARTICLES'
 ? 'background:#795548;color:white;'
 : ''
@@ -1345,6 +1363,7 @@ onclick="changerSite('ARTICLES')">
 📦 ARTICLES
 
 </button>
+
 <button
 class="tab"
 style="
