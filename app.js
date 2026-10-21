@@ -1319,6 +1319,26 @@ onclick="changerSite('VENTES')">
 
 </div>
 
+<div style="width:100%;">
+
+<button
+class="tab"
+style="
+width:100%;
+${
+siteActif==='ARTICLES'
+? 'background:#795548;color:white;'
+: ''
+}"
+onclick="changerSite('ARTICLES')">
+
+📦 ARTICLES
+
+</button>
+
+</div>
+
+
 `;
 
 let html = "";
@@ -1397,7 +1417,11 @@ function changerSite(site){
         categorieActive = "DASHBOARD";
 
     }
+else if(site === "ARTICLES"){
 
+    categorieActive = "ARTICLES";
+
+}
     renderOnglets();
 
     render();
@@ -3697,6 +3721,13 @@ if(
     return;
 
 }
+    if(categorieActive === "ARTICLES"){
+
+    renderArticles();
+
+    return;
+
+}
 if(categorieActive === "DASHBOARD"){
     
 
@@ -5143,6 +5174,313 @@ if(canvas){
     });
 
 }
+
+}
+function renderArticles(){
+
+    const fournisseurs = [
+        ...new Set(
+            Object.values(stock)
+            .flat()
+            .map(a => a.fournisseur)
+            .filter(f => f)
+        )
+    ].sort();
+
+    const categories = [
+        ...new Set(
+            Object.values(stock)
+            .flat()
+            .map(a => a.categorie)
+            .filter(c => c)
+        )
+    ].sort();
+
+    document.getElementById("cards").innerHTML = `
+
+    <div class="card">
+
+        <h2>📦 Gestion des articles</h2>
+
+        <input
+        id="rechercheArticleMaster"
+        placeholder="Code ou article"
+        oninput="afficherArticlesMaster()">
+
+        <br><br>
+
+        <button onclick="nouvelArticle()">
+        ➕ Nouvel article
+        </button>
+
+        <br><br>
+
+        <div id="listeArticlesMaster"></div>
+
+    </div>
+
+    `;
+
+    afficherArticlesMaster();
+
+}
+function afficherArticlesMaster(){
+
+    const recherche =
+    document.getElementById(
+        "rechercheArticleMaster"
+    )?.value
+    ?.toLowerCase() || "";
+
+    const dejaVu = new Set();
+
+    let html = "";
+
+    Object.values(stock)
+    .flat()
+    .forEach(article => {
+
+        if(dejaVu.has(article.code)){
+            return;
+        }
+
+        dejaVu.add(article.code);
+
+        if(
+            recherche &&
+            !String(article.code)
+            .includes(recherche) &&
+            !String(article.article)
+            .toLowerCase()
+            .includes(recherche)
+        ){
+            return;
+        }
+
+        html += `
+
+        <div class="card">
+
+        <b>${article.article}</b>
+
+        <br><br>
+
+        Code
+
+        <input
+        value="${article.code}"
+        onchange="
+        modifierArticleMaster(
+        '${article.code}',
+        'code',
+        this.value
+        )">
+
+        <br><br>
+
+        Article
+
+        <input
+        value="${article.article}"
+        onchange="
+        modifierArticleMaster(
+        '${article.code}',
+        'article',
+        this.value
+        )">
+
+        <br><br>
+
+        Fournisseur
+
+        <input
+        list="listeFournisseursMaster"
+        value="${article.fournisseur || ''}"
+        onchange="
+        modifierArticleMaster(
+        '${article.code}',
+        'fournisseur',
+        this.value
+        )">
+
+        <br><br>
+
+        Code fournisseur
+
+        <input
+        value="${article.codeFournisseur || ''}"
+        onchange="
+        modifierArticleMaster(
+        '${article.code}',
+        'codeFournisseur',
+        this.value
+        )">
+
+        <br><br>
+
+        Catégorie
+
+        <input
+        list="listeCategoriesMaster"
+        value="${article.categorie || ''}"
+        onchange="
+        modifierArticleMaster(
+        '${article.code}',
+        'categorie',
+        this.value
+        )">
+
+        <br><br>
+
+        Prix
+
+        <input
+        type="number"
+        step="0.01"
+        value="${article.prix || 0}"
+        onchange="
+        modifierArticleMaster(
+        '${article.code}',
+        'prix',
+        this.value
+        )">
+
+        <br><br>
+
+        Colisage
+
+        <input
+        type="number"
+        value="${article.colisage || 1}"
+        onchange="
+        modifierArticleMaster(
+        '${article.code}',
+        'colisage',
+        this.value
+        )">
+
+        </div>
+
+        `;
+    });
+
+    html += `
+
+    <datalist id="listeFournisseursMaster">
+
+    ${
+        [...new Set(
+            Object.values(stock)
+            .flat()
+            .map(a => a.fournisseur)
+            .filter(f => f)
+        )]
+        .sort()
+        .map(f=>
+            `<option value="${f}">`
+        )
+        .join("")
+    }
+
+    </datalist>
+
+    <datalist id="listeCategoriesMaster">
+
+    ${
+        [...new Set(
+            Object.values(stock)
+            .flat()
+            .map(a => a.categorie)
+            .filter(c => c)
+        )]
+        .sort()
+        .map(c=>
+            `<option value="${c}">`
+        )
+        .join("")
+    }
+
+    </datalist>
+    `;
+
+    document.getElementById(
+        "listeArticlesMaster"
+    ).innerHTML = html;
+
+}
+function modifierArticleMaster(
+    code,
+    champ,
+    valeur
+){
+
+    Object.keys(stock).forEach(categorie => {
+
+        stock[categorie].forEach(article => {
+
+            if(
+                String(article.code) ===
+                String(code)
+            ){
+
+                article[champ] =
+                champ === "prix"
+                || champ === "colisage"
+                ? Number(valeur)
+                : valeur;
+
+            }
+
+        });
+
+    });
+
+    save();
+
+}
+function nouvelArticle(){
+
+    const code =
+    prompt("Code article");
+
+    if(!code) return;
+
+    const article =
+    prompt("Nom article");
+
+    if(!article) return;
+
+    Object.keys(stock).forEach(categorie => {
+
+        stock[categorie].push({
+
+            id: crypto.randomUUID(),
+
+            code: code,
+
+            article: article,
+
+            categorie: "",
+
+            stock: 0,
+
+            prix: 0,
+
+            fournisseur: "",
+
+            codeFournisseur: "",
+
+            colisage: 1,
+
+            mouvements: []
+
+        });
+
+    });
+
+    save();
+
+    afficherArticlesMaster();
 
 }
 mettreAJourSuggestions();
