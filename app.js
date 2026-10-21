@@ -5539,6 +5539,50 @@ function nouvelArticle(){
 }
 function renderFournisseurs(){
 
+    Object.values(stock)
+    .flat()
+    .forEach(article => {
+
+        const nom =
+        String(
+            article.fournisseur || ""
+        ).trim();
+
+        if(
+            nom &&
+            !fournisseurs.some(
+                f =>
+                String(f.nom).trim()
+                .toUpperCase()
+                ===
+                nom.toUpperCase()
+            )
+        ){
+
+            fournisseurs.push({
+
+                id: crypto.randomUUID(),
+
+                nom: nom,
+
+                numeroClient: "",
+
+                representant: "",
+
+                portable: "",
+
+                bureau: "",
+
+                email: ""
+
+            });
+
+        }
+
+    });
+
+    saveFournisseurs();
+
     document.getElementById("cards").innerHTML = `
 
     <div class="card">
@@ -5547,7 +5591,7 @@ function renderFournisseurs(){
 
         <input
         id="rechercheFournisseur"
-        placeholder="Nom fournisseur"
+        placeholder="Nom fournisseur ou représentant"
         oninput="afficherFournisseurs()">
 
         <br><br>
@@ -5567,10 +5611,10 @@ function renderFournisseurs(){
     afficherFournisseurs();
 
 }
+
 function afficherFournisseurs(){
 
     const recherche =
-
     document.getElementById(
         "rechercheFournisseur"
     )?.value?.toLowerCase() || "";
@@ -5582,8 +5626,12 @@ function afficherFournisseurs(){
         if(
             recherche &&
             !String(f.nom || "")
-            .toLowerCase()
-            .includes(recherche)
+                .toLowerCase()
+                .includes(recherche)
+            &&
+            !String(f.representant || "")
+                .toLowerCase()
+                .includes(recherche)
         ){
             return;
         }
@@ -5597,9 +5645,9 @@ function afficherFournisseurs(){
         <input
         value="${f.nom || ''}"
         onchange="
-f.nom=this.value;
-saveFournisseurs();
-">
+        f.nom=this.value;
+        saveFournisseurs();
+        ">
 
         <br><br>
 
@@ -5608,9 +5656,9 @@ saveFournisseurs();
         <input
         value="${f.numeroClient || ''}"
         onchange="
-f.numeroClient=this.value;
-saveFournisseurs();
-">
+        f.numeroClient=this.value;
+        saveFournisseurs();
+        ">
 
         <br><br>
 
@@ -5619,9 +5667,9 @@ saveFournisseurs();
         <input
         value="${f.representant || ''}"
         onchange="
-f.representant=this.value;
-saveFournisseurs();
-">
+        f.representant=this.value;
+        saveFournisseurs();
+        ">
 
         <br><br>
 
@@ -5630,9 +5678,9 @@ saveFournisseurs();
         <input
         value="${f.portable || ''}"
         onchange="
-f.portable=this.value;
-saveFournisseurs();
-">
+        f.portable=this.value;
+        saveFournisseurs();
+        ">
 
         <br><br>
 
@@ -5641,9 +5689,9 @@ saveFournisseurs();
         <input
         value="${f.bureau || ''}"
         onchange="
-f.bureau=this.value;
-saveFournisseurs();
-">
+        f.bureau=this.value;
+        saveFournisseurs();
+        ">
 
         <br><br>
 
@@ -5653,9 +5701,9 @@ saveFournisseurs();
         type="email"
         value="${f.email || ''}"
         onchange="
-f.email=this.value;
-saveFournisseurs();
-">
+        f.email=this.value;
+        saveFournisseurs();
+        ">
 
         <br><br>
 
@@ -5676,47 +5724,6 @@ saveFournisseurs();
     document.getElementById(
         "listeFournisseurs"
     ).innerHTML = html;
-
-}
-function supprimerFournisseur(id){
-
-    if(!confirm("Supprimer ce fournisseur ?")){
-        return;
-    }
-
-    fournisseurs =
-    fournisseurs.filter(
-        f => f.id !== id
-    );
-
-    saveFournisseurs();
-
-    afficherFournisseurs();
-
-}
-function nouveauFournisseur(){
-
-    fournisseurs.push({
-
-        id: crypto.randomUUID(),
-
-        nom: "",
-
-        numeroClient: "",
-
-        representant: "",
-
-        portable: "",
-
-        bureau: "",
-
-        email: ""
-
-    });
-
-    saveFournisseurs();
-
-    afficherFournisseurs();
 
 }
 mettreAJourSuggestions();
