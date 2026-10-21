@@ -5562,7 +5562,9 @@ function afficherFournisseurs(){
 
         if(
             recherche &&
-            !f.nom.toLowerCase().includes(recherche)
+            !String(f.nom || "")
+            .toLowerCase()
+            .includes(recherche)
         ){
             return;
         }
@@ -5571,7 +5573,14 @@ function afficherFournisseurs(){
 
         <div class="card">
 
-        <b>${f.nom}</b>
+        Nom fournisseur
+
+        <input
+        value="${f.nom || ''}"
+        onchange="
+f.nom=this.value;
+saveFournisseurs();
+">
 
         <br><br>
 
@@ -5586,7 +5595,7 @@ saveFournisseurs();
 
         <br><br>
 
-        Représentant
+        Nom du représentant
 
         <input
         value="${f.representant || ''}"
@@ -5619,14 +5628,25 @@ saveFournisseurs();
 
         <br><br>
 
-        Email
+        Adresse mail
 
         <input
+        type="email"
         value="${f.email || ''}"
         onchange="
 f.email=this.value;
 saveFournisseurs();
 ">
+
+        <br><br>
+
+        <button
+        style="background:#dc3545;color:white;"
+        onclick="supprimerFournisseur('${f.id}')">
+
+        🗑️ Supprimer
+
+        </button>
 
         </div>
 
@@ -5637,6 +5657,22 @@ saveFournisseurs();
     document.getElementById(
         "listeFournisseurs"
     ).innerHTML = html;
+
+}
+function supprimerFournisseur(id){
+
+    if(!confirm("Supprimer ce fournisseur ?")){
+        return;
+    }
+
+    fournisseurs =
+    fournisseurs.filter(
+        f => f.id !== id
+    );
+
+    saveFournisseurs();
+
+    afficherFournisseurs();
 
 }
 function nouveauFournisseur(){
