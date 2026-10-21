@@ -5285,7 +5285,7 @@ this.value
         value="${article.article}"
         onchange="
         modifierArticleMaster(
-        '${article.code}',
+      '${article.id}',
         'article',
         this.value
         )">
