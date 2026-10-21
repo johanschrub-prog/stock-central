@@ -393,7 +393,65 @@ oninput="rechercherReception()">
 <br><br>
 
 <div id="resultatsReception"></div>
+<div id="popupReception" style="
+display:none;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,.6);
+z-index:9999;
+">
 
+<div style="
+background:white;
+width:90%;
+max-width:500px;
+margin:30px auto;
+padding:20px;
+border-radius:12px;
+">
+
+<h2>Choisir la cave</h2>
+
+<button onclick="choisirDestinationReception('HDLP MINI BAR')" style="width:100%;height:60px;margin:5px 0;">
+HDLP MINI BAR
+</button>
+
+<button onclick="choisirDestinationReception('HDLP SOFT')" style="width:100%;height:60px;margin:5px 0;">
+HDLP SOFT
+</button>
+
+<button onclick="choisirDestinationReception('HDLP BAR')" style="width:100%;height:60px;margin:5px 0;">
+HDLP BAR
+</button>
+
+<button onclick="choisirDestinationReception('HDLP SEMINAIRE')" style="width:100%;height:60px;margin:5px 0;">
+HDLP SEMINAIRE
+</button>
+
+<button onclick="choisirDestinationReception('RCLP ALCOOL')" style="width:100%;height:60px;margin:5px 0;">
+RCLP ALCOOL
+</button>
+
+<button onclick="choisirDestinationReception('RCLP SOFT')" style="width:100%;height:60px;margin:5px 0;">
+RCLP SOFT
+</button>
+
+<button onclick="choisirDestinationReception('RCLP VIN')" style="width:100%;height:60px;margin:5px 0;">
+RCLP VIN
+</button>
+
+<br><br>
+
+<button onclick="fermerPopupReception()">
+❌ Annuler
+</button>
+
+</div>
+
+</div>
 </div>
 
 `;
@@ -557,44 +615,7 @@ ${Number(article.prix || 0).toFixed(2)} €
 :
 ""
 }
-                    <br>
                    
-                    Destination :
-
-                    <select
-                    id="destination_${article.id}">
-
-                        <option>
-                        HDLP MINI BAR
-                        </option>
-
-                        <option>
-                        HDLP SOFT
-                        </option>
-
-                        <option>
-                        HDLP BAR
-                        </option>
-
-                        <option>
-                        HDLP SEMINAIRE
-                        </option>
-
-                        <option>
-                        RCLP ALCOOL
-                        </option>
-
-                        <option>
-                        RCLP SOFT
-                        </option>
-
-                        <option>
-                        RCLP VIN
-                        </option>
-
-                    </select>
-
-                    <br><br>
 
              
 
@@ -641,7 +662,7 @@ onfocus="this.dataset.auto='0'">
 
 <button
 onclick="
-receptionRapide(
+ouvrirPopupReception(
 '${article.code}',
 '${article.id}'
 )
@@ -748,18 +769,52 @@ if(totalPieces > 0){
 }
 
 }
-function receptionRapide(
+let receptionCode = "";
+let receptionId = "";
+function ouvrirPopupReception(
     code,
     id
 ){
 
-const destination =
-document.getElementById(
-    "destination_" + id
-).value;
+    receptionCode = code;
+    receptionId = id;
+
+    document.getElementById(
+        "popupReception"
+    ).style.display = "block";
+
+}
+
+function fermerPopupReception(){
+
+    document.getElementById(
+        "popupReception"
+    ).style.display = "none";
+
+}
+
+function choisirDestinationReception(
+    destination
+){
+
+    fermerPopupReception();
+
+    receptionRapide(
+        receptionCode,
+        receptionId,
+        destination
+    );
+
+}
+function receptionRapide(
+    code,
+    id,
+    destination
+){
+
 
 const article =
-stock[destination]
+stock[cave]
 ?.find(a =>
 String(a.code) === String(code)
 );
