@@ -5728,66 +5728,54 @@ this.value
 
         <br><br>
 
-  Portable
-
-<div style="
-display:flex;
-gap:8px;
-align-items:center;
-">
-
 Portable
 
-<div style="
-display:flex;
-gap:8px;
-align-items:center;
-">
+<br>
 
 <input
 type="tel"
 value="${f.portable || ''}"
-style="flex:1;"
 onchange="
 modifierFournisseur(
 '${f.id}',
 'portable',
 this.value
-)">
+)"
+style="width:100%;"
+>
+
+<br><br>
 
 <button
-type="button"
-onclick="window.location.href='tel:${f.portable || ''}'"
+onclick="window.open('tel:${f.portable || ''}')"
 style="
-width:70px;
+width:48%;
 height:55px;
-font-size:16px;
-font-weight:bold;
 background:#28a745;
 color:white;
+font-weight:bold;
 border:none;
 border-radius:8px;
-">
-TEL
+"
+>
+APPELER
 </button>
 
 <button
-type="button"
-onclick="window.location.href='sms:${f.portable || ''}'"
+onclick="window.open('sms:${f.portable || ''}')"
 style="
-width:70px;
+width:48%;
 height:55px;
-font-size:16px;
-font-weight:bold;
 background:#2196f3;
 color:white;
+font-weight:bold;
 border:none;
 border-radius:8px;
-">
+float:right;
+"
+>
 SMS
 </button>
-
-</div>
 
 
 
@@ -5808,39 +5796,37 @@ this.value
 
         <br><br>
 
-  Adresse mail
+Adresse mail
 
-<div style="
-display:flex;
-gap:8px;
-align-items:center;
-">
+<br>
 
 <input
 type="email"
 value="${f.email || ''}"
-style="flex:1;"
 onchange="
 modifierFournisseur(
 '${f.id}',
 'email',
 this.value
-)">
+)"
+style="width:100%;"
+>
+
+<br><br>
 
 <button
-type="button"
-onclick="window.location.href='mailto:${f.email || ''}'"
+onclick="window.open('mailto:${f.email || ''}')"
 style="
-width:70px;
+width:100%;
 height:55px;
-font-size:16px;
-font-weight:bold;
 background:#ff9800;
 color:white;
+font-weight:bold;
 border:none;
 border-radius:8px;
-">
-MAIL
+"
+>
+ENVOYER MAIL
 </button>
 
 </div>
