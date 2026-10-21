@@ -5524,11 +5524,11 @@ function renderFournisseurs(){
 
     <div class="card">
 
-        <h2>🚚 Fournisseurs</h2>
+        <h2>🚚 Gestion des fournisseurs</h2>
 
         <input
         id="rechercheFournisseur"
-        placeholder="Rechercher fournisseur"
+        placeholder="Nom fournisseur"
         oninput="afficherFournisseurs()">
 
         <br><br>
@@ -5641,14 +5641,11 @@ saveFournisseurs();
 }
 function nouveauFournisseur(){
 
-    const nom =
-    prompt("Nom du fournisseur");
-
-    if(!nom) return;
-
     fournisseurs.push({
 
-        nom: nom,
+        id: crypto.randomUUID(),
+
+        nom: "",
 
         numeroClient: "",
 
