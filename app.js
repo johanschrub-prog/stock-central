@@ -5747,7 +5747,7 @@ style="width:100%;"
 <br><br>
 
 <button
-onclick="window.open('tel:${f.portable || ''}')"
+onclick="location.href='tel:${f.portable || ''}'"
 style="
 width:48%;
 height:55px;
@@ -5762,7 +5762,7 @@ APPELER
 </button>
 
 <button
-onclick="window.open('sms:${f.portable || ''}')"
+onclick="location.href='sms:${f.portable || ''}'"
 style="
 width:48%;
 height:55px;
@@ -5815,12 +5815,14 @@ style="width:100%;"
 <br><br>
 
 <button
-onclick="window.open('mailto:${f.email || ''}')"
+type="button"
+onclick="location.href='mailto:${f.email || ''}'"
 style="
 width:100%;
 height:55px;
 background:#ff9800;
 color:white;
+font-size:18px;
 font-weight:bold;
 border:none;
 border-radius:8px;
@@ -5829,18 +5831,26 @@ border-radius:8px;
 ENVOYER MAIL
 </button>
 
+<br><br>
+
+<button
+type="button"
+style="
+width:100%;
+height:55px;
+background:#dc3545;
+color:white;
+font-size:18px;
+font-weight:bold;
+border:none;
+border-radius:8px;
+"
+onclick="supprimerFournisseur('${f.id}')"
+>
+SUPPRIMER LE FOURNISSEUR
+</button>
+
 </div>
-        <br><br>
-
-        <button
-        style="background:#dc3545;color:white;"
-        onclick="supprimerFournisseur('${f.id}')">
-
-        🗑️ Supprimer
-
-        </button>
-
-        </div>
 
         `;
 
