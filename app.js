@@ -601,6 +601,10 @@ ${article.fournisseur || "-"}
 
 Code fournisseur :
 ${article.codeFournisseur || "-"}
+`
+:
+""
+}
 
 <br>
 
@@ -619,15 +623,16 @@ margin-bottom:10px;
 
 <br>
 
+${
+codeFournisseurRecherche === ""
+?
+`
 Prix actuel :
 ${Number(article.prix || 0).toFixed(2)} €
 `
 :
 ""
 }
-                   
-
-             
 
 Cartons :
 
