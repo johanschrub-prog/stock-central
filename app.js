@@ -1412,16 +1412,17 @@ function changerSite(site){
         categorieActive = "VENTES";
 
     }
+    else if(site === "ARTICLES"){
+
+        categorieActive = "ARTICLES";
+
+    }
     else{
 
         categorieActive = "DASHBOARD";
 
     }
-else if(site === "ARTICLES"){
 
-    categorieActive = "ARTICLES";
-
-}
     renderOnglets();
 
     render();
@@ -5270,11 +5271,11 @@ function afficherArticlesMaster(){
         <input
         value="${article.code}"
         onchange="
-        modifierArticleMaster(
-        '${article.code}',
-        'code',
-        this.value
-        )">
+       modifierArticleMaster(
+'${article.id}',
+'code',
+this.value
+)">
 
         <br><br>
 
@@ -5297,11 +5298,11 @@ function afficherArticlesMaster(){
         list="listeFournisseursMaster"
         value="${article.fournisseur || ''}"
         onchange="
-        modifierArticleMaster(
-        '${article.code}',
-        'fournisseur',
-        this.value
-        )">
+       modifierArticleMaster(
+'${article.id}',
+'fournisseur',
+this.value
+)">
 
         <br><br>
 
@@ -5311,7 +5312,7 @@ function afficherArticlesMaster(){
         value="${article.codeFournisseur || ''}"
         onchange="
         modifierArticleMaster(
-        '${article.code}',
+      '${article.id}',
         'codeFournisseur',
         this.value
         )">
@@ -5325,7 +5326,7 @@ function afficherArticlesMaster(){
         value="${article.categorie || ''}"
         onchange="
         modifierArticleMaster(
-        '${article.code}',
+      '${article.id}',
         'categorie',
         this.value
         )">
@@ -5340,7 +5341,7 @@ function afficherArticlesMaster(){
         value="${article.prix || 0}"
         onchange="
         modifierArticleMaster(
-        '${article.code}',
+      '${article.id}',
         'prix',
         this.value
         )">
@@ -5354,7 +5355,7 @@ function afficherArticlesMaster(){
         value="${article.colisage || 1}"
         onchange="
         modifierArticleMaster(
-        '${article.code}',
+      '${article.id}',
         'colisage',
         this.value
         )">
@@ -5409,7 +5410,7 @@ function afficherArticlesMaster(){
 
 }
 function modifierArticleMaster(
-    code,
+    id,
     champ,
     valeur
 ){
@@ -5418,10 +5419,7 @@ function modifierArticleMaster(
 
         stock[categorie].forEach(article => {
 
-            if(
-                String(article.code) ===
-                String(code)
-            ){
+            if(article.id === id){
 
                 article[champ] =
                 champ === "prix"
@@ -5436,6 +5434,8 @@ function modifierArticleMaster(
     });
 
     save();
+
+    afficherArticlesMaster();
 
 }
 function nouvelArticle(){
