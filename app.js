@@ -6263,49 +6263,48 @@ backgroundColor:[
 }]
 
 },
-options:{
-    indexAxis:'y',
+        options:{
+            indexAxis:'y',
 
-    responsive:true,
+            responsive:true,
 
-    maintainAspectRatio:false,
+            maintainAspectRatio:false,
 
-    layout:{
-        padding:{
-            left:20
-        }
-    },
+            layout:{
+                padding:{
+                    left:20
+                }
+            },
 
-    plugins:{
-        legend:{
-            display:false
-        }
-    },
+            plugins:{
+                legend:{
+                    display:false
+                }
+            },
 
-   scales:{
-    y:{
-        ticks:{
-            autoSkip:false,
-            font:{
-                size:16
+            scales:{
+                y:{
+                    ticks:{
+                        autoSkip:false,
+                        font:{
+                            size:16
+                        }
+                    }
+                },
+                x:{
+                    beginAtZero:true,
+                    ticks:{
+                        maxRotation:0,
+                        minRotation:0,
+                        font:{
+                            size:14
+                        }
+                    }
+                }
             }
         }
-    },
-    x:{
-        beginAtZero:true,
-        ticks:{
-            maxRotation:0,
-            minRotation:0,
-            font:{
-                size:14
-            }
-        }
-    }
-}
 
-});
-
-}
+    });
 
 }
 function ouvrirGraphiquePleinEcran(id){
