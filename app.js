@@ -6358,7 +6358,7 @@ function supprimerFournisseur(id){
     afficherFournisseurs();
 
 }
-
+        }
 mettreAJourSuggestions();
 
 changerSite("DASHBOARD");
