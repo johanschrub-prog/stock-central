@@ -1,4 +1,3 @@
-alert("VERSION APP 22-10-2026");
 const STORAGE_KEY = "StockCentral";
 let siteActif = "DASHBOARD";
 let stock =
