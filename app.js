@@ -1395,6 +1395,35 @@ onclick="changerSite('VENTES')">
 
 </button>
 
+<div style="width:100%;display:flex;gap:10px;">
+
+<button
+class="tab"
+style="${
+siteActif==='STAT_HDLP'
+? 'background:#1976d2;color:white;'
+: ''
+}"
+onclick="changerSite('STAT_HDLP')">
+
+📊 REMONTÉES HDLP
+
+</button>
+
+<button
+class="tab"
+style="${
+siteActif==='STAT_RCLP'
+? 'background:#ff9800;color:white;'
+: ''
+}"
+onclick="changerSite('STAT_RCLP')">
+
+📊 REMONTÉES RCLP
+
+</button>
+
+</div>
 </div>
 
 <div style="width:100%;display:flex;gap:10px;">
@@ -1479,6 +1508,66 @@ document.getElementById(
 ).innerHTML = html;
 
 }
+function ouvrirStatsRemontee(site){
+
+    let historique = JSON.parse(localStorage.getItem("historiqueGlobal") || "[]");
+
+    let remontees = historique.filter(h =>
+        h.type === "Remontée Cave" &&
+        h.destination &&
+        h.destination.toUpperCase().includes(site)
+    );
+
+    if(remontees.length === 0){
+        alert("Aucune remontée trouvée pour " + site);
+        return;
+    }
+
+    let total = 0;
+    let articles = {};
+
+    remontees.forEach(r => {
+
+        total += Number(r.quantite || 0);
+
+        let nom = r.article || r.designation || "Article inconnu";
+
+        if(!articles[nom]){
+            articles[nom] = 0;
+        }
+
+        articles[nom] += Number(r.quantite || 0);
+    });
+
+    let top10 = Object.entries(articles)
+        .sort((a,b)=>b[1]-a[1])
+        .slice(0,10);
+
+    let html = `
+        <h2>📊 Statistiques Remontées ${site}</h2>
+        <p><b>Nombre de mouvements :</b> ${remontees.length}</p>
+        <p><b>Quantité totale remontée :</b> ${total}</p>
+
+        <h3>Top 10 Articles</h3>
+        <table border="1" width="100%">
+            <tr>
+                <th>Article</th>
+                <th>Quantité</th>
+            </tr>
+    `;
+
+    top10.forEach(a=>{
+        html += `
+        <tr>
+            <td>${a[0]}</td>
+            <td>${a[1]}</td>
+        </tr>`;
+    });
+
+    html += "</table>";
+
+    ouvrirFenetre(html);
+}
 function changerSite(site){
 
     siteActif = site;
@@ -1517,6 +1606,14 @@ function changerSite(site){
 
         categorieActive = "DASHBOARD";
 
+        else if(site === "STAT_HDLP"){
+    categorieActive = "STAT_HDLP";
+            
+}
+            
+else if(site === "STAT_RCLP"){
+    categorieActive = "STAT_RCLP";
+}
     }
 
     renderOnglets();
@@ -3818,6 +3915,21 @@ if(
     return;
 
 }
+    if(categorieActive === "STAT_HDLP"){
+
+    renderStatsRemontees("HDLP");
+
+    return;
+
+}
+
+if(categorieActive === "STAT_RCLP"){
+
+    renderStatsRemontees("RCLP");
+
+    return;
+
+}
     if(categorieActive === "ARTICLES"){
 
     renderArticles();
@@ -5859,6 +5971,262 @@ SUPPRIMER LE FOURNISSEUR
     document.getElementById(
         "listeFournisseurs"
     ).innerHTML = html;
+
+}
+function renderStatsRemontees(site){
+
+document.getElementById("cards").innerHTML = `
+
+<div class="card">
+
+<h2>📊 Remontées ${site}</h2>
+
+Date début
+
+<br><br>
+
+<input
+type="date"
+id="dateDebutRemontee">
+
+<br><br>
+
+Date fin
+
+<br><br>
+
+<input
+type="date"
+id="dateFinRemontee">
+
+<br><br>
+
+<button
+onclick="calculerStatsRemontees('${site}')">
+
+📊 Afficher
+
+</button>
+
+</div>
+
+<div id="resultatStatsRemontee"></div>
+
+<div class="card">
+
+<h2>📈 Evolution des remontées</h2>
+
+<canvas id="graphRemontees"></canvas>
+
+</div>
+
+`;
+
+}
+function calculerStatsRemontees(site){
+
+let mouvements = [];
+
+Object.keys(stock).forEach(categorie => {
+
+    stock[categorie].forEach(article => {
+
+        (article.mouvements || []).forEach(m => {
+
+            if(m.origine === "REMONTEE " + site){
+
+                mouvements.push({
+
+                    article: article.article,
+
+                    code: article.code,
+
+                    quantite: Number(m.quantite || 0),
+
+                    date: m.date,
+
+                    categorie: article.categorie || "Sans catégorie"
+
+                });
+
+            }
+
+        });
+
+    });
+
+});
+
+const debut =
+document.getElementById(
+    "dateDebutRemontee"
+).value;
+
+const fin =
+document.getElementById(
+    "dateFinRemontee"
+).value;
+
+const ventesJour = {};
+const articles = {};
+const categoriesStats = {};
+
+let total = 0;
+
+mouvements.forEach(v => {
+
+    let dateVente = "";
+
+    if(String(v.date).includes("/")){
+
+        const p =
+        v.date.split(" ")[0].split("/");
+
+        dateVente =
+        p[2] + "-" +
+        p[1].padStart(2,"0") + "-" +
+        p[0].padStart(2,"0");
+
+    }else{
+
+        dateVente =
+        String(v.date).substring(0,10);
+
+    }
+
+    if(debut && dateVente < debut){
+        return;
+    }
+
+    if(fin && dateVente > fin){
+        return;
+    }
+
+    total += v.quantite;
+
+    if(!articles[v.article]){
+        articles[v.article] = 0;
+    }
+
+    articles[v.article] += v.quantite;
+
+    if(!ventesJour[dateVente]){
+        ventesJour[dateVente] = 0;
+    }
+
+    ventesJour[dateVente] += v.quantite;
+
+    if(!categoriesStats[v.categorie]){
+        categoriesStats[v.categorie] = 0;
+    }
+
+    categoriesStats[v.categorie] += v.quantite;
+
+});
+
+const top = Object.entries(articles)
+.sort((a,b)=>b[1]-a[1])
+.slice(0,35);
+
+let html = `
+
+<div class="card">
+
+<h2>📊 Résultat</h2>
+
+Quantité remontée :
+
+<b>${total}</b>
+
+<br><br>
+
+<h3>🏆 Top remontées</h3>
+
+`;
+
+top.forEach(t=>{
+
+const pourcentage =
+
+total > 0
+? ((t[1]/total)*100).toFixed(1)
+: 0;
+
+html += `
+
+${t[0]} :
+
+<b>${t[1]}</b>
+
+(${pourcentage}%)
+
+<br>
+
+`;
+
+});
+
+html += "</div>";
+
+document.getElementById(
+"resultatStatsRemontee"
+).innerHTML = html;
+
+const canvas =
+document.getElementById(
+"graphRemontees"
+);
+
+if(canvas){
+
+const ancien =
+Chart.getChart(canvas);
+
+if(ancien){
+ancien.destroy();
+}
+
+new Chart(canvas,{
+
+type:"bar",
+
+data:{
+
+labels:
+Object.keys(categoriesStats),
+
+datasets:[{
+
+label:"Quantités remontées",
+
+data:
+Object.values(categoriesStats),
+
+backgroundColor:[
+"#1976d2",
+"#ff9800",
+"#28a745",
+"#e91e63",
+"#9c27b0",
+"#795548"
+]
+
+}]
+
+},
+
+options:{
+responsive:true,
+plugins:{
+legend:{
+display:false
+}
+}
+}
+
+});
+
+}
 
 }
 mettreAJourSuggestions();
