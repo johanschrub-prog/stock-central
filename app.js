@@ -5365,7 +5365,23 @@ if(canvas){
             }]
 
         },
+options:{
+    indexAxis:'y',
 
+    responsive:true,
+
+    plugins:{
+        legend:{
+            display:false
+        }
+    },
+
+    scales:{
+        x:{
+            beginAtZero:true
+        }
+    }
+}
        options:{
 
     responsive:true,
@@ -6220,7 +6236,40 @@ backgroundColor:[
 }]
 
 },
+    options:{
+    indexAxis:'y',
 
+    responsive:true,
+
+    plugins:{
+        legend:{
+            display:false
+        }
+    },
+
+    scales:{
+        x:{
+            beginAtZero:true
+        }
+    }
+}
+options:{
+    indexAxis:'y',
+
+    responsive:true,
+
+    plugins:{
+        legend:{
+            display:false
+        }
+    },
+
+    scales:{
+        x:{
+            beginAtZero:true
+        }
+    }
+}
 options:{
 
     responsive:true,
