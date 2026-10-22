@@ -2622,20 +2622,41 @@ function validerImportCommandeHDLP(){
             cave
         );
 
-        const article =
+      let article =
+stock[cave]
+?.find(a =>
+    String(a.code) === String(c.code)
+);
 
-        stock[cave]
-        ?.find(a =>
+if(!article){
 
-            String(a.code)
+    article = {
 
-            ===
+        id: crypto.randomUUID(),
 
-            String(c.code)
+        code: c.code,
 
-        );
+        article: c.article,
 
-        if(!article) return;
+        categorie: "",
+
+        stock: 0,
+
+        prix: 0,
+
+        fournisseur: c.fournisseur || "",
+
+        codeFournisseur: "",
+
+        colisage: Number(c.conditionnement || 1),
+
+        mouvements: []
+
+    };
+
+    stock[cave].push(article);
+
+}
 
         article.stock =
 
@@ -2921,20 +2942,41 @@ function validerImportCommandeRCLP(){
             cave
         );
 
-        const article =
+      let article =
+stock[cave]
+?.find(a =>
+    String(a.code) === String(c.code)
+);
 
-        stock[cave]
-        ?.find(a =>
+if(!article){
 
-            String(a.code)
+    article = {
 
-            ===
+        id: crypto.randomUUID(),
 
-            String(c.code)
+        code: c.code,
 
-        );
+        article: c.article,
 
-        if(!article) return;
+        categorie: "",
+
+        stock: 0,
+
+        prix: 0,
+
+        fournisseur: c.fournisseur || "",
+
+        codeFournisseur: "",
+
+        colisage: Number(c.conditionnement || 1),
+
+        mouvements: []
+
+    };
+
+    stock[cave].push(article);
+
+}
 
         article.stock =
 
