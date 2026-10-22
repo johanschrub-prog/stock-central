@@ -5351,8 +5351,8 @@ if(canvas){
     }
 canvas.height =
 Math.max(
-    500,
-    labels.length * 50
+    800,
+    labels.length * 70
 );
     new Chart(canvas,{
 
@@ -5388,6 +5388,12 @@ options:{
 
     maintainAspectRatio:false,
 
+    layout:{
+        padding:{
+            left:20
+        }
+    },
+
     plugins:{
         legend:{
             display:false
@@ -5397,7 +5403,10 @@ options:{
     scales:{
         y:{
             ticks:{
-                autoSkip:false
+                autoSkip:false,
+                font:{
+                    size:14
+                }
             }
         },
         x:{
@@ -5405,6 +5414,7 @@ options:{
         }
     }
 }
+``
 
      
     });
@@ -6220,7 +6230,7 @@ ancien.destroy();
 canvas.height =
 Math.max(
     500,
-    labels.length * 50
+    Object.keys(categoriesStats).length * 50
 );
 new Chart(canvas,{
 
@@ -6257,6 +6267,12 @@ options:{
 
     maintainAspectRatio:false,
 
+    layout:{
+        padding:{
+            left:20
+        }
+    },
+
     plugins:{
         legend:{
             display:false
@@ -6266,7 +6282,10 @@ options:{
     scales:{
         y:{
             ticks:{
-                autoSkip:false
+                autoSkip:false,
+                font:{
+                    size:14
+                }
             }
         },
         x:{
@@ -6274,6 +6293,7 @@ options:{
         }
     }
 }
+
 
 
 
@@ -6318,20 +6338,7 @@ function ouvrirGraphiquePleinEcran(id){
     `);
 
 }
-function ouvrirGraphiquePleinEcran(id){
 
-    const canvas =
-    document.getElementById(id);
-
-    if(!canvas) return;
-
-    if(canvas.requestFullscreen){
-
-        canvas.requestFullscreen();
-
-    }
-
-}
 mettreAJourSuggestions();
 
 changerSite("DASHBOARD");
