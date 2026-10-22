@@ -5400,21 +5400,28 @@ options:{
         }
     },
 
-    scales:{
-        y:{
-            ticks:{
-                autoSkip:false,
-                font:{
-                    size:14
-                }
+ scales:{
+    y:{
+        ticks:{
+            autoSkip:false,
+            font:{
+                size:16
             }
-        },
-        x:{
-            beginAtZero:true
+        }
+    },
+    x:{
+        beginAtZero:true,
+        ticks:{
+            maxRotation:0,
+            minRotation:0,
+            font:{
+                size:14
+            }
         }
     }
 }
-``
+
+
 
      
     });
@@ -6279,23 +6286,26 @@ options:{
         }
     },
 
-    scales:{
-        y:{
-            ticks:{
-                autoSkip:false,
-                font:{
-                    size:14
-                }
+   scales:{
+    y:{
+        ticks:{
+            autoSkip:false,
+            font:{
+                size:16
             }
-        },
-        x:{
-            beginAtZero:true
+        }
+    },
+    x:{
+        beginAtZero:true,
+        ticks:{
+            maxRotation:0,
+            minRotation:0,
+            font:{
+                size:14
+            }
         }
     }
 }
-
-
-
 
 });
 
