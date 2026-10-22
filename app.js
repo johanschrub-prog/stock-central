@@ -5349,7 +5349,11 @@ if(canvas){
         ancien.destroy();
 
     }
-
+canvas.height =
+Math.max(
+    500,
+    labels.length * 50
+);
     new Chart(canvas,{
 
         type:"bar",
@@ -5382,6 +5386,8 @@ options:{
 
     responsive:true,
 
+    maintainAspectRatio:false,
+
     plugins:{
         legend:{
             display:false
@@ -5389,11 +5395,17 @@ options:{
     },
 
     scales:{
+        y:{
+            ticks:{
+                autoSkip:false
+            }
+        },
         x:{
             beginAtZero:true
         }
     }
 }
+
      
     });
 
@@ -6205,7 +6217,11 @@ Chart.getChart(canvas);
 if(ancien){
 ancien.destroy();
 }
-
+canvas.height =
+Math.max(
+    500,
+    labels.length * 50
+);
 new Chart(canvas,{
 
 type:"bar",
@@ -6234,10 +6250,12 @@ backgroundColor:[
 }]
 
 },
-    options:{
+options:{
     indexAxis:'y',
 
     responsive:true,
+
+    maintainAspectRatio:false,
 
     plugins:{
         legend:{
@@ -6246,11 +6264,17 @@ backgroundColor:[
     },
 
     scales:{
+        y:{
+            ticks:{
+                autoSkip:false
+            }
+        },
         x:{
             beginAtZero:true
         }
     }
 }
+
 
 
 });
