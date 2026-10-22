@@ -5382,33 +5382,7 @@ options:{
         }
     }
 }
-       options:{
-
-    responsive:true,
-
-    plugins:{
-        legend:{
-            display:false
-        }
-    },
-
-    scales:{
-
-        x:{
-            ticks:{
-                minRotation:90,
-                maxRotation:90
-            }
-        },
-
-        y:{
-            beginAtZero:true
-        }
-
-    }
-
-}
-
+     
     });
 
 }
@@ -6253,49 +6227,8 @@ backgroundColor:[
         }
     }
 }
-options:{
-    indexAxis:'y',
 
-    responsive:true,
 
-    plugins:{
-        legend:{
-            display:false
-        }
-    },
-
-    scales:{
-        x:{
-            beginAtZero:true
-        }
-    }
-}
-options:{
-
-    responsive:true,
-
-    plugins:{
-        legend:{
-            display:false
-        }
-    },
-
-    scales:{
-
-        x:{
-            ticks:{
-                minRotation:90,
-                maxRotation:90
-            }
-        },
-
-        y:{
-            beginAtZero:true
-        }
-
-    }
-
-}
 });
 
 }
