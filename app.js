@@ -5111,6 +5111,18 @@ mettreAJourSuggestions();
 
 <h2>📈 Evolution des ventes</h2>
 
+<button
+onclick="ouvrirGraphiquePleinEcran('graphVentes')"
+style="
+width:100%;
+height:60px;
+font-size:20px;
+font-weight:bold;
+margin-bottom:10px;
+">
+🔍 Plein écran
+</button>
+
 <canvas id="graphVentes"></canvas>
 
 </div>
@@ -6012,6 +6024,18 @@ onclick="calculerStatsRemontees('${site}')">
 
 <h2>📈 Evolution des remontées</h2>
 
+<button
+onclick="ouvrirGraphiquePleinEcran('graphRemontees')"
+style="
+width:100%;
+height:60px;
+font-size:20px;
+font-weight:bold;
+margin-bottom:10px;
+">
+🔍 Plein écran
+</button>
+
 <canvas id="graphRemontees"></canvas>
 
 </div>
@@ -6232,6 +6256,56 @@ backgroundColor:[
 });
 
 }
+
+}
+function ouvrirGraphiquePleinEcran(id){
+
+    const canvas =
+    document.getElementById(id);
+
+    if(!canvas) return;
+
+    const image =
+    canvas.toDataURL("image/png");
+
+    const fenetre =
+    window.open("","Graphique");
+
+    fenetre.document.write(`
+        <html>
+        <head>
+            <title>Graphique</title>
+        </head>
+        <body style="
+            margin:0;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            background:white;
+        ">
+            <img
+            src="${image}"
+            style="
+                width:100%;
+                height:auto;
+            ">
+        </body>
+        </html>
+    `);
+
+}
+function ouvrirGraphiquePleinEcran(id){
+
+    const canvas =
+    document.getElementById(id);
+
+    if(!canvas) return;
+
+    if(canvas.requestFullscreen){
+
+        canvas.requestFullscreen();
+
+    }
 
 }
 mettreAJourSuggestions();
