@@ -5351,7 +5351,7 @@ if(canvas){
     }
 canvas.height =
 Math.max(
-    800,
+    600,
     labels.length * 70
 );
     new Chart(canvas,{
@@ -5381,12 +5381,11 @@ Math.max(
             }]
 
         },
-        options:{
-            indexAxis:'y',
+    options:{
+    indexAxis:'y',
+    responsive:false,
+    maintainAspectRatio:true,
 
-            responsive:true,
-
-            maintainAspectRatio:false,
 
             layout:{
                 padding:{
