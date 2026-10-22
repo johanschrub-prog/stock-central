@@ -6005,7 +6005,11 @@ SUPPRIMER LE FOURNISSEUR
     ).innerHTML = html;
 
 }
+     console.log("AVANT RENDER STATS");
+       
 function renderStatsRemontees(site){
+console.log("APRES DECLARATION");
+
 
 document.getElementById("cards").innerHTML = `
 
