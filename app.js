@@ -5420,13 +5420,13 @@ options:{
         }
     }
 }
-}
+
 
 
      
     });
 
-}
+
 
 }
 function renderArticles(){
