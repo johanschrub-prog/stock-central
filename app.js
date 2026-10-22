@@ -5366,27 +5366,32 @@ if(canvas){
 
         },
 
-        options:{
+       options:{
 
-            responsive:true,
+    responsive:true,
 
-            plugins:{
-
-                legend:{
-                    display:false
-                }
-
-            },
-
-            scales:{
-
-                y:{
-                    beginAtZero:true
-                }
-
-            }
-
+    plugins:{
+        legend:{
+            display:false
         }
+    },
+
+    scales:{
+
+        x:{
+            ticks:{
+                minRotation:90,
+                maxRotation:90
+            }
+        },
+
+        y:{
+            beginAtZero:true
+        }
+
+    }
+
+}
 
     });
 
@@ -6217,14 +6222,31 @@ backgroundColor:[
 },
 
 options:{
-responsive:true,
-plugins:{
-legend:{
-display:false
-}
-}
-}
 
+    responsive:true,
+
+    plugins:{
+        legend:{
+            display:false
+        }
+    },
+
+    scales:{
+
+        x:{
+            ticks:{
+                minRotation:90,
+                maxRotation:90
+            }
+        },
+
+        y:{
+            beginAtZero:true
+        }
+
+    }
+
+}
 });
 
 }
