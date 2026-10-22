@@ -6077,7 +6077,13 @@ Object.keys(stock).forEach(categorie => {
 
         (article.mouvements || []).forEach(m => {
 
-            if(m.origine === "REMONTEE " + site){
+          if(
+    String(m.origine || "")
+    .includes("REMONTEE")
+    &&
+    String(m.origine || "")
+    .includes(site)
+){
 
                 mouvements.push({
 
@@ -6263,11 +6269,9 @@ backgroundColor:[
 
 },
         options:{
-            indexAxis:'y',
-
-            responsive:true,
-
-            maintainAspectRatio:false,
+    indexAxis:'y',
+    responsive:false,
+    maintainAspectRatio:true,
 
             layout:{
                 padding:{
@@ -6305,7 +6309,7 @@ backgroundColor:[
 
     });
 }
-
+}
 function ouvrirGraphiquePleinEcran(id){
 
     const canvas =
