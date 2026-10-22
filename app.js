@@ -6305,7 +6305,7 @@ backgroundColor:[
 
     });
 }
-}
+
 function ouvrirGraphiquePleinEcran(id){
 
     const canvas =
