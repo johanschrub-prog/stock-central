@@ -6348,6 +6348,21 @@ function ouvrirGraphiquePleinEcran(id){
     `);
 
 }
+function supprimerFournisseur(id){
+
+    if(!confirm("Supprimer ce fournisseur ?")){
+        return;
+    }
+
+    fournisseurs = fournisseurs.filter(
+        f => f.id !== id
+    );
+
+    saveFournisseurs();
+
+    afficherFournisseurs();
+
+}
 
 mettreAJourSuggestions();
 
