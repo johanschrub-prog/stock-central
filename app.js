@@ -1597,27 +1597,28 @@ function changerSite(site){
         categorieActive = "ARTICLES";
 
     }
-        else if(site === "FOURNISSEURS"){
+    else if(site === "FOURNISSEURS"){
 
-    categorieActive = "FOURNISSEURS";
+        categorieActive = "FOURNISSEURS";
 
-}
+    }
+    else if(site === "STAT_HDLP"){
+
+        categorieActive = "STAT_HDLP";
+
+    }
+    else if(site === "STAT_RCLP"){
+
+        categorieActive = "STAT_RCLP";
+
+    }
     else{
 
         categorieActive = "DASHBOARD";
 
-        else if(site === "STAT_HDLP"){
-    categorieActive = "STAT_HDLP";
-            
-}
-            
-else if(site === "STAT_RCLP"){
-    categorieActive = "STAT_RCLP";
-}
     }
 
     renderOnglets();
-
     render();
 
 }
@@ -6231,4 +6232,4 @@ display:false
 }
 mettreAJourSuggestions();
 
-changerSite("DASHBOARD");changerSite("DASHBOARD");
+changerSite("DASHBOARD");
