@@ -6362,7 +6362,7 @@ function supprimerFournisseur(id){
 
     afficherFournisseurs();
 
-}
+
 }      
 mettreAJourSuggestions();
 
