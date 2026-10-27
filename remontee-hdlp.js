@@ -33,18 +33,24 @@ function renderRemonteeHDLP(){
             <button onclick="changerOngletHDLP('alcool')">
                 ALCOOL
             </button>
-<button onclick="ouvrirAjoutArticleHDLP()">
-➕ Article
-</button>
 
-<button
-style="background:#dc3545;color:white;"
-onclick="retirerArticleHDLP()">
-➖ Retirer Article
-</button>
+<br><br>
+            
+<div style="margin-top:15px;margin-bottom:15px;">
+
+    <button
+    onclick="ouvrirAjoutArticleHDLP()"
+    style="
+    background:#198754;
+    color:white;
+    font-weight:bold;
+    ">
+    ➕ Article
+    </button>
+
+</div>
 
             <hr>
-
             <input
             id="rechercheHDLP"
             placeholder="🔍 Rechercher un article ou un code"
@@ -269,47 +275,6 @@ function ajouterArticleDepuisStockHDLP(code){
     );
 
     fermerAjoutArticleHDLP();
-
-    renderContenuHDLP();
-
-}
-function retirerArticleHDLP(){
-
-    const code =
-    prompt(
-        "Code article à supprimer"
-    );
-
-    if(!code) return;
-
-    const avant =
-    hdlpData[hdlpTab].length;
-
-    hdlpData[hdlpTab] =
-    hdlpData[hdlpTab]
-    .filter(a =>
-
-        String(a.code) !==
-        String(code)
-
-    );
-
-    if(
-        avant ===
-        hdlpData[hdlpTab].length
-    ){
-
-        alert(
-            "Article introuvable"
-        );
-
-        return;
-    }
-
-    localStorage.setItem(
-        "caveData",
-        JSON.stringify(hdlpData)
-    );
 
     renderContenuHDLP();
 
