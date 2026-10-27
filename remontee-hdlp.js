@@ -279,6 +279,54 @@ function ajouterArticleDepuisStockHDLP(code){
     renderContenuHDLP();
 
 }
+function getStockHDLP(code){
+
+    let total = 0;
+
+    [
+        "HDLP SOFT",
+        "HDLP BAR",
+        "HDLP MINI BAR",
+        "HDLP SEMINAIRE"
+    ].forEach(categorie => {
+
+        (stock[categorie] || []).forEach(article => {
+
+            if(String(article.code) === String(code)){
+                total += Number(article.stock || 0);
+            }
+
+        });
+
+    });
+
+    return total;
+
+}
+
+function getStockRCLP(code){
+
+    let total = 0;
+
+    [
+        "RCLP SOFT",
+        "RCLP VIN",
+        "RCLP ALCOOL"
+    ].forEach(categorie => {
+
+        (stock[categorie] || []).forEach(article => {
+
+            if(String(article.code) === String(code)){
+                total += Number(article.stock || 0);
+            }
+
+        });
+
+    });
+
+    return total;
+
+}
 function changerOngletHDLP(tab){
     hdlpTab = tab;
     renderContenuHDLP();
@@ -319,10 +367,10 @@ document.getElementById(
         String(a.code) === String(article.code)
     );
 const stockHDLP =
-JSON.stringify(articleStock);
+getStockHDLP(article.code);
 
 const stockRCLP =
-articleStock?.stockRCLP ?? 0;
+getStockRCLP(article.code);
 
     html += `
 
