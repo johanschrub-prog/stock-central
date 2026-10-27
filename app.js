@@ -1460,6 +1460,15 @@ onclick="changerSite('FOURNISSEURS')">
 
 
 `;
+    <button
+onclick="mettreAJourStockJson()"
+style="
+background:#28a745;
+color:white;
+font-weight:bold;
+">
+🔄 Mettre à jour stock.json
+</button>
 
 let html = "";
 
@@ -6408,3 +6417,26 @@ function supprimerFournisseur(id){
 mettreAJourSuggestions();
 
 changerSite("DASHBOARD");
+function mettreAJourStockJson(){
+
+    const blob = new Blob(
+        [
+            JSON.stringify(stock, null, 2)
+        ],
+        {
+            type: "application/json"
+        }
+    );
+
+    const lien =
+    document.createElement("a");
+
+    lien.href =
+    URL.createObjectURL(blob);
+
+    lien.download =
+    "stock.json";
+
+    lien.click();
+
+}
