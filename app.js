@@ -1643,58 +1643,40 @@ function ouvrirStatsRemontee(site){
 function changerSite(site){
 
     siteActif = site;
-else if(site === "APPLICATIONS"){
-    categorieActive = "APPLICATIONS";
-}
-    if(site === "HDLP"){
 
+    if(site === "APPLICATIONS"){
+        categorieActive = "APPLICATIONS";
+    }
+    else if(site === "HDLP"){
         categorieActive = "TOUS_HDLP";
-
     }
     else if(site === "RCLP"){
-
         categorieActive = "TOUS_RCLP";
-
     }
     else if(site === "HISTORIQUE"){
-
         categorieActive = "HISTORIQUE";
-
     }
     else if(site === "VENTES"){
-
         categorieActive = "VENTES";
-
     }
     else if(site === "ARTICLES"){
-
         categorieActive = "ARTICLES";
-
     }
     else if(site === "FOURNISSEURS"){
-
         categorieActive = "FOURNISSEURS";
-
     }
     else if(site === "STAT_HDLP"){
-
         categorieActive = "STAT_HDLP";
-
     }
     else if(site === "STAT_RCLP"){
-
         categorieActive = "STAT_RCLP";
-
     }
     else{
-
         categorieActive = "DASHBOARD";
-
     }
 
     renderOnglets();
     render();
-
 }
 function changerCategorie(cat){
 
