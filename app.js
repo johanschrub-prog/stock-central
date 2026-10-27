@@ -6410,25 +6410,6 @@ function ouvrirGraphiquePleinEcran(id){
     `);
 
 }
-function supprimerFournisseur(id){
-
-    if(!confirm("Supprimer ce fournisseur ?")){
-        return;
-    }
-
-    fournisseurs = fournisseurs.filter(
-        f => f.id !== id
-    );
-
-    saveFournisseurs();
-
-    afficherFournisseurs();
-
-
-}      
-mettreAJourSuggestions();
-
-changerSite("DASHBOARD");
 function mettreAJourStockJson(){
 
     const blob = new Blob(
@@ -6452,3 +6433,23 @@ function mettreAJourStockJson(){
     lien.click();
 
 }
+function supprimerFournisseur(id){
+
+    if(!confirm("Supprimer ce fournisseur ?")){
+        return;
+    }
+
+    fournisseurs = fournisseurs.filter(
+        f => f.id !== id
+    );
+
+    saveFournisseurs();
+
+    afficherFournisseurs();
+
+
+}      
+mettreAJourSuggestions();
+
+changerSite("DASHBOARD");
+
