@@ -4285,6 +4285,22 @@ box-sizing:border-box;
 
 }
 document.getElementById("cards").innerHTML = `
+<div class="card">
+<button
+onclick="mettreAJourStockJson()"
+style="
+width:100%;
+height:70px;
+background:#28a745;
+color:white;
+font-size:22px;
+font-weight:bold;
+border:none;
+border-radius:8px;
+">
+🔄 METTRE À JOUR STOCK.JSON
+</button>
+</div>
 
 <div style="
 margin-left:-10px;
