@@ -1432,6 +1432,18 @@ onclick="changerSite('STAT_RCLP')">
 class="tab"
 style="
 ${
+siteActif==='APPLICATIONS'
+? 'background:#673ab7;color:white;'
+: ''
+}"
+onclick="changerSite('APPLICATIONS')">
+📱 APPLICATIONS
+</button>
+
+<button
+class="tab"
+style="
+${
 siteActif==='ARTICLES'
 ? 'background:#795548;color:white;'
 : ''
@@ -1507,7 +1519,67 @@ document.getElementById(
 "sousOnglets"
 ).innerHTML = html;
 }
+function ouvrirApplications(){
 
+    document.getElementById("cards").innerHTML = `
+
+    <div class="card">
+
+        <h2>📱 Applications</h2>
+
+        <button
+        style="width:100%;height:70px;"
+        onclick="ouvrirRemonteeHDLP()">
+
+        📤 Remontées HDLP
+
+        </button>
+
+        <br><br>
+
+        <button
+        style="width:100%;height:70px;"
+        onclick="ouvrirRemonteeRCLP()">
+
+        📤 Remontées RCLP
+
+        </button>
+
+        <br><br>
+
+        <button
+        style="width:100%;height:70px;"
+        onclick="ouvrirVentesBoutique()">
+
+        🛍️ Ventes Boutique
+
+        </button>
+
+        <br><br>
+
+        <button
+        style="width:100%;height:70px;"
+        onclick="ouvrirCommandeHDLP()">
+
+        🚚 Commandes HDLP
+
+        </button>
+
+        <br><br>
+
+        <button
+        style="width:100%;height:70px;"
+        onclick="ouvrirCommandeRCLP()">
+
+        🚚 Commandes RCLP
+
+        </button>
+
+    </div>
+
+    `;
+
+}
 function ouvrirStatsRemontee(site){
 
     let historique = JSON.parse(localStorage.getItem("historiqueGlobal") || "[]");
@@ -1571,7 +1643,9 @@ function ouvrirStatsRemontee(site){
 function changerSite(site){
 
     siteActif = site;
-
+else if(site === "APPLICATIONS"){
+    categorieActive = "APPLICATIONS";
+}
     if(site === "HDLP"){
 
         categorieActive = "TOUS_HDLP";
@@ -3973,6 +4047,10 @@ if(categorieActive === "STAT_RCLP"){
     return;
 
 }
+   if(categorieActive === "APPLICATIONS"){
+    ouvrirApplications();
+    return;
+} 
     if(categorieActive === "ARTICLES"){
 
     renderArticles();
