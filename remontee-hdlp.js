@@ -319,7 +319,7 @@ document.getElementById(
         String(a.code) === String(article.code)
     );
 const stockHDLP =
-articleStock?.stockHDLP ?? 0;
+JSON.stringify(articleStock);
 
 const stockRCLP =
 articleStock?.stockRCLP ?? 0;
