@@ -1,19 +1,111 @@
 function ouvrirRemonteeHDLP(){
-
     document.getElementById("cards").innerHTML = `
         <div class="card">
-
-            <h2>📤 Remontées HDLP</h2>
-
-            <button onclick="changerSite('APPLICATIONS')">
-                ⬅ Retour
+            <button
+            onclick="changerSite('APPLICATIONS')">
+            ⬅ Retour
             </button>
-
-            <br><br>
-
-            Module en construction
-
+            <h2>
+            📤 Remontées HDLP
+            </h2>
+            <button
+            onclick="changerOngletHDLP('devant')">
+            DEVANT BAR
+            </button>
+            <button
+            onclick="changerOngletHDLP('champagne')">
+            CHAMPAGNE
+            </button>
+            <button
+            onclick="changerOngletHDLP('alcool')">
+            ALCOOL
+            </button>
+            <hr>
+            <div id="contenuHDLP"></div>
         </div>
     `;
-
+    renderContenuHDLP();
+}
+let hdlpTab = "devant";
+let hdlpData =
+JSON.parse(
+    localStorage.getItem("caveData")
+) || {
+    devant: [],
+    champagne: [],
+    alcool: []
+};
+function ouvrirRemonteeHDLP(){
+    renderRemonteeHDLP();
+}
+function renderRemonteeHDLP(){
+    document.getElementById("cards").innerHTML = `
+        <div class="card">
+            <button
+            onclick="changerSite('APPLICATIONS')">
+            ⬅ Retour
+           </button>
+            <h2>📤 Remontées HDLP</h2>
+            <button onclick="changerOngletHDLP('devant')">
+            DEVANT BAR
+            </button>
+            <button onclick="changerOngletHDLP('champagne')">
+            CHAMPAGNE
+            </button>
+            <button onclick="changerOngletHDLP('alcool')">
+            ALCOOL
+            </button>
+            <div id="contenuHDLP"></div>
+        </div>
+    `;
+    renderContenuHDLP();
+}
+function changerOngletHDLP(tab){
+    hdlpTab = tab;
+    renderContenuHDLP();
+}
+function renderContenuHDLP(){
+    const liste =
+    hdlpData[hdlpTab] || [];
+    let html = "";
+    liste.forEach(article => {
+        html += `
+        <div class="card">
+            <b>${article.article}</b>
+            <br>
+            Code : ${article.code}
+            <br><br>
+            <input
+            type="number"
+            id="qty_${article.id}"
+            value="${article.quantite || ''}"
+            placeholder="Quantité">
+            <button
+            onclick="validerQuantiteHDLP('${article.id}')">
+            OK
+            </button>
+        </div>
+        `;
+    });
+    document.getElementById(
+        "contenuHDLP"
+    ).innerHTML = html;
+}
+function validerQuantiteHDLP(id){
+    const article =
+    hdlpData[hdlpTab]
+    .find(a => a.id === id);
+    if(!article) return;
+    const valeur =
+    document.getElementById(
+        "qty_" + id
+    ).value;
+    article.quantite =
+    valeur === ""
+    ? 0
+    : Number(valeur);
+    localStorage.setItem(
+        "caveData",
+        JSON.stringify(hdlpData)
+    );
 }
