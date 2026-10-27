@@ -319,9 +319,10 @@ document.getElementById(
         String(a.code) === String(article.code)
     );
 const stockHDLP =
-JSON.stringify(articleStock);
+articleStock?.stock ?? 0;
 
-const stockRCLP = "";
+const stockRCLP =
+"-";
 
     html += `
 
