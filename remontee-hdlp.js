@@ -319,10 +319,10 @@ document.getElementById(
         String(a.code) === String(article.code)
     );
 const stockHDLP =
-articleStock?.stock ?? 0;
+articleStock?.stockHDLP ?? 0;
 
 const stockRCLP =
-"-";
+articleStock?.stockRCLP ?? 0;
 
     html += `
 
@@ -340,7 +340,7 @@ const stockRCLP =
             color:#1976d2;
             font-weight:bold;
         ">
-          📦 Infos : ${stockHDLP}
+       📦 Stock HDLP : ${stockHDLP}
         </span>
 
         <br>
