@@ -1504,30 +1504,12 @@ ${c}
     });
 
 }
-
-html += `
-<div style="margin-top:10px;">
-<button
-onclick="mettreAJourStockJson()"
-style="
-width:100%;
-height:60px;
-background:#28a745;
-color:white;
-font-size:20px;
-font-weight:bold;
-border:none;
-border-radius:8px;
-">
-🔄 MISE À JOUR STOCK
-</button>
-</div>
-`;
-
+    
 document.getElementById(
 "sousOnglets"
 ).innerHTML = html;
 }
+
 function ouvrirStatsRemontee(site){
 
     let historique = JSON.parse(localStorage.getItem("historiqueGlobal") || "[]");
@@ -4196,8 +4178,27 @@ ${r.categorie || "-"}
         `;
 
     });
+const boutonMaj = `
+<div class="card">
+<button
+onclick="mettreAJourStockJson()"
+style="
+width:100%;
+height:70px;
+background:#28a745;
+color:white;
+font-size:22px;
+font-weight:bold;
+border:none;
+border-radius:8px;
+">
+🔄 METTRE À JOUR STOCK.JSON
+</button>
+</div>
+`;
+  document.getElementById("cards").innerHTML =
+boutonMaj + html;
 
-    document.getElementById("cards").innerHTML = html;
 
     return;
 
