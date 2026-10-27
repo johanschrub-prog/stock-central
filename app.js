@@ -1460,8 +1460,6 @@ onclick="changerSite('FOURNISSEURS')">
 
 
 `;
-   
-</button>
 
 let html = "";
 
