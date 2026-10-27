@@ -318,12 +318,10 @@ document.getElementById(
     .find(a =>
         String(a.code) === String(article.code)
     );
-console.log(articleStock);
-    const stockHDLP =
-    articleStock?.stockHDLP ?? 0;
+const stockHDLP =
+JSON.stringify(articleStock);
 
-    const stockRCLP =
-    articleStock?.stockRCLP ?? 0;
+const stockRCLP = "";
 
     html += `
 
@@ -341,7 +339,7 @@ console.log(articleStock);
             color:#1976d2;
             font-weight:bold;
         ">
-            📦 Stock HDLP : ${stockHDLP}
+          📦 Infos : ${stockHDLP}
         </span>
 
         <br>
