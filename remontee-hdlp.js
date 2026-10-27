@@ -21,6 +21,17 @@ function ouvrirRemonteeHDLP(){
             ALCOOL
             </button>
             <hr>
+            <input
+id="rechercheHDLP"
+placeholder="🔍 Rechercher un article ou un code"
+oninput="renderContenuHDLP()"
+style="
+width:100%;
+margin-bottom:10px;
+font-size:18px;
+padding:10px;
+box-sizing:border-box;
+">
             <div id="contenuHDLP"></div>
         </div>
     `;
@@ -65,10 +76,31 @@ function changerOngletHDLP(tab){
     renderContenuHDLP();
 }
 function renderContenuHDLP(){
+   const recherche =
+document.getElementById(
+    "rechercheHDLP"
+)?.value
+?.toLowerCase() || "";
     const liste =
     hdlpData[hdlpTab] || [];
     let html = "";
-    liste.forEach(article => {
+    liste
+.filter(article => {
+
+    return (
+        String(article.article || "")
+        .toLowerCase()
+        .includes(recherche)
+
+        ||
+
+        String(article.code || "")
+        .toLowerCase()
+        .includes(recherche)
+    );
+
+})
+.forEach(article => {
         html += `
         <div class="card">
             <b>${article.article}</b>
