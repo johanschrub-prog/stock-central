@@ -292,10 +292,11 @@ document.getElementById(
     const liste =
     hdlpData[hdlpTab] || [];
     let html = "";
-    liste
+   liste
 .filter(article => {
 
     return (
+
         String(article.article || "")
         .toLowerCase()
         .includes(recherche)
@@ -305,41 +306,82 @@ document.getElementById(
         String(article.code || "")
         .toLowerCase()
         .includes(recherche)
+
     );
 
 })
 .forEach(article => {
-        html += `
-        <div class="card">
-            <b>${article.article}</b>
-            <br>
-            Code : ${article.code}
-            <br><br>
-            <input
-            type="number"
-            id="qty_${article.id}"
-            value="${article.quantite || ''}"
-            placeholder="Quantité">
-           <button
-onclick="validerQuantiteHDLP('${article.id}')">
-✅ OK
-</button>
 
-<button
-style="
-background:#dc3545;
-color:white;
-margin-left:5px;
-"
-onclick="
-supprimerArticleHDLP(
-'${article.id}'
-)">
-🗑️
-</button>
-        </div>
-        `;
-    });
+    const articleStock =
+    Object.values(stock)
+    .flat()
+    .find(a =>
+        String(a.code) === String(article.code)
+    );
+
+    const stockHDLP =
+    articleStock?.stockHDLP ?? 0;
+
+    const stockRCLP =
+    articleStock?.stockRCLP ?? 0;
+
+    html += `
+
+    <div class="card">
+
+        <b>${article.article}</b>
+
+        <br>
+
+        Code : ${article.code}
+
+        <br><br>
+
+        <span style="
+            color:#1976d2;
+            font-weight:bold;
+        ">
+            📦 Stock HDLP : ${stockHDLP}
+        </span>
+
+        <br>
+
+        <span style="
+            color:#ff9800;
+            font-weight:bold;
+        ">
+            📦 Stock RCLP : ${stockRCLP}
+        </span>
+
+        <br><br>
+
+        <input
+        type="number"
+        id="qty_${article.id}"
+        value="${article.quantite || ''}"
+        placeholder="Quantité">
+
+        <button
+        onclick="validerQuantiteHDLP('${article.id}')">
+            ✅ OK
+        </button>
+
+        <button
+        style="
+            background:#dc3545;
+            color:white;
+            margin-left:5px;
+        "
+        onclick="supprimerArticleHDLP('${article.id}')">
+            🗑️
+        </button>
+
+    </div>
+
+    `;
+
+});
+
     document.getElementById(
         "contenuHDLP"
     ).innerHTML = html;
