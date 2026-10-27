@@ -318,7 +318,7 @@ document.getElementById(
     .find(a =>
         String(a.code) === String(article.code)
     );
-
+console.log(articleStock);
     const stockHDLP =
     articleStock?.stockHDLP ?? 0;
 
