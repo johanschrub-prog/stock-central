@@ -1,42 +1,3 @@
-function ouvrirRemonteeHDLP(){
-    document.getElementById("cards").innerHTML = `
-        <div class="card">
-            <button
-            onclick="changerSite('APPLICATIONS')">
-            ⬅ Retour
-            </button>
-            <h2>
-            📤 Remontées HDLP
-            </h2>
-            <button
-            onclick="changerOngletHDLP('devant')">
-            DEVANT BAR
-            </button>
-            <button
-            onclick="changerOngletHDLP('champagne')">
-            CHAMPAGNE
-            </button>
-            <button
-            onclick="changerOngletHDLP('alcool')">
-            ALCOOL
-            </button>
-            <hr>
-            <input
-id="rechercheHDLP"
-placeholder="🔍 Rechercher un article ou un code"
-oninput="renderContenuHDLP()"
-style="
-width:100%;
-margin-bottom:10px;
-font-size:18px;
-padding:10px;
-box-sizing:border-box;
-">
-            <div id="contenuHDLP"></div>
-        </div>
-    `;
-    renderContenuHDLP();
-}
 let hdlpTab = "devant";
 let hdlpData =
 JSON.parse(
@@ -50,27 +11,53 @@ function ouvrirRemonteeHDLP(){
     renderRemonteeHDLP();
 }
 function renderRemonteeHDLP(){
+
     document.getElementById("cards").innerHTML = `
+
         <div class="card">
-            <button
-            onclick="changerSite('APPLICATIONS')">
-            ⬅ Retour
-           </button>
+
+            <button onclick="changerSite('APPLICATIONS')">
+                ⬅ Retour
+            </button>
+
             <h2>📤 Remontées HDLP</h2>
+
             <button onclick="changerOngletHDLP('devant')">
-            DEVANT BAR
+                DEVANT BAR
             </button>
+
             <button onclick="changerOngletHDLP('champagne')">
-            CHAMPAGNE
+                CHAMPAGNE
             </button>
+
             <button onclick="changerOngletHDLP('alcool')">
-            ALCOOL
+                ALCOOL
             </button>
+
+            <hr>
+
+            <input
+            id="rechercheHDLP"
+            placeholder="🔍 Rechercher un article ou un code"
+            oninput="renderContenuHDLP()"
+            style="
+                width:100%;
+                padding:10px;
+                font-size:18px;
+                margin-bottom:10px;
+                box-sizing:border-box;
+            ">
+
             <div id="contenuHDLP"></div>
+
         </div>
+
     `;
+
     renderContenuHDLP();
+
 }
+
 function changerOngletHDLP(tab){
     hdlpTab = tab;
     renderContenuHDLP();
