@@ -1460,14 +1460,7 @@ onclick="changerSite('FOURNISSEURS')">
 
 
 `;
-    <button
-onclick="mettreAJourStockJson()"
-style="
-background:#28a745;
-color:white;
-font-weight:bold;
-">
-🔄 Mettre à jour stock.json
+   
 </button>
 
 let html = "";
@@ -1512,10 +1505,28 @@ ${c}
 
 }
 
+html += `
+<div style="margin-top:10px;">
+<button
+onclick="mettreAJourStockJson()"
+style="
+width:100%;
+height:60px;
+background:#28a745;
+color:white;
+font-size:20px;
+font-weight:bold;
+border:none;
+border-radius:8px;
+">
+🔄 MISE À JOUR STOCK
+</button>
+</div>
+`;
+
 document.getElementById(
 "sousOnglets"
 ).innerHTML = html;
-
 }
 function ouvrirStatsRemontee(site){
 
