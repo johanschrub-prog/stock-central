@@ -90,16 +90,18 @@ function chargerArticlesRCLP(){
         );
 
         rclpData.push({
+      
+    id: crypto.randomUUID(),
 
-            id: crypto.randomUUID(),
+    code: articleCentral.code,
 
-            code: article.code,
+    article: articleCentral.article,
 
-            article: article.article,
+    remontee: 0,
 
-            quantite: 0
+    redescente: 0
 
-        });
+});
 
     });
 
