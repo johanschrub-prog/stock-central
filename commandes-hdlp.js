@@ -828,7 +828,7 @@ ${article.totalPieces}
  pièce(s)
             <br>
 
-          Prix réception :
+         Prix réception :
 
 <input
 type="number"
@@ -836,7 +836,34 @@ step="0.01"
 
 id="prixReception_${commande.id}_${article.code}"
 
-value="${article.prix}">
+value="${article.prix}"
+
+oninput="
+majMontantReception(
+'${commande.id}',
+'${article.code}'
+)
+">
+
+<br><br>
+
+Montant réception :
+
+<input
+type="number"
+step="0.01"
+
+id="montantReception_${commande.id}_${article.code}"
+
+value="${article.montant.toFixed(2)}"
+
+oninput="
+majPrixReception(
+'${commande.id}',
+'${article.code}',
+${article.totalPieces}
+)
+">
 
 <br><br>
 
@@ -1046,20 +1073,36 @@ function receptionnerCommandeHDLP(id){
     }
 
     commande.articles.forEach(article => {
-const prixReception =
+const montantReception =
 
 Number(
 document.getElementById(
-`prixReception_${id}_${article.code}`
+`montantReception_${id}_${article.code}`
 )?.value
 
-|| article.prix
+|| article.montant
 
 || 0
 );
 
+const prixReception =
+
+article.totalPieces > 0
+
+?
+
+montantReception /
+article.totalPieces
+
+:
+
+0;
+
 article.prix =
 prixReception;
+
+article.montant =
+montantReception;
         const destination =
         article.destination;
 
@@ -1132,5 +1175,85 @@ prixReception;
     );
 
     ouvrirDetailCommandeHDLP(id);
+
+}
+function majPrixReception(
+    commandeId,
+    code,
+    totalPieces
+){
+
+    const montant =
+
+    Number(
+    document.getElementById(
+        `montantReception_${commandeId}_${code}`
+    )?.value || 0
+    );
+
+    if(totalPieces <= 0){
+        return;
+    }
+
+    const nouveauPrix =
+
+    montant / totalPieces;
+
+    const champPrix =
+    document.getElementById(
+        `prixReception_${commandeId}_${code}`
+    );
+
+    if(champPrix){
+
+        champPrix.value =
+        nouveauPrix.toFixed(4);
+
+    }
+
+}
+function majMontantReception(
+    commandeId,
+    code
+){
+
+    const commande =
+    commandesHDLP.find(
+        c => c.id === commandeId
+    );
+
+    if(!commande) return;
+
+    const article =
+    commande.articles.find(
+        a => String(a.code) === String(code)
+    );
+
+    if(!article) return;
+
+    const prix =
+
+    Number(
+    document.getElementById(
+        `prixReception_${commandeId}_${code}`
+    )?.value || 0
+    );
+
+    const montant =
+
+    prix *
+    Number(article.totalPieces || 0);
+
+    const champMontant =
+    document.getElementById(
+        `montantReception_${commandeId}_${code}`
+    );
+
+    if(champMontant){
+
+        champMontant.value =
+        montant.toFixed(2);
+
+    }
 
 }
