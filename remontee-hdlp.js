@@ -3,6 +3,7 @@ let hdlpData =
 JSON.parse(
     localStorage.getItem("caveData")
 ) || {
+    resume: [],
     devant: [],
     champagne: [],
     alcool: []
@@ -21,7 +22,9 @@ function renderRemonteeHDLP(){
             </button>
 
             <h2>📤 Remontées HDLP</h2>
-
+<button onclick="changerOngletHDLP('resume')">
+    📋 RÉSUMÉ
+</button>
             <button onclick="changerOngletHDLP('devant')">
                 DEVANT BAR
             </button>
@@ -331,103 +334,314 @@ function changerOngletHDLP(tab){
     hdlpTab = tab;
     renderContenuHDLP();
 }
-function renderContenuHDLP(){
-   const recherche =
-document.getElementById(
-    "rechercheHDLP"
-)?.value
-?.toLowerCase() || "";
-    const liste =
-    hdlpData[hdlpTab] || [];
-    let html = "";
-   liste
-.filter(article => {
+function renderResumeHDLP(){
 
-    return (
+    let html = "<h3>📋 Résumé des remontées</h3>";
 
-        String(article.article || "")
-        .toLowerCase()
-        .includes(recherche)
+    const articles = [
+        ...(hdlpData.devant || []),
+        ...(hdlpData.champagne || []),
+        ...(hdlpData.alcool || [])
+    ];
 
-        ||
+    let totalArticles = 0;
+    let totalQuantites = 0;
 
-        String(article.code || "")
-        .toLowerCase()
-        .includes(recherche)
+    articles.forEach(article => {
 
-    );
+        const qte = Number(article.quantite || 0);
 
-})
-.forEach(article => {
+        if(qte <= 0) return;
 
-    const articleStock =
-    Object.values(stock)
-    .flat()
-    .find(a =>
-        String(a.code) === String(article.code)
-    );
-const stockHDLP =
-getStockHDLP(article.code);
+        totalArticles++;
+        totalQuantites += qte;
 
-const stockRCLP =
-getStockRCLP(article.code);
+        html += `
+        <div class="card">
+
+            <b>${article.article}</b>
+
+            <br>
+
+            Quantité : ${qte}
+
+            <br><br>
+
+            <input
+                type="checkbox"
+                id="check_${article.id}"
+                checked
+            >
+
+            Remonté
+
+            <br><br>
+
+            Cave d'origine :
+
+            <select id="cave_${article.id}">
+                <option>HDLP SOFT</option>
+                <option>HDLP BAR</option>
+                <option>HDLP MINI BAR</option>
+                <option>HDLP SEMINAIRE</option>
+            </select>
+
+            <br><br>
+
+            <button
+            style="
+                background:#dc3545;
+                color:white;
+            "
+            onclick="retirerArticleResumeHDLP('${article.id}')">
+                🗑️ Retirer
+            </button>
+
+        </div>
+        `;
+    });
 
     html += `
 
     <div class="card">
 
-        <b>${article.article}</b>
+        <b>Total articles :</b>
+        ${totalArticles}
 
         <br>
 
-        Code : ${article.code}
+        <b>Total quantités :</b>
+        ${totalQuantites}
 
         <br><br>
 
-        <span style="
-            color:#1976d2;
-            font-weight:bold;
-        ">
-       📦 Stock HDLP : ${stockHDLP}
-        </span>
+        Date de remontée
 
         <br>
-
-        <span style="
-            color:#ff9800;
-            font-weight:bold;
-        ">
-            📦 Stock RCLP : ${stockRCLP}
-        </span>
-
-        <br><br>
 
         <input
-        type="number"
-        id="qty_${article.id}"
-        value="${article.quantite || ''}"
-        placeholder="Quantité">
+            type="date"
+            id="dateRemonteeHDLP"
+            value="${
+                new Date()
+                .toISOString()
+                .split('T')[0]
+            }"
+        >
+
+        <br><br>
 
         <button
-        onclick="validerQuantiteHDLP('${article.id}')">
-            ✅ OK
-        </button>
-
-        <button
-        style="
-            background:#dc3545;
-            color:white;
-            margin-left:5px;
-        "
-        onclick="supprimerArticleHDLP('${article.id}')">
-            🗑️
+        onclick="validerRemonteeResumeHDLP()">
+            ✅ Valider la remontée
         </button>
 
     </div>
-
     `;
 
-});
+    document.getElementById(
+        "contenuHDLP"
+    ).innerHTML = html;
+}
+function retirerArticleResumeHDLP(id){
+
+    ["devant","champagne","alcool"]
+    .forEach(onglet => {
+
+        const article =
+        hdlpData[onglet]
+        .find(a => a.id === id);
+
+        if(article){
+            article.quantite = 0;
+        }
+
+    });
+
+    localStorage.setItem(
+        "caveData",
+        JSON.stringify(hdlpData)
+    );
+
+    renderResumeHDLP();
+}
+function validerRemonteeResumeHDLP(){
+
+    const date =
+    document.getElementById(
+        "dateRemonteeHDLP"
+    ).value;
+
+    const mouvements = [];
+
+    ["devant","champagne","alcool"]
+    .forEach(onglet => {
+
+        hdlpData[onglet]
+        .forEach(article => {
+
+            if(
+                Number(article.quantite || 0) <= 0
+            ){
+                return;
+            }
+
+            const coche =
+            document.getElementById(
+                "check_" + article.id
+            );
+
+            if(!coche.checked){
+                return;
+            }
+
+            const cave =
+            document.getElementById(
+                "cave_" + article.id
+            ).value;
+
+            mouvements.push({
+
+                article:
+                article.article,
+
+                code:
+                article.code,
+
+                quantite:
+                article.quantite,
+
+                cave:
+
+                cave,
+
+                date:
+
+                date,
+
+                type:
+
+                "Remontée HDLP"
+
+            });
+
+        });
+
+    });
+
+    console.log(mouvements);
+
+    alert(
+        mouvements.length +
+        " article(s) validé(s)"
+    );
+}
+function renderContenuHDLP(){
+
+    if(hdlpTab === "resume"){
+        renderResumeHDLP();
+        return;
+    }
+
+    const recherche =
+    document.getElementById(
+        "rechercheHDLP"
+    )?.value
+    ?.toLowerCase() || "";
+
+    const liste =
+    hdlpData[hdlpTab] || [];
+
+    let html = "";
+
+    liste
+    .filter(article => {
+
+        return (
+
+            String(article.article || "")
+            .toLowerCase()
+            .includes(recherche)
+
+            ||
+
+            String(article.code || "")
+            .toLowerCase()
+            .includes(recherche)
+
+        );
+
+    })
+
+    .forEach(article => {
+
+        const stockHDLP =
+        getStockHDLP(article.code);
+
+        const stockRCLP =
+        getStockRCLP(article.code);
+
+        html += `
+
+        <div class="card">
+
+            <b>${article.article}</b>
+
+            <br>
+
+            Code : ${article.code}
+
+            <br><br>
+
+            <span style="
+                color:#1976d2;
+                font-weight:bold;
+            ">
+                📦 Stock HDLP : ${stockHDLP}
+            </span>
+
+            <br>
+
+            <span style="
+                color:#ff9800;
+                font-weight:bold;
+            ">
+                📦 Stock RCLP : ${stockRCLP}
+            </span>
+
+            <br><br>
+
+            <input
+                type="number"
+                id="qty_${article.id}"
+                value="${article.quantite || ''}"
+                placeholder="Quantité"
+                style="
+                    width:120px;
+                    padding:8px;
+                "
+            >
+
+            <button
+            onclick="validerQuantiteHDLP('${article.id}')">
+                ✅ OK
+            </button>
+
+            <button
+            style="
+                background:#dc3545;
+                color:white;
+                margin-left:5px;
+            "
+            onclick="supprimerArticleHDLP('${article.id}')">
+                🗑️
+            </button>
+
+        </div>
+
+        `;
+
+    });
 
     document.getElementById(
         "contenuHDLP"
