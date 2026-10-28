@@ -401,29 +401,30 @@ ${article.colisage || 1}
 
     });
 
-    html += `
+html += `
 
-   <div class="card">
+<div class="card">
 
     <b>
     Total commande :
     </b>
 
-    <span
-    id="totalCommandeHDLP">
-    0.00 €
+    <span id="totalCommandeHDLP">
+        0.00 €
     </span>
 
 </div>
-        onclick="
-        enregistrerCommandeHDLP()
-        ">
-            ✅ Enregistrer commande
-        </button>
 
-    </div>
+<div class="card">
 
-    `;
+    <button
+    onclick="enregistrerCommandeHDLP()">
+        ✅ Enregistrer commande
+    </button>
+
+</div>
+
+`;
 
     document.getElementById(
         "contenuCommandeHDLP"
@@ -778,7 +779,33 @@ function ouvrirDetailCommandeHDLP(id){
     </div>
 
     `;
+if(
+    commande.statut ===
+    "EN ATTENTE"
+){
 
+    html += `
+
+    <div class="card">
+
+        <button
+        style="
+            background:#28a745;
+            color:white;
+            font-weight:bold;
+        "
+        onclick="
+        receptionnerCommandeHDLP(
+        '${commande.id}'
+        )">
+            ✅ Réceptionner la commande
+        </button>
+
+    </div>
+
+    `;
+
+}
     document.getElementById(
         "cards"
     ).innerHTML = html;
