@@ -5,7 +5,7 @@ JSON.parse(
     )
 ) || [];
 
-let commandeHDLPCourante = [];
+let commandeHDLPCourante = {};
 
 let fournisseurCommandeHDLP = "";
 
@@ -358,7 +358,11 @@ ${article.colisage || 1}
 
             id="cartons_${article.code}"
 
-            value="0"
+          value="${
+commandeHDLPCourante[
+article.code
+]?.cartons || 0
+}"
 
             oninput="
             calculCommandeHDLP(
@@ -379,7 +383,11 @@ ${article.colisage || 1}
 
             id="pieces_${article.code}"
 
-            value="0"
+          value="${
+commandeHDLPCourante[
+article.code
+]?.pieces || 0
+}"
 
             oninput="
             calculCommandeHDLP(
@@ -451,6 +459,16 @@ function calculCommandeHDLP(
         )?.value || 0
     );
 
+    commandeHDLPCourante[code] = {
+
+        cartons:
+        cartons,
+
+        pieces:
+        pieces
+
+    };
+
     const totalPieces =
     (cartons * colisage)
     + pieces;
@@ -458,16 +476,22 @@ function calculCommandeHDLP(
     const montant =
     totalPieces * prix;
 
+    const zone =
     document.getElementById(
         "total_" + code
-    ).innerHTML =
+    );
 
-    totalPieces +
-    " pièce(s) - " +
+    if(zone){
 
-    montant.toFixed(2) +
+        zone.innerHTML =
 
-    " €";
+        totalPieces +
+        " pièce(s) - " +
+
+        montant.toFixed(2) +
+        " €";
+
+    }
 
     let totalCommande = 0;
 
@@ -484,18 +508,18 @@ function calculCommandeHDLP(
             return;
         }
 
-        const texte =
-        div.innerText;
-
-        const montant =
+        const montantLigne =
         parseFloat(
-            texte
+
+            div.innerText
             .split("-")[1]
             ?.replace("€","")
             ?.trim()
+
         ) || 0;
 
-        totalCommande += montant;
+        totalCommande +=
+        montantLigne;
 
     });
 
@@ -507,7 +531,10 @@ function calculCommandeHDLP(
     if(total){
 
         total.innerHTML =
-        totalCommande.toFixed(2)
+
+        totalCommande
+        .toFixed(2)
+
         + " €";
 
     }
@@ -591,13 +618,16 @@ function enregistrerCommandeHDLP(){
 
         montantTotal += montant;
 
-        articlesCommande.push({
+     articlesCommande.push({
 
-            code:
-            article.code,
+    code:
+    article.code,
 
-            article:
-            article.article,
+    codeFournisseur:
+    article.codeFournisseur || "",
+
+    article:
+    article.article,
 
             destination:
 
@@ -727,7 +757,20 @@ function ouvrirDetailCommandeHDLP(id){
 
             Code :
             ${article.code}
+<br><br>
 
+Code fournisseur :
+
+<br>
+
+<input
+type="text"
+
+id="codeFournisseur_${commande.id}_${article.code}"
+
+value="${
+article.codeFournisseur || ""
+}">
             <br><br>
 
             Destination :
@@ -922,8 +965,51 @@ function ouvrirDetailCommandeHDLP(id){
 
     `;
 
-    if(
-        commande.statut ===
+   if(
+    commande.statut ===
+    "EN ATTENTE"
+){
+
+    html += `
+
+    <div class="card">
+
+        <button
+        onclick="
+        sauvegarderCommandeHDLP(
+        '${commande.id}'
+        )
+        ">
+            💾 Sauvegarder les modifications
+        </button>
+
+        <br><br>
+
+        <button
+        style="
+        background:#28a745;
+        color:white;
+        font-weight:bold;
+        "
+        onclick="
+        receptionnerCommandeHDLP(
+        '${commande.id}'
+        )
+        ">
+            ✅ Réceptionner la commande
+        </button>
+
+    </div>
+
+    `;
+
+}
+
+document.getElementById(
+    "cards"
+).innerHTML = html;
+
+}
        
 function sauvegarderCommandeHDLP(id){
 
@@ -934,8 +1020,7 @@ function sauvegarderCommandeHDLP(id){
 
     if(!commande) return;
 
-    commande.articles
-    .forEach(article => {
+    commande.articles.forEach(article => {
 
         article.cartons =
         Number(
@@ -956,6 +1041,11 @@ function sauvegarderCommandeHDLP(id){
             `destination_${id}_${article.code}`
         )?.value || "";
 
+        article.codeFournisseur =
+        document.getElementById(
+            `codeFournisseur_${id}_${article.code}`
+        )?.value || "";
+
         article.totalPieces =
 
         (
@@ -964,12 +1054,15 @@ function sauvegarderCommandeHDLP(id){
                 article.colisage || 1
             )
         )
+
         +
+
         article.pieces;
 
         article.montant =
 
         article.totalPieces *
+
         Number(
             article.prix || 0
         );
@@ -983,7 +1076,9 @@ function sauvegarderCommandeHDLP(id){
         (total,a)=>
 
         total +
-        Number(a.montant || 0),
+        Number(
+            a.montant || 0
+        ),
 
         0
 
@@ -1095,8 +1190,12 @@ function receptionnerCommandeHDLP(id){
 
         0;
 
-        article.prix =
-        prixReception;
+       a.prix =
+prixReception;
+
+a.codeFournisseur =
+article.codeFournisseur || "";
+
 
         article.montant =
         montantReception;
