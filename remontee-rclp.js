@@ -39,8 +39,7 @@ function renderRemonteeRCLP(){
         margin-bottom:10px;
         ">
 
-        <input
-      <input
+     <input
 id="rechercheCodeRCLP"
 type="text"
 inputmode="numeric"
@@ -404,9 +403,10 @@ function validerRemonteeResumeRCLP(){
 
     rclpData.forEach(article => {
 
-        if(
-            Number(article.quantite || 0) <= 0
-        ){
+        const qte =
+        Number(article.quantite || 0);
+
+        if(qte <= 0){
             return;
         }
 
@@ -424,6 +424,23 @@ function validerRemonteeResumeRCLP(){
             "cave_" + article.id
         ).value;
 
+        let articleStock =
+        (stock[cave] || [])
+        .find(a =>
+            String(a.code) ===
+            String(article.code)
+        );
+
+        if(articleStock){
+
+            articleStock.stock = Math.max(
+                0,
+                Number(articleStock.stock || 0)
+                - qte
+            );
+
+        }
+
         mouvements.push({
 
             article:
@@ -433,7 +450,7 @@ function validerRemonteeResumeRCLP(){
             article.code,
 
             quantite:
-            article.quantite,
+            qte,
 
             cave:
             cave,
@@ -446,12 +463,38 @@ function validerRemonteeResumeRCLP(){
 
         });
 
+        article.quantite = 0;
+
     });
 
-    console.log(mouvements);
+    localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(stock)
+    );
+
+    localStorage.setItem(
+        "rclpData",
+        JSON.stringify(rclpData)
+    );
+
+    let historique =
+    JSON.parse(
+        localStorage.getItem(
+            "mouvements"
+        )
+    ) || [];
+
+    historique.push(...mouvements);
+
+    localStorage.setItem(
+        "mouvements",
+        JSON.stringify(historique)
+    );
 
     alert(
         mouvements.length +
         " article(s) validé(s)"
     );
+
+    renderResumeRCLP();
 }
