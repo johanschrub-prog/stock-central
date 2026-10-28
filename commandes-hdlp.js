@@ -713,8 +713,7 @@ function ouvrirDetailCommandeHDLP(id){
 
     `;
 
-    commande.articles
-    .forEach(article => {
+    commande.articles.forEach(article => {
 
         html += `
 
@@ -729,149 +728,176 @@ function ouvrirDetailCommandeHDLP(id){
             Code :
             ${article.code}
 
-            <br>
+            <br><br>
 
-           Destination :
-
-<select
-id="destination_${commande.id}_${article.code}">
-
-<option ${
-article.destination === "HDLP SOFT"
-? "selected" : ""
-}>
-HDLP SOFT
-</option>
-
-<option ${
-article.destination === "HDLP BAR"
-? "selected" : ""
-}>
-HDLP BAR
-</option>
-
-<option ${
-article.destination === "HDLP MINI BAR"
-? "selected" : ""
-}>
-HDLP MINI BAR
-</option>
-
-<option ${
-article.destination === "HDLP SEMINAIRE"
-? "selected" : ""
-}>
-HDLP SEMINAIRE
-</option>
-
-<option ${
-article.destination === "RCLP SOFT"
-? "selected" : ""
-}>
-RCLP SOFT
-</option>
-
-<option ${
-article.destination === "RCLP VIN"
-? "selected" : ""
-}>
-RCLP VIN
-</option>
-
-<option ${
-article.destination === "RCLP ALCOOL"
-? "selected" : ""
-}>
-RCLP ALCOOL
-</option>
-
-</select>
+            Destination :
 
             <br>
 
-           Cartons :
+            <select
+            id="destination_${commande.id}_${article.code}">
 
-<input
-type="number"
-id="cartons_${commande.id}_${article.code}"
-value="${article.cartons}"
-oninput="
-recalculerDetailCommande(
-'${commande.id}',
-'${article.code}',
-${article.colisage}
-)
-">
+                <option ${
+                article.destination==="HDLP SOFT"
+                ? "selected" : ""
+                }>
+                HDLP SOFT
+                </option>
 
-<br><br>
+                <option ${
+                article.destination==="HDLP BAR"
+                ? "selected" : ""
+                }>
+                HDLP BAR
+                </option>
 
-Pièces :
+                <option ${
+                article.destination==="HDLP MINI BAR"
+                ? "selected" : ""
+                }>
+                HDLP MINI BAR
+                </option>
 
-<input
-type="number"
-id="pieces_${commande.id}_${article.code}"
-value="${article.pieces}"
-oninput="
-recalculerDetailCommande(
-'${commande.id}',
-'${article.code}',
-${article.colisage}
-)
-">
+                <option ${
+                article.destination==="HDLP SEMINAIRE"
+                ? "selected" : ""
+                }>
+                HDLP SEMINAIRE
+                </option>
+
+                <option ${
+                article.destination==="RCLP SOFT"
+                ? "selected" : ""
+                }>
+                RCLP SOFT
+                </option>
+
+                <option ${
+                article.destination==="RCLP VIN"
+                ? "selected" : ""
+                }>
+                RCLP VIN
+                </option>
+
+                <option ${
+                article.destination==="RCLP ALCOOL"
+                ? "selected" : ""
+                }>
+                RCLP ALCOOL
+                </option>
+
+            </select>
+
+            <br><br>
+
+            Cartons :
 
             <br>
 
-           Total :
-<span id="totalDetail_${article.code}">
-${article.totalPieces}
-</span>
- pièce(s)
+            <input
+            type="number"
+            id="cartons_${commande.id}_${article.code}"
+            value="${article.cartons}"
+
+            oninput="
+            recalculerDetailCommande(
+            '${commande.id}',
+            '${article.code}',
+            ${article.colisage}
+            )
+            ">
+
+            <br><br>
+
+            Pièces :
+
             <br>
 
-         Prix réception :
+            <input
+            type="number"
+            id="pieces_${commande.id}_${article.code}"
+            value="${article.pieces}"
 
-<input
-type="number"
-step="0.01"
+            oninput="
+            recalculerDetailCommande(
+            '${commande.id}',
+            '${article.code}',
+            ${article.colisage}
+            )
+            ">
 
-id="prixReception_${commande.id}_${article.code}"
+            <br><br>
 
-value="${article.prix}"
+            Total :
 
-oninput="
-majMontantReception(
-'${commande.id}',
-'${article.code}'
-)
-">
+            <span
+            id="totalDetail_${article.code}">
+            ${article.totalPieces}
+            </span>
 
-<br><br>
+            pièce(s)
 
-Montant réception :
+            <br><br>
 
-<input
-type="number"
-step="0.01"
+            Prix réception :
 
-id="montantReception_${commande.id}_${article.code}"
+            <br>
 
-value="${article.montant.toFixed(2)}"
+            <input
+            type="number"
+            step="0.01"
 
-oninput="
-majPrixReception(
-'${commande.id}',
-'${article.code}',
-${article.totalPieces}
-)
-">
+            id="prixReception_${commande.id}_${article.code}"
 
-<br><br>
+            value="${article.prix}"
 
-Montant estimé :
+            oninput="
+            majMontantReception(
+            '${commande.id}',
+            '${article.code}'
+            )
+            ">
 
-${Number(
-    article.montant
-).toFixed(2)} €
+            <br><br>
+
+            Montant réception :
+
+            <br>
+
+            <input
+            type="number"
+            step="0.01"
+
+            id="montantReception_${commande.id}_${article.code}"
+
+            value="${Number(
+                article.montant || 0
+            ).toFixed(2)}"
+
+            oninput="
+            majPrixReception(
+            '${commande.id}',
+            '${article.code}',
+            ${article.totalPieces}
+            )
+            ">
+
+            <br><br>
+
+            <button
+            style="
+            background:#dc3545;
+            color:white;
+            "
+            onclick="
+            supprimerLigneCommandeHDLP(
+            '${commande.id}',
+            '${article.code}'
+            )
+            ">
+            🗑️ Supprimer la ligne
+            </button>
+
         </div>
 
         `;
@@ -887,7 +913,7 @@ ${Number(
         Total commande :
 
         ${Number(
-            commande.montantTotal
+            commande.montantTotal || 0
         ).toFixed(2)} €
 
         </b>
@@ -895,48 +921,10 @@ ${Number(
     </div>
 
     `;
-if(
-    commande.statut ===
-    "EN ATTENTE"
-){
 
-    html += `
-
-    <div class="card">
-
-        <button
-        onclick="
-        sauvegarderCommandeHDLP(
-        '${commande.id}'
-        )">
-            💾 Sauvegarder les modifications
-        </button>
-
-        <br><br>
-
-        <button
-        style="
-            background:#28a745;
-            color:white;
-            font-weight:bold;
-        "
-        onclick="
-        receptionnerCommandeHDLP(
-        '${commande.id}'
-        )">
-            ✅ Réceptionner la commande
-        </button>
-
-    </div>
-
-    `;
-
-}
-    document.getElementById(
-        "cards"
-    ).innerHTML = html;
-
-}
+    if(
+        commande.statut ===
+       
 function sauvegarderCommandeHDLP(id){
 
     const commande =
@@ -1065,53 +1053,69 @@ function receptionnerCommandeHDLP(id){
     if(!commande) return;
 
     if(
+        commande.statut ===
+        "RECEPTIONNEE"
+    ){
+        return;
+    }
+
+    if(
         !confirm(
-            "Confirmer la réception ?"
+            "Confirmer la réception de la commande ?"
         )
     ){
         return;
     }
 
     commande.articles.forEach(article => {
-const montantReception =
 
-Number(
-document.getElementById(
-`montantReception_${id}_${article.code}`
-)?.value
+        const montantReception =
 
-|| article.montant
+        Number(
+        document.getElementById(
+        `montantReception_${id}_${article.code}`
+        )?.value
 
-|| 0
-);
+        || article.montant
 
-const prixReception =
+        || 0
+        );
 
-article.totalPieces > 0
+        const prixReception =
 
-?
+        article.totalPieces > 0
 
-montantReception /
-article.totalPieces
+        ?
 
-:
+        montantReception
+        /
+        article.totalPieces
 
-0;
+        :
 
-article.prix =
-prixReception;
+        0;
 
-article.montant =
-montantReception;
+        article.prix =
+        prixReception;
+
+        article.montant =
+        montantReception;
+
         const destination =
         article.destination;
 
         const articleStock =
+
         (stock[destination] || [])
+
         .find(a =>
+
             String(a.code)
+
             ===
+
             String(article.code)
+
         );
 
         if(articleStock){
@@ -1143,9 +1147,7 @@ montantReception;
                 ){
 
                     a.prix =
-                    Number(
-                        article.prix || 0
-                    );
+                    prixReception;
 
                 }
 
@@ -1171,12 +1173,13 @@ montantReception;
     );
 
     alert(
-        "Commande réceptionnée ✅"
+        "✅ Commande réceptionnée"
     );
 
     ouvrirDetailCommandeHDLP(id);
 
 }
+
 function majPrixReception(
     commandeId,
     code,
@@ -1255,5 +1258,53 @@ function majMontantReception(
         montant.toFixed(2);
 
     }
+
+}
+function supprimerLigneCommandeHDLP(
+    commandeId,
+    code
+){
+
+    const commande =
+    commandesHDLP.find(
+        c => c.id === commandeId
+    );
+
+    if(!commande) return;
+
+    commande.articles =
+    commande.articles.filter(
+        a =>
+        String(a.code)
+        !==
+        String(code)
+    );
+
+    commande.montantTotal =
+
+    commande.articles.reduce(
+
+        (total,a) =>
+
+        total +
+        Number(a.montant || 0),
+
+        0
+
+    );
+
+    localStorage.setItem(
+
+        "commandesHDLP",
+
+        JSON.stringify(
+            commandesHDLP
+        )
+
+    );
+
+    ouvrirDetailCommandeHDLP(
+        commandeId
+    );
 
 }
