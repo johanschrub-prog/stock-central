@@ -32,7 +32,10 @@ function ouvrirCommandeHDLP(){
         onclick="listeCommandesHDLP()">
             📋 Commandes enregistrées
         </button>
-
+<button
+onclick="listeCommandesReceptionneesHDLP()">
+    ✅ Réceptionnées
+</button>
         <hr>
 
         Sélectionnez une action.
@@ -128,22 +131,30 @@ function listeCommandesHDLP(){
         </button>
 
         <h2>
-        📋 Commandes enregistrées
+        📋 Commandes en attente
         </h2>
 
     `;
 
+    const commandesEnAttente =
+
+    commandesHDLP.filter(
+        c =>
+        c.statut ===
+        "EN ATTENTE"
+    );
+
     if(
-        commandesHDLP.length === 0
+        commandesEnAttente.length === 0
     ){
 
         html += `
-        Aucun document.
+        Aucune commande en attente.
         `;
 
     }else{
 
-        commandesHDLP
+        commandesEnAttente
         .slice()
         .reverse()
         .forEach(cmd => {
@@ -181,7 +192,8 @@ function listeCommandesHDLP(){
                 onclick="
                 ouvrirDetailCommandeHDLP(
                 '${cmd.id}'
-                )">
+                )
+                ">
                     👁️ Ouvrir
                 </button>
 
@@ -193,9 +205,7 @@ function listeCommandesHDLP(){
 
     }
 
-    html += `
-    </div>
-    `;
+    html += `</div>`;
 
     document.getElementById(
         "cards"
@@ -945,26 +955,24 @@ function sauvegarderCommandeHDLP(id){
             `codeFournisseur_${id}_${article.code}`
         )?.value || "";
 
-        article.totalPieces =
+        article.prix =
+        Number(
+            document.getElementById(
+                `prixReception_${id}_${article.code}`
+            )?.value || 0
+        );
 
+        article.totalPieces =
         (
             article.cartons *
-            Number(
-                article.colisage || 1
-            )
+            Number(article.colisage || 1)
         )
-
         +
-
         article.pieces;
 
         article.montant =
-
         article.totalPieces *
-
-        Number(
-            article.prix || 0
-        );
+        article.prix;
 
     });
 
@@ -972,25 +980,20 @@ function sauvegarderCommandeHDLP(id){
 
     commande.articles.reduce(
 
-        (total,a)=>
+        (total,a) =>
 
         total +
-        Number(
-            a.montant || 0
-        ),
+        Number(a.montant || 0),
 
         0
 
     );
 
     localStorage.setItem(
-
         "commandesHDLP",
-
         JSON.stringify(
             commandesHDLP
         )
-
     );
 
     alert(
@@ -1062,7 +1065,16 @@ function receptionnerCommandeHDLP(id){
     }
 
     commande.articles.forEach(article => {
+article.prix =
+Number(
+document.getElementById(
+`prixReception_${id}_${article.code}`
+)?.value
 
+|| article.prix
+
+|| 0
+);
         const montantReception =
 
         Number(
@@ -1367,5 +1379,98 @@ function validerArticleCommandeHDLP(
         articleNom +
         " ajouté à la commande ✅"
     );
+
+}
+function listeCommandesReceptionneesHDLP(){
+
+    let html = `
+
+    <div class="card">
+
+        <button
+        onclick="ouvrirCommandeHDLP()">
+            ⬅ Retour
+        </button>
+
+        <h2>
+        ✅ Commandes réceptionnées
+        </h2>
+
+    `;
+
+    const commandesReceptionnees =
+
+    commandesHDLP.filter(
+        c =>
+        c.statut ===
+        "RECEPTIONNEE"
+    );
+
+    if(
+        commandesReceptionnees.length === 0
+    ){
+
+        html += `
+        Aucune commande réceptionnée.
+        `;
+
+    }else{
+
+        commandesReceptionnees
+        .slice()
+        .reverse()
+        .forEach(cmd => {
+
+            html += `
+
+            <div class="card">
+
+                <b>
+                🚚 ${cmd.fournisseur}
+                </b>
+
+                <br><br>
+
+                📅 ${cmd.date}
+
+                <br>
+
+                💰 ${Number(
+                    cmd.montantTotal || 0
+                ).toFixed(2)} €
+
+                <br>
+
+                📦 ${cmd.articles.length}
+                article(s)
+
+                <br>
+
+                ✅ Réceptionnée
+
+                <br><br>
+
+                <button
+                onclick="
+                ouvrirDetailCommandeHDLP(
+                '${cmd.id}'
+                )
+                ">
+                    👁️ Ouvrir
+                </button>
+
+            </div>
+
+            `;
+
+        });
+
+    }
+
+    html += `</div>`;
+
+    document.getElementById(
+        "cards"
+    ).innerHTML = html;
 
 }
