@@ -731,18 +731,79 @@ function ouvrirDetailCommandeHDLP(id){
 
             <br>
 
-            Destination :
-            ${article.destination}
+           Destination :
+
+<select
+id="destination_${commande.id}_${article.code}">
+
+<option ${
+article.destination === "HDLP SOFT"
+? "selected" : ""
+}>
+HDLP SOFT
+</option>
+
+<option ${
+article.destination === "HDLP BAR"
+? "selected" : ""
+}>
+HDLP BAR
+</option>
+
+<option ${
+article.destination === "HDLP MINI BAR"
+? "selected" : ""
+}>
+HDLP MINI BAR
+</option>
+
+<option ${
+article.destination === "HDLP SEMINAIRE"
+? "selected" : ""
+}>
+HDLP SEMINAIRE
+</option>
+
+<option ${
+article.destination === "RCLP SOFT"
+? "selected" : ""
+}>
+RCLP SOFT
+</option>
+
+<option ${
+article.destination === "RCLP VIN"
+? "selected" : ""
+}>
+RCLP VIN
+</option>
+
+<option ${
+article.destination === "RCLP ALCOOL"
+? "selected" : ""
+}>
+RCLP ALCOOL
+</option>
+
+</select>
 
             <br>
 
-            Cartons :
-            ${article.cartons}
+           Cartons :
 
-            <br>
+<input
+type="number"
+id="cartons_${commande.id}_${article.code}"
+value="${article.cartons}">
 
-            Pièces :
-            ${article.pieces}
+<br><br>
+
+Pièces :
+
+<input
+type="number"
+id="pieces_${commande.id}_${article.code}"
+value="${article.pieces}">
 
             <br>
 
@@ -798,6 +859,25 @@ if(
         receptionnerCommandeHDLP(
         '${commande.id}'
         )">
+        html += `
+
+<div class="card">
+
+<button
+onclick="
+sauvegarderCommandeHDLP(
+'${commande.id}'
+)
+">
+
+💾 Sauvegarder les modifications
+
+</button>
+
+</div>
+
+`;
+
             ✅ Réceptionner la commande
         </button>
 
@@ -809,5 +889,86 @@ if(
     document.getElementById(
         "cards"
     ).innerHTML = html;
+
+}
+function sauvegarderCommandeHDLP(id){
+
+    const commande =
+    commandesHDLP.find(
+        c => c.id === id
+    );
+
+    if(!commande) return;
+
+    commande.articles
+    .forEach(article => {
+
+        article.cartons =
+        Number(
+            document.getElementById(
+                `cartons_${id}_${article.code}`
+            )?.value || 0
+        );
+
+        article.pieces =
+        Number(
+            document.getElementById(
+                `pieces_${id}_${article.code}`
+            )?.value || 0
+        );
+
+        article.destination =
+        document.getElementById(
+            `destination_${id}_${article.code}`
+        )?.value || "";
+
+        article.totalPieces =
+
+        (
+            article.cartons *
+            Number(
+                article.colisage || 1
+            )
+        )
+        +
+        article.pieces;
+
+        article.montant =
+
+        article.totalPieces *
+        Number(
+            article.prix || 0
+        );
+
+    });
+
+    commande.montantTotal =
+
+    commande.articles.reduce(
+
+        (total,a)=>
+
+        total +
+        Number(a.montant || 0),
+
+        0
+
+    );
+
+    localStorage.setItem(
+
+        "commandesHDLP",
+
+        JSON.stringify(
+            commandesHDLP
+        )
+
+    );
+
+    alert(
+        "Commande mise à jour ✅"
+    );
+
+    ouvrirDetailCommandeHDLP(id);
 
 }
