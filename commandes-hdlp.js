@@ -117,46 +117,76 @@ function nouvelleCommandeHDLP(){
 }
 function listeCommandesHDLP(){
 
-   html += `
+    let html = `
 
-<div class="card">
+    <div class="card">
 
-    <b>
-    🚚 ${cmd.fournisseur}
-    </b>
+        <button
+        onclick="ouvrirCommandeHDLP()">
+            ⬅ Retour
+        </button>
 
-    <br><br>
+        <h2>
+        📋 Commandes enregistrées
+        </h2>
 
-    📅 ${cmd.date}
+    `;
 
-    <br>
+    if(
+        commandesHDLP.length === 0
+    ){
 
-    💰 ${Number(
-        cmd.montantTotal || 0
-    ).toFixed(2)} €
+        html += `
+        Aucun document.
+        `;
 
-    <br>
+    }else{
 
-    📦 ${cmd.articles.length}
-    article(s)
+        commandesHDLP
+        .slice()
+        .reverse()
+        .forEach(cmd => {
 
-    <br>
+            html += `
 
-    📌 ${cmd.statut}
+            <div class="card">
 
-    <br><br>
+                <b>
+                🚚 ${cmd.fournisseur}
+                </b>
 
-    <button
-    onclick="
-    ouvrirDetailCommandeHDLP(
-    '${cmd.id}'
-    )">
-        👁️ Ouvrir
-    </button>
+                <br><br>
 
-</div>
+                📅 ${cmd.date}
 
-`;
+                <br>
+
+                💰 ${Number(
+                    cmd.montantTotal || 0
+                ).toFixed(2)} €
+
+                <br>
+
+                📦 ${cmd.articles.length}
+                article(s)
+
+                <br>
+
+                📌 ${cmd.statut}
+
+                <br><br>
+
+                <button
+                onclick="
+                ouvrirDetailCommandeHDLP(
+                '${cmd.id}'
+                )">
+                    👁️ Ouvrir
+                </button>
+
+            </div>
+
+            `;
 
         });
 
@@ -274,7 +304,10 @@ ${article.fournisseur || "-"}
             ${Number(
                 article.prix || 0
             ).toFixed(2)} €
+<br>
 
+Colisage :
+${article.colisage || 1}
             <br><br>
 
             Stock destination
@@ -370,9 +403,18 @@ ${article.fournisseur || "-"}
 
     html += `
 
-    <div class="card">
+   <div class="card">
 
-        <button
+    <b>
+    Total commande :
+    </b>
+
+    <span
+    id="totalCommandeHDLP">
+    0.00 €
+    </span>
+
+</div>
         onclick="
         enregistrerCommandeHDLP()
         ">
@@ -425,6 +467,49 @@ function calculCommandeHDLP(
     montant.toFixed(2) +
 
     " €";
+
+    let totalCommande = 0;
+
+    document
+    .querySelectorAll(
+        "[id^='total_']"
+    )
+    .forEach(div => {
+
+        if(
+            div.id ===
+            "totalCommandeHDLP"
+        ){
+            return;
+        }
+
+        const texte =
+        div.innerText;
+
+        const montant =
+        parseFloat(
+            texte
+            .split("-")[1]
+            ?.replace("€","")
+            ?.trim()
+        ) || 0;
+
+        totalCommande += montant;
+
+    });
+
+    const total =
+    document.getElementById(
+        "totalCommandeHDLP"
+    );
+
+    if(total){
+
+        total.innerHTML =
+        totalCommande.toFixed(2)
+        + " €";
+
+    }
 
 }
 function enregistrerCommandeHDLP(){
