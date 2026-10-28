@@ -212,13 +212,15 @@ function chargerArticlesCommandeHDLP(){
 
     .forEach(article => {
 
-        if(
-            String(
-                article.fournisseur || ""
-            ) !== fournisseur
-        ){
-            return;
-        }
+      if(
+    fournisseur !== ""
+    &&
+    String(
+        article.fournisseur || ""
+    ) !== fournisseur
+){
+    return;
+}
 
         if(
             dejaVus.has(
@@ -277,7 +279,10 @@ function chargerArticlesCommandeHDLP(){
 
             Code fournisseur :
             ${article.codeFournisseur || "-"}
+<br>
 
+Fournisseur :
+${article.fournisseur || "-"}
             <br>
 
             Prix pièce :
