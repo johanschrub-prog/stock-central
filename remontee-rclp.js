@@ -132,37 +132,39 @@ function renderContenuRCLP(){
 
     let html = "";
 
-   rclpData
+    rclpData
 
-.sort((a, b) =>
-    Number(a.code) - Number(b.code)
-)
+    .sort((a,b)=>
+        Number(a.code)-Number(b.code)
+    )
 
-.filter(article => {
+    .filter(article=>{
 
-    const okTexte =
+        const okTexte =
 
-        recherche === ""
+            recherche === ""
 
-        ||
+            ||
 
-        String(article.article)
-        .toLowerCase()
-        .includes(recherche);
+            String(article.article)
+            .toLowerCase()
+            .includes(recherche);
 
-    const okCode =
+        const okCode =
 
-        rechercheCode === ""
+            rechercheCode === ""
 
-        ||
+            ||
 
-        String(article.code)
-        .startsWith(rechercheCode);
+            String(article.code)
+            .startsWith(rechercheCode);
 
-    return okTexte && okCode;
+        return okTexte && okCode;
 
-})
-.forEach(article => {
+    })
+
+    .forEach(article=>{
+
         const stockHDLP =
         getStockHDLP(article.code);
 
@@ -173,96 +175,69 @@ function renderContenuRCLP(){
 
         <div class="card">
 
-        <b>${article.article}</b>
+            <b>${article.article}</b>
 
-        <br>
+            <br>
 
-        Code : ${article.code}
+            Code : ${article.code}
 
-        <br><br>
+            <br><br>
 
-        <span
-        style="
-        color:#1976d2;
-        font-weight:bold;
-        ">
-        📦 HDLP : ${stockHDLP}
-        </span>
+            <span style="
+                color:#1976d2;
+                font-weight:bold;
+            ">
+                📦 HDLP : ${stockHDLP}
+            </span>
 
-        <br>
+            <br>
 
-        <span
-        style="
-        color:#ff9800;
-        font-weight:bold;
-        ">
-        📦 RCLP : ${stockRCLP}
-        </span>
+            <span style="
+                color:#ff9800;
+                font-weight:bold;
+            ">
+                📦 RCLP : ${stockRCLP}
+            </span>
 
-        <br><br>
+            <br><br>
 
-       ⬆️ Remontée
+            ⬆️ Remontée
 
-<input
-type="number"
-id="remontee_${article.id}"
-value="${article.remontee || ''}"
-placeholder="Remontée"
-style="
-width:120px;
-padding:8px;
-">
+            <br>
 
-<br><br>
+            <input
+            type="number"
+            id="remontee_${article.id}"
+            value="${article.remontee || ''}"
+            placeholder="Remontée">
 
-⬇️ Redescente
+            <br><br>
 
-⬆️ Remontée
+            ⬇️ Redescente
 
-<input
-type="number"
-id="remontee_${article.id}"
-value="${article.remontee || ''}"
-placeholder="Remontée"
-style="
-width:120px;
-padding:8px;
-">
+            <br>
 
-<br><br>
+            <input
+            type="number"
+            id="redescente_${article.id}"
+            value="${article.redescente || ''}"
+            placeholder="Redescente"
 
-⬇️ Redescente
+            onkeydown="
+            if(event.key==='Enter'){
+                validerQuantiteRCLP('${article.id}');
+            }
+            ">
 
-<input
-type="number"
-id="redescente_${article.id}"
-value="${article.redescente || ''}"
-placeholder="Redescente"
-style="
-width:120px;
-padding:8px;
-">
+            <br><br>
 
-
-
-        onkeydown="
-        if(event.key==='Enter'){
-            validerQuantiteRCLP('${article.id}');
-        }
-        "
-
-        style="
-        width:120px;
-        padding:8px;
-        ">
-
-        <button
-        onclick="
-        validerQuantiteRCLP(
-        '${article.id}'
-        )">
-        ✅ OK
-        </button>
+            <button
+            onclick="
+            validerQuantiteRCLP(
+            '${article.id}'
+            )">
+            ✅ OK
+            </button>
 
         </div>
 
@@ -307,11 +282,20 @@ function validerQuantiteRCLP(id){
 
     if(rechercheCode){
 
-        rechercheCode.value = "";
+      rechercheCode.value = "";
 
-        rechercheCode.focus();
+const rechercheArticle =
+document.getElementById(
+    "rechercheRCLP"
+);
 
-        renderContenuRCLP();
+if(rechercheArticle){
+    rechercheArticle.value = "";
+}
+
+rechercheCode.focus();
+
+renderContenuRCLP();
 
     }
 }
@@ -356,13 +340,13 @@ if(
 
             <br><br>
 
-            <input
-                type="checkbox"
-                id="check_${article.id}"
-                checked
-            >
+         <input
+    type="checkbox"
+    id="check_${article.id}"
+    checked
+>
 
-            Remonté
+À traiter
 
             <br><br>
 
@@ -440,11 +424,16 @@ function retirerArticleResumeRCLP(id){
     rclpData.find(
         a => a.id === id
     );
-save();
+
     if(article){
-      article.remontee = 0;
-article.redescente = 0;
+
+        article.remontee = 0;
+
+        article.redescente = 0;
+
     }
+
+    save();
 
     localStorage.setItem(
         "rclpData",
@@ -452,6 +441,7 @@ article.redescente = 0;
     );
 
     renderResumeRCLP();
+
 }
 function validerRemonteeResumeRCLP(){
 
@@ -463,17 +453,19 @@ function validerRemonteeResumeRCLP(){
     const mouvements = [];
 
     rclpData.forEach(article => {
-const remontee =
-Number(article.remontee || 0);
 
-const redescente =
-Number(article.redescente || 0);
-    if(
-    remontee <= 0 &&
-    redescente <= 0
-){
-    return;
-}
+        const remontee =
+        Number(article.remontee || 0);
+
+        const redescente =
+        Number(article.redescente || 0);
+
+        if(
+            remontee <= 0 &&
+            redescente <= 0
+        ){
+            return;
+        }
 
         const coche =
         document.getElementById(
@@ -489,7 +481,7 @@ Number(article.redescente || 0);
             "cave_" + article.id
         ).value;
 
-        let articleStock =
+        const articleStock =
         (stock[cave] || [])
         .find(a =>
             String(a.code) ===
@@ -498,12 +490,13 @@ Number(article.redescente || 0);
 
         if(articleStock){
 
-          articleStock.stock = Math.max(
-    0,
-    Number(articleStock.stock || 0)
-    - remontee
-    + redescente
-);
+            articleStock.stock = Math.max(
+                0,
+                Number(articleStock.stock || 0)
+                - remontee
+                + redescente
+            );
+
         }
 
         mouvements.push({
@@ -514,8 +507,11 @@ Number(article.redescente || 0);
             code:
             article.code,
 
-            quantite:
-            qte,
+            remontee:
+            remontee,
+
+            redescente:
+            redescente,
 
             cave:
             cave,
@@ -524,17 +520,17 @@ Number(article.redescente || 0);
             date,
 
             type:
-            "Remontée RCLP"
+            "Mouvement RCLP"
 
         });
 
         article.remontee = 0;
-article.redescente = 0;
+
+        article.redescente = 0;
 
     });
 
-  save();
-
+    save();
 
     localStorage.setItem(
         "rclpData",
@@ -560,6 +556,6 @@ article.redescente = 0;
         " article(s) validé(s)"
     );
 
-changerOngletRCLP("rclp");
+    changerOngletRCLP("rclp");
 
 }
