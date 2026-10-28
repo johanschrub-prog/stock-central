@@ -874,7 +874,7 @@ article.codeFournisseur || ""
 
     `;
 
-  if(
+if(
     commande.statut ===
     "EN ATTENTE"
 ){
@@ -919,6 +919,11 @@ else{
     <div class="card">
 
         <button
+        style="
+        background:#ffc107;
+        color:black;
+        font-weight:bold;
+        "
         onclick="
         mettreAJourFactureHDLP(
         '${commande.id}'
@@ -927,11 +932,20 @@ else{
             💰 Mettre à jour avec la facture
         </button>
 
+        <br><br>
+
+        <button
+        onclick="
+        sauvegarderCommandeHDLP(
+        '${commande.id}'
+        )
+        ">
+            💾 Sauvegarder les modifications
+        </button>
+
     </div>
 
     `;
-
-}
 
 }
 
@@ -1506,28 +1520,23 @@ function mettreAJourFactureHDLP(id){
 
     commande.articles.forEach(article => {
 
-        const prixFacture =
-
-        Number(
+        article.codeFournisseur =
         document.getElementById(
-        `prixReception_${id}_${article.code}`
-        )?.value
+            `codeFournisseur_${id}_${article.code}`
+        )?.value || "";
 
-        || article.prix
-
-        || 0
+        const prixFacture =
+        Number(
+            document.getElementById(
+                `prixReception_${id}_${article.code}`
+            )?.value || 0
         );
 
         const montantFacture =
-
         Number(
-        document.getElementById(
-        `montantReception_${id}_${article.code}`
-        )?.value
-
-        || article.montant
-
-        || 0
+            document.getElementById(
+                `montantReception_${id}_${article.code}`
+            )?.value || 0
         );
 
         article.prix =
@@ -1552,7 +1561,7 @@ function mettreAJourFactureHDLP(id){
                     prixFacture;
 
                     a.codeFournisseur =
-                    article.codeFournisseur || "";
+                    article.codeFournisseur;
 
                 }
 
@@ -1566,9 +1575,8 @@ function mettreAJourFactureHDLP(id){
 
     commande.articles.reduce(
 
-        (t,a)=>
-
-        t +
+        (total,a) =>
+        total +
         Number(
             a.montant || 0
         ),
@@ -1576,6 +1584,10 @@ function mettreAJourFactureHDLP(id){
         0
 
     );
+
+    commande.dateFacture =
+    new Date()
+    .toLocaleString();
 
     localStorage.setItem(
         STORAGE_KEY,
@@ -1590,7 +1602,7 @@ function mettreAJourFactureHDLP(id){
     );
 
     alert(
-        "Facture enregistrée ✅"
+        "✅ Facture enregistrée"
     );
 
     ouvrirDetailCommandeHDLP(id);
