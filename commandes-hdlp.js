@@ -828,11 +828,23 @@ ${article.totalPieces}
  pièce(s)
             <br>
 
-            Montant :
-            ${Number(
-                article.montant
-            ).toFixed(2)} €
+          Prix réception :
 
+<input
+type="number"
+step="0.01"
+
+id="prixReception_${commande.id}_${article.code}"
+
+value="${article.prix}">
+
+<br><br>
+
+Montant estimé :
+
+${Number(
+    article.montant
+).toFixed(2)} €
         </div>
 
         `;
@@ -1014,5 +1026,111 @@ function recalculerDetailCommande(
         totalPieces;
 
     }
+
+}
+function receptionnerCommandeHDLP(id){
+
+    const commande =
+    commandesHDLP.find(
+        c => c.id === id
+    );
+
+    if(!commande) return;
+
+    if(
+        !confirm(
+            "Confirmer la réception ?"
+        )
+    ){
+        return;
+    }
+
+    commande.articles.forEach(article => {
+const prixReception =
+
+Number(
+document.getElementById(
+`prixReception_${id}_${article.code}`
+)?.value
+
+|| article.prix
+
+|| 0
+);
+
+article.prix =
+prixReception;
+        const destination =
+        article.destination;
+
+        const articleStock =
+        (stock[destination] || [])
+        .find(a =>
+            String(a.code)
+            ===
+            String(article.code)
+        );
+
+        if(articleStock){
+
+            articleStock.stock =
+
+            Number(
+                articleStock.stock || 0
+            )
+
+            +
+
+            Number(
+                article.totalPieces || 0
+            );
+
+        }
+
+        Object.keys(stock)
+        .forEach(categorie => {
+
+            stock[categorie]
+            .forEach(a => {
+
+                if(
+                    String(a.code)
+                    ===
+                    String(article.code)
+                ){
+
+                    a.prix =
+                    Number(
+                        article.prix || 0
+                    );
+
+                }
+
+            });
+
+        });
+
+    });
+
+    commande.statut =
+    "RECEPTIONNEE";
+
+    localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(stock)
+    );
+
+    localStorage.setItem(
+        "commandesHDLP",
+        JSON.stringify(
+            commandesHDLP
+        )
+    );
+
+    alert(
+        "Commande réceptionnée ✅"
+    );
+
+    ouvrirDetailCommandeHDLP(id);
 
 }
