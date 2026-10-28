@@ -245,6 +245,281 @@ function renderContenuBoutique(){
     ).innerHTML = html;
 
 }
+function validerVenteBoutique(id){
+
+    const article =
+    boutiqueData.find(
+        a => a.id === id
+    );
+
+    if(!article) return;
+
+    article.vente = Number(
+        document.getElementById(
+            "vente_" + id
+        ).value || 0
+    );
+
+    localStorage.setItem(
+        "boutiqueData",
+        JSON.stringify(boutiqueData)
+    );
+
+    const rechercheCode =
+    document.getElementById(
+        "rechercheCodeBoutique"
+    );
+
+    if(rechercheCode){
+
+        rechercheCode.value = "";
+
+        rechercheCode.focus();
+
+        renderContenuBoutique();
+
+    }
+
+}
+function renderResumeBoutique(){
+
+    let html =
+    "<h3>📋 Résumé des ventes</h3>";
+
+    let totalArticles = 0;
+
+    let totalQuantites = 0;
+
+    boutiqueData.forEach(article => {
+
+        const vente =
+        Number(article.vente || 0);
+
+        if(vente <= 0){
+            return;
+        }
+
+        totalArticles++;
+
+        totalQuantites += vente;
+
+        html += `
+
+        <div class="card">
+
+            <b>${article.article}</b>
+
+            <br>
+
+            Vente :
+            ${vente}
+
+            <br><br>
+
+            <input
+            type="checkbox"
+            id="check_${article.id}"
+            checked>
+
+            À traiter
+
+            <br><br>
+
+            Cave d'origine :
+
+            <select id="cave_${article.id}">
+                <option>HDLP SOFT</option>
+                <option>HDLP BAR</option>
+                <option>HDLP MINI BAR</option>
+                <option>HDLP SEMINAIRE</option>
+                <option>RCLP SOFT</option>
+                <option>RCLP VIN</option>
+                <option>RCLP ALCOOL</option>
+            </select>
+
+            <br><br>
+
+            <button
+            style="
+                background:#dc3545;
+                color:white;
+            "
+            onclick="
+            retirerArticleResumeBoutique(
+            '${article.id}'
+            )">
+                🗑️ Retirer
+            </button>
+
+        </div>
+
+        `;
+
+    });
+
+    html += `
+
+    <div class="card">
+
+        <b>Total articles :</b>
+        ${totalArticles}
+
+        <br>
+
+        <b>Total quantités :</b>
+        ${totalQuantites}
+
+        <br><br>
+
+        <input
+        type="date"
+        id="dateVenteBoutique"
+        value="${
+            new Date()
+            .toISOString()
+            .split("T")[0]
+        }">
+
+        <br><br>
+
+        <button
+        onclick="validerVentesBoutique()">
+            ✅ Valider les ventes
+        </button>
+
+    </div>
+
+    `;
+
+    document.getElementById(
+        "contenuBoutique"
+    ).innerHTML = html;
+
+}
+function retirerArticleResumeBoutique(id){
+
+    const article =
+    boutiqueData.find(
+        a => a.id === id
+    );
+
+    if(article){
+
+        article.vente = 0;
+
+    }
+
+    localStorage.setItem(
+        "boutiqueData",
+        JSON.stringify(boutiqueData)
+    );
+
+    renderResumeBoutique();
+
+}
+function validerVentesBoutique(){
+
+    const date =
+    document.getElementById(
+        "dateVenteBoutique"
+    ).value;
+
+    const mouvements = [];
+
+    boutiqueData.forEach(article => {
+
+        const vente =
+        Number(article.vente || 0);
+
+        if(vente <= 0){
+            return;
+        }
+
+        const coche =
+        document.getElementById(
+            "check_" + article.id
+        );
+
+        if(!coche.checked){
+            return;
+        }
+
+        const cave =
+        document.getElementById(
+            "cave_" + article.id
+        ).value;
+
+        const articleStock =
+        (stock[cave] || [])
+        .find(a =>
+            String(a.code) ===
+            String(article.code)
+        );
+
+        if(articleStock){
+
+            articleStock.stock =
+            Number(articleStock.stock || 0)
+            - vente;
+
+        }
+
+        mouvements.push({
+
+            article:
+            article.article,
+
+            code:
+            article.code,
+
+            quantite:
+            vente,
+
+            cave:
+            cave,
+
+            date:
+            date,
+
+            type:
+            "Vente Boutique"
+
+        });
+
+        article.vente = 0;
+
+    });
+
+    save();
+
+    localStorage.setItem(
+        "boutiqueData",
+        JSON.stringify(boutiqueData)
+    );
+
+    let historique =
+    JSON.parse(
+        localStorage.getItem(
+            "mouvements"
+        )
+    ) || [];
+
+    historique.push(...mouvements);
+
+    localStorage.setItem(
+        "mouvements",
+        JSON.stringify(historique)
+    );
+
+    alert(
+        mouvements.length +
+        " vente(s) validée(s)"
+    );
+
+    changerOngletBoutique("vente");
+
+}
+
 
 
 
