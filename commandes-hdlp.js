@@ -906,7 +906,20 @@ if(
         ">
             ✅ Réceptionner
         </button>
+<br><br>
 
+<button
+style="
+background:#dc3545;
+color:white;
+"
+onclick="
+supprimerCommandeHDLP(
+'${commande.id}'
+)
+">
+🗑️ Supprimer la commande
+</button>
     </div>
 
     `;
@@ -931,7 +944,20 @@ else{
         ">
             💰 Mettre à jour avec la facture
         </button>
+<br><br>
 
+<button
+style="
+background:#dc3545;
+color:white;
+"
+onclick="
+supprimerCommandeReceptionneeHDLP(
+'${commande.id}'
+)
+">
+↩️ Annuler la réception
+</button>
         <br><br>
 
         <button
@@ -1606,5 +1632,118 @@ function mettreAJourFactureHDLP(id){
     );
 
     ouvrirDetailCommandeHDLP(id);
+
+}
+function supprimerCommandeHDLP(id){
+
+    if(
+        !confirm(
+            "Supprimer cette commande ?"
+        )
+    ){
+        return;
+    }
+
+    commandesHDLP =
+    commandesHDLP.filter(
+        c => c.id !== id
+    );
+
+    localStorage.setItem(
+        "commandesHDLP",
+        JSON.stringify(
+            commandesHDLP
+        )
+    );
+
+    alert(
+        "Commande supprimée ✅"
+    );
+
+    listeCommandesHDLP();
+
+}
+function supprimerCommandeReceptionneeHDLP(id){
+
+    const commande =
+    commandesHDLP.find(
+        c => c.id === id
+    );
+
+    if(!commande) return;
+
+    if(
+        !confirm(
+            "La réception va être annulée et les stocks seront retirés. Continuer ?"
+        )
+    ){
+        return;
+    }
+
+    commande.articles.forEach(article => {
+
+        const destination =
+        article.destination;
+
+        const articleStock =
+
+        (stock[destination] || [])
+
+        .find(a =>
+
+            String(a.code)
+            ===
+            String(article.code)
+
+        );
+
+        if(articleStock){
+
+            articleStock.stock =
+
+            Number(
+                articleStock.stock || 0
+            )
+
+            -
+
+            Number(
+                article.totalPieces || 0
+            );
+
+            if(
+                articleStock.stock < 0
+            ){
+
+                articleStock.stock = 0;
+
+            }
+
+        }
+
+    });
+
+    commandesHDLP =
+    commandesHDLP.filter(
+        c => c.id !== id
+    );
+
+    localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(stock)
+    );
+
+    localStorage.setItem(
+        "commandesHDLP",
+        JSON.stringify(
+            commandesHDLP
+        )
+    );
+
+    alert(
+        "Réception annulée ✅"
+    );
+
+    listeCommandesReceptionneesHDLP();
 
 }
