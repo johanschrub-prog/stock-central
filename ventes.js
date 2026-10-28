@@ -103,7 +103,9 @@ function chargerArticlesBoutique(){
 
             article: article.article,
 
-            vente: 0
+            vente: 0,
+
+            redescente: 0
 
         });
 
@@ -208,7 +210,7 @@ function renderContenuBoutique(){
 
             <br><br>
 
-            Vente
+            🛍️ Vente
 
             <br>
 
@@ -216,7 +218,19 @@ function renderContenuBoutique(){
             type="number"
             id="vente_${article.id}"
             value="${article.vente || ''}"
-            placeholder="Quantité"
+            placeholder="Vente">
+
+            <br><br>
+
+            📦 Redescente Boutique
+
+            <br>
+
+            <input
+            type="number"
+            id="redescente_${article.id}"
+            value="${article.redescente || ''}"
+            placeholder="Redescente"
 
             onkeydown="
             if(event.key==='Enter'){
@@ -260,6 +274,12 @@ function validerVenteBoutique(id){
         ).value || 0
     );
 
+    article.redescente = Number(
+        document.getElementById(
+            "redescente_" + id
+        ).value || 0
+    );
+
     localStorage.setItem(
         "boutiqueData",
         JSON.stringify(boutiqueData)
@@ -295,13 +315,20 @@ function renderResumeBoutique(){
         const vente =
         Number(article.vente || 0);
 
-        if(vente <= 0){
+        const redescente =
+        Number(article.redescente || 0);
+
+        if(
+            vente <= 0 &&
+            redescente <= 0
+        ){
             return;
         }
 
         totalArticles++;
 
-        totalQuantites += vente;
+        totalQuantites +=
+        vente + redescente;
 
         html += `
 
@@ -311,8 +338,13 @@ function renderResumeBoutique(){
 
             <br>
 
-            Vente :
+            🛍️ Vente :
             ${vente}
+
+            <br>
+
+            📦 Redescente :
+            ${redescente}
 
             <br><br>
 
@@ -407,6 +439,8 @@ function retirerArticleResumeBoutique(id){
 
         article.vente = 0;
 
+        article.redescente = 0;
+
     }
 
     localStorage.setItem(
@@ -431,7 +465,13 @@ function validerVentesBoutique(){
         const vente =
         Number(article.vente || 0);
 
-        if(vente <= 0){
+        const redescente =
+        Number(article.redescente || 0);
+
+        if(
+            vente <= 0 &&
+            redescente <= 0
+        ){
             return;
         }
 
@@ -459,8 +499,12 @@ function validerVentesBoutique(){
         if(articleStock){
 
             articleStock.stock =
+
             Number(articleStock.stock || 0)
-            - vente;
+
+            - vente
+
+            + redescente;
 
         }
 
@@ -472,8 +516,11 @@ function validerVentesBoutique(){
             code:
             article.code,
 
-            quantite:
+            vente:
             vente,
+
+            redescente:
+            redescente,
 
             cave:
             cave,
@@ -487,6 +534,8 @@ function validerVentesBoutique(){
         });
 
         article.vente = 0;
+
+        article.redescente = 0;
 
     });
 
@@ -513,13 +562,10 @@ function validerVentesBoutique(){
 
     alert(
         mouvements.length +
-        " vente(s) validée(s)"
+        " mouvement(s) validé(s)"
     );
 
     changerOngletBoutique("vente");
 
 }
-
-
-
 
