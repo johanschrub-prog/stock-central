@@ -334,12 +334,15 @@ function changerOngletHDLP(tab){
 }
 function renderResumeHDLP(){
 
-    let html = "<h3>📋 Résumé des remontées</h3>";
+    let html =
+    "<h3>📋 Résumé des remontées</h3>";
 
     const articles = [
+
         ...(hdlpData.devant || []),
         ...(hdlpData.champagne || []),
         ...(hdlpData.alcool || [])
+
     ];
 
     let totalArticles = 0;
@@ -347,31 +350,48 @@ function renderResumeHDLP(){
 
     articles.forEach(article => {
 
-        const qte = Number(article.quantite || 0);
+        const remontee =
+        Number(article.remontee || 0);
 
-        if(qte <= 0) return;
+        const redescente =
+        Number(article.redescente || 0);
+
+        if(
+            remontee <= 0 &&
+            redescente <= 0
+        ){
+            return;
+        }
 
         totalArticles++;
-        totalQuantites += qte;
+
+        totalQuantites +=
+        remontee + redescente;
 
         html += `
+
         <div class="card">
 
             <b>${article.article}</b>
 
             <br>
 
-            Quantité : ${qte}
+            ⬆️ Remontée :
+            ${remontee}
+
+            <br>
+
+            ⬇️ Redescente :
+            ${redescente}
 
             <br><br>
 
             <input
-                type="checkbox"
-                id="check_${article.id}"
-                checked
-            >
+            type="checkbox"
+            id="check_${article.id}"
+            checked>
 
-            Remonté
+            À traiter
 
             <br><br>
 
@@ -391,12 +411,17 @@ function renderResumeHDLP(){
                 background:#dc3545;
                 color:white;
             "
-            onclick="retirerArticleResumeHDLP('${article.id}')">
+            onclick="
+            retirerArticleResumeHDLP(
+            '${article.id}'
+            )">
                 🗑️ Retirer
             </button>
 
         </div>
+
         `;
+
     });
 
     html += `
@@ -418,23 +443,24 @@ function renderResumeHDLP(){
         <br>
 
         <input
-            type="date"
-            id="dateRemonteeHDLP"
-            value="${
-                new Date()
-                .toISOString()
-                .split('T')[0]
-            }"
-        >
+        type="date"
+        id="dateRemonteeHDLP"
+        value="${
+            new Date()
+            .toISOString()
+            .split('T')[0]
+        }">
 
         <br><br>
 
         <button
-        onclick="validerRemonteeResumeHDLP()">
+        onclick="
+        validerRemonteeResumeHDLP()">
             ✅ Valider la remontée
         </button>
 
     </div>
+
     `;
 
     document.getElementById(
@@ -451,7 +477,11 @@ function retirerArticleResumeHDLP(id){
         .find(a => a.id === id);
 
         if(article){
-            article.quantite = 0;
+
+            article.remontee = 0;
+
+            article.redescente = 0;
+
         }
 
     });
@@ -462,6 +492,7 @@ function retirerArticleResumeHDLP(id){
     );
 
     renderResumeHDLP();
+
 }
 function validerRemonteeResumeHDLP(){
 
@@ -478,8 +509,15 @@ function validerRemonteeResumeHDLP(){
         hdlpData[onglet]
         .forEach(article => {
 
+            const remontee =
+            Number(article.remontee || 0);
+
+            const redescente =
+            Number(article.redescente || 0);
+
             if(
-                Number(article.quantite || 0) <= 0
+                remontee <= 0 &&
+                redescente <= 0
             ){
                 return;
             }
@@ -498,6 +536,24 @@ function validerRemonteeResumeHDLP(){
                 "cave_" + article.id
             ).value;
 
+            const articleStock =
+            (stock[cave] || [])
+            .find(a =>
+                String(a.code) ===
+                String(article.code)
+            );
+
+            if(articleStock){
+
+                articleStock.stock = Math.max(
+                    0,
+                    Number(articleStock.stock || 0)
+                    - remontee
+                    + redescente
+                );
+
+            }
+
             mouvements.push({
 
                 article:
@@ -506,33 +562,59 @@ function validerRemonteeResumeHDLP(){
                 code:
                 article.code,
 
-                quantite:
-                article.quantite,
+                remontee:
+                remontee,
+
+                redescente:
+                redescente,
 
                 cave:
-
                 cave,
 
                 date:
-
                 date,
 
                 type:
-
-                "Remontée HDLP"
+                "Mouvement HDLP"
 
             });
+
+            article.remontee = 0;
+
+            article.redescente = 0;
 
         });
 
     });
 
-    console.log(mouvements);
+    save();
+
+    localStorage.setItem(
+        "caveData",
+        JSON.stringify(hdlpData)
+    );
+
+    let historique =
+    JSON.parse(
+        localStorage.getItem(
+            "mouvements"
+        )
+    ) || [];
+
+    historique.push(...mouvements);
+
+    localStorage.setItem(
+        "mouvements",
+        JSON.stringify(historique)
+    );
 
     alert(
         mouvements.length +
         " article(s) validé(s)"
     );
+
+    changerOngletHDLP("devant");
+
 }
 function renderContenuHDLP(){
 
@@ -544,8 +626,7 @@ function renderContenuHDLP(){
     const recherche =
     document.getElementById(
         "rechercheHDLP"
-    )?.value
-    ?.toLowerCase() || "";
+    )?.value?.toLowerCase() || "";
 
     const liste =
     hdlpData[hdlpTab] || [];
@@ -553,6 +634,7 @@ function renderContenuHDLP(){
     let html = "";
 
     liste
+
     .filter(article => {
 
         return (
@@ -609,21 +691,36 @@ function renderContenuHDLP(){
 
             <br><br>
 
-           <input
-    type="number"
-    id="qty_${article.id}"
-    value="${article.quantite || ''}"
-    placeholder="Quantité"
-    style="
-        width:120px;
-        padding:8px;
-    "
-    onkeydown="
-        if(event.key==='Enter'){
-            validerQuantiteHDLP('${article.id}');
-        }
-    "
->
+            ⬆️ Remontée
+
+            <br>
+
+            <input
+            type="number"
+            id="remontee_${article.id}"
+            value="${article.remontee || ''}"
+            placeholder="Remontée">
+
+            <br><br>
+
+            ⬇️ Redescente
+
+            <br>
+
+            <input
+            type="number"
+            id="redescente_${article.id}"
+            value="${article.redescente || ''}"
+            placeholder="Redescente"
+
+            onkeydown="
+            if(event.key==='Enter'){
+                validerQuantiteHDLP('${article.id}');
+            }
+            ">
+
+            <br><br>
+
             <button
             onclick="validerQuantiteHDLP('${article.id}')">
                 ✅ OK
@@ -679,15 +776,17 @@ function validerQuantiteHDLP(id){
 
     if(!article) return;
 
-    const valeur =
-    document.getElementById(
-        "qty_" + id
-    ).value;
+    article.remontee = Number(
+        document.getElementById(
+            "remontee_" + id
+        ).value || 0
+    );
 
-    article.quantite =
-    valeur === ""
-    ? 0
-    : Number(valeur);
+    article.redescente = Number(
+        document.getElementById(
+            "redescente_" + id
+        ).value || 0
+    );
 
     localStorage.setItem(
         "caveData",
