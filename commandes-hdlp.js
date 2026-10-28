@@ -794,7 +794,14 @@ RCLP ALCOOL
 <input
 type="number"
 id="cartons_${commande.id}_${article.code}"
-value="${article.cartons}">
+value="${article.cartons}"
+oninput="
+recalculerDetailCommande(
+'${commande.id}',
+'${article.code}',
+${article.colisage}
+)
+">
 
 <br><br>
 
@@ -803,13 +810,22 @@ Pièces :
 <input
 type="number"
 id="pieces_${commande.id}_${article.code}"
-value="${article.pieces}">
+value="${article.pieces}"
+oninput="
+recalculerDetailCommande(
+'${commande.id}',
+'${article.code}',
+${article.colisage}
+)
+">
 
             <br>
 
-            Total :
-            ${article.totalPieces}
-
+           Total :
+<span id="totalDetail_${article.code}">
+${article.totalPieces}
+</span>
+ pièce(s)
             <br>
 
             Montant :
@@ -850,6 +866,16 @@ if(
     <div class="card">
 
         <button
+        onclick="
+        sauvegarderCommandeHDLP(
+        '${commande.id}'
+        )">
+            💾 Sauvegarder les modifications
+        </button>
+
+        <br><br>
+
+        <button
         style="
             background:#28a745;
             color:white;
@@ -859,25 +885,6 @@ if(
         receptionnerCommandeHDLP(
         '${commande.id}'
         )">
-        html += `
-
-<div class="card">
-
-<button
-onclick="
-sauvegarderCommandeHDLP(
-'${commande.id}'
-)
-">
-
-💾 Sauvegarder les modifications
-
-</button>
-
-</div>
-
-`;
-
             ✅ Réceptionner la commande
         </button>
 
@@ -970,5 +977,42 @@ function sauvegarderCommandeHDLP(id){
     );
 
     ouvrirDetailCommandeHDLP(id);
+
+}
+function recalculerDetailCommande(
+    id,
+    code,
+    colisage
+){
+
+    const cartons =
+    Number(
+        document.getElementById(
+            `cartons_${id}_${code}`
+        )?.value || 0
+    );
+
+    const pieces =
+    Number(
+        document.getElementById(
+            `pieces_${id}_${code}`
+        )?.value || 0
+    );
+
+    const totalPieces =
+    (cartons * colisage)
+    + pieces;
+
+    const zone =
+    document.getElementById(
+        `totalDetail_${code}`
+    );
+
+    if(zone){
+
+        zone.innerHTML =
+        totalPieces;
+
+    }
 
 }
