@@ -89,13 +89,13 @@ function chargerArticlesRCLP(){
             String(article.code)
         );
 
-        rclpData.push({
-      
+     rclpData.push({
+
     id: crypto.randomUUID(),
 
-    code: articleCentral.code,
+    code: article.code,
 
-    article: articleCentral.article,
+    article: article.article,
 
     remontee: 0,
 
@@ -201,11 +201,49 @@ function renderContenuRCLP(){
 
         <br><br>
 
-        <input
-        type="number"
-        id="qty_${article.id}"
-        value="${article.quantite || ''}"
-        placeholder="Quantité"
+       ⬆️ Remontée
+
+<input
+type="number"
+id="remontee_${article.id}"
+value="${article.remontee || ''}"
+placeholder="Remontée"
+style="
+width:120px;
+padding:8px;
+">
+
+<br><br>
+
+⬇️ Redescente
+
+⬆️ Remontée
+
+<input
+type="number"
+id="remontee_${article.id}"
+value="${article.remontee || ''}"
+placeholder="Remontée"
+style="
+width:120px;
+padding:8px;
+">
+
+<br><br>
+
+⬇️ Redescente
+
+<input
+type="number"
+id="redescente_${article.id}"
+value="${article.redescente || ''}"
+placeholder="Redescente"
+style="
+width:120px;
+padding:8px;
+">
+
+
 
         onkeydown="
         if(event.key==='Enter'){
@@ -245,12 +283,16 @@ function validerQuantiteRCLP(id){
 
     if(!article) return;
 
-    article.quantite = Number(
-
+    article.remontee = Number(
         document.getElementById(
-            "qty_" + id
+            "remontee_" + id
         ).value || 0
+    );
 
+    article.redescente = Number(
+        document.getElementById(
+            "redescente_" + id
+        ).value || 0
     );
 
     localStorage.setItem(
@@ -263,25 +305,15 @@ function validerQuantiteRCLP(id){
         "rechercheCodeRCLP"
     );
 
- if(rechercheCode){
+    if(rechercheCode){
 
-    rechercheCode.value = "";
+        rechercheCode.value = "";
 
-    const rechercheArticle =
-    document.getElementById(
-        "rechercheRCLP"
-    );
+        rechercheCode.focus();
 
-    if(rechercheArticle){
-        rechercheArticle.value = "";
+        renderContenuRCLP();
+
     }
-
-    rechercheCode.focus();
-
-    renderContenuRCLP();
-
-}
-
 }
 function renderResumeRCLP(){
 
@@ -292,12 +324,21 @@ function renderResumeRCLP(){
 
     rclpData.forEach(article => {
 
-        const qte = Number(article.quantite || 0);
+        const remontee =
+Number(article.remontee || 0);
 
-        if(qte <= 0) return;
+const redescente =
+Number(article.redescente || 0);
+
+if(
+    remontee <= 0 &&
+    redescente <= 0
+){
+    return;
+}
 
         totalArticles++;
-        totalQuantites += qte;
+        totalQuantites += remontee + redescente;
 
         html += `
 
@@ -307,7 +348,11 @@ function renderResumeRCLP(){
 
             <br>
 
-            Quantité : ${qte}
+            ⬆️ Remontée : ${remontee}
+
+<br>
+
+⬇️ Redescente : ${redescente}
 
             <br><br>
 
@@ -397,7 +442,8 @@ function retirerArticleResumeRCLP(id){
     );
 save();
     if(article){
-        article.quantite = 0;
+      article.remontee = 0;
+article.redescente = 0;
     }
 
     localStorage.setItem(
@@ -417,13 +463,17 @@ function validerRemonteeResumeRCLP(){
     const mouvements = [];
 
     rclpData.forEach(article => {
+const remontee =
+Number(article.remontee || 0);
 
-        const qte =
-        Number(article.quantite || 0);
-
-        if(qte <= 0){
-            return;
-        }
+const redescente =
+Number(article.redescente || 0);
+    if(
+    remontee <= 0 &&
+    redescente <= 0
+){
+    return;
+}
 
         const coche =
         document.getElementById(
@@ -448,12 +498,12 @@ function validerRemonteeResumeRCLP(){
 
         if(articleStock){
 
-            articleStock.stock = Math.max(
-                0,
-                Number(articleStock.stock || 0)
-                - qte
-            );
-
+          articleStock.stock = Math.max(
+    0,
+    Number(articleStock.stock || 0)
+    - remontee
+    + redescente
+);
         }
 
         mouvements.push({
@@ -478,7 +528,8 @@ function validerRemonteeResumeRCLP(){
 
         });
 
-        article.quantite = 0;
+        article.remontee = 0;
+article.redescente = 0;
 
     });
 
