@@ -5,7 +5,7 @@ JSON.parse(
     localStorage.getItem("boutiqueData")
 ) || [];
 
-function ouvrirVentesBoutique(){
+function ouvrirSaisieVentesBoutique(){
 
     renderVentesBoutique();
 
