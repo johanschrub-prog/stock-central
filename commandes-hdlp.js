@@ -6,6 +6,7 @@ JSON.parse(
 ) || [];
 
 let commandeHDLPCourante = {};
+let commandeHDLPArticles = {};
 
 let fournisseurCommandeHDLP = "";
 
@@ -279,7 +280,18 @@ function chargerArticlesCommandeHDLP(){
 
         html += `
 
-        <div class="card">
+       <div class="card"
+style="
+${
+commandeHDLPArticles[
+article.code
+]
+?
+'border:3px solid #28a745;'
+:
+''
+}
+">
 
             <b>
             ${article.article}
@@ -399,9 +411,23 @@ article.code
 
             <br><br>
 
-           <div id="total_${article.code}">
+        <div id="total_${article.code}">
 0 pièce(s) - 0 €
 </div>
+
+<br><br>
+
+<button
+onclick="
+validerArticleCommandeHDLP(
+'${article.code}',
+'${article.article}',
+${article.colisage || 1},
+${article.prix || 0}
+)
+">
+✅ OK
+</button>
 
         </div>
 
@@ -461,11 +487,8 @@ function calculCommandeHDLP(
 
     commandeHDLPCourante[code] = {
 
-        cartons:
-        cartons,
-
-        pieces:
-        pieces
+        cartons: cartons,
+        pieces: pieces
 
     };
 
@@ -484,62 +507,15 @@ function calculCommandeHDLP(
     if(zone){
 
         zone.innerHTML =
-
         totalPieces +
         " pièce(s) - " +
-
         montant.toFixed(2) +
         " €";
 
     }
 
-    let totalCommande = 0;
-
-    document
-    .querySelectorAll(
-        "[id^='total_']"
-    )
-    .forEach(div => {
-
-        if(
-            div.id ===
-            "totalCommandeHDLP"
-        ){
-            return;
-        }
-
-        const montantLigne =
-        parseFloat(
-
-            div.innerText
-            .split("-")[1]
-            ?.replace("€","")
-            ?.trim()
-
-        ) || 0;
-
-        totalCommande +=
-        montantLigne;
-
-    });
-
-    const total =
-    document.getElementById(
-        "totalCommandeHDLP"
-    );
-
-    if(total){
-
-        total.innerHTML =
-
-        totalCommande
-        .toFixed(2)
-
-        + " €";
-
-    }
-
 }
+
 function enregistrerCommandeHDLP(){
 
     const fournisseur =
@@ -558,121 +534,38 @@ function enregistrerCommandeHDLP(){
 
     }
 
-    const articlesCommande = [];
+    const articlesCommande =
 
-    let montantTotal = 0;
-
-    const dejaVus = new Set();
-
-    Object.values(stock)
-    .flat()
-    .forEach(article => {
-
-        if(
-            dejaVus.has(
-                String(article.code)
-            )
-        ){
-            return;
-        }
-
-        dejaVus.add(
-            String(article.code)
-        );
-
-        const cartons =
-        Number(
-            document.getElementById(
-                "cartons_" + article.code
-            )?.value || 0
-        );
-
-        const pieces =
-        Number(
-            document.getElementById(
-                "pieces_" + article.code
-            )?.value || 0
-        );
-
-        if(
-            cartons <= 0 &&
-            pieces <= 0
-        ){
-            return;
-        }
-
-        const totalPieces =
-
-        (cartons *
-        Number(article.colisage || 1))
-
-        + pieces;
-
-        const montant =
-
-        totalPieces *
-
-        Number(
-            article.prix || 0
-        );
-
-        montantTotal += montant;
-
-     articlesCommande.push({
-
-    code:
-    article.code,
-
-    codeFournisseur:
-    article.codeFournisseur || "",
-
-    article:
-    article.article,
-
-            destination:
-
-            document.getElementById(
-                "destination_" +
-                article.code
-            )?.value || "",
-
-            cartons:
-            cartons,
-
-            pieces:
-            pieces,
-
-            colisage:
-            Number(
-                article.colisage || 1
-            ),
-
-            totalPieces:
-            totalPieces,
-
-            prix:
-            Number(
-                article.prix || 0
-            ),
-
-            montant:
-            montant
-
-        });
-
-    });
+    Object.values(
+        commandeHDLPArticles
+    );
 
     if(
         articlesCommande.length === 0
     ){
 
         alert(
-            "Aucun article commandé"
+            "Aucun article validé"
         );
 
         return;
 
     }
+
+    const montantTotal =
+
+    articlesCommande.reduce(
+
+        (total,a)=>
+
+        total +
+        Number(
+            a.montant || 0
+        ),
+
+        0
+
+    );
 
     commandesHDLP.push({
 
@@ -698,11 +591,17 @@ function enregistrerCommandeHDLP(){
     });
 
     localStorage.setItem(
+
         "commandesHDLP",
+
         JSON.stringify(
             commandesHDLP
         )
+
     );
+
+    commandeHDLPArticles = {};
+    commandeHDLPCourante = {};
 
     alert(
         "Commande enregistrée ✅"
@@ -1182,23 +1081,15 @@ function receptionnerCommandeHDLP(id){
 
         ?
 
-        montantReception
-        /
+        montantReception /
         article.totalPieces
 
         :
 
         0;
 
-       a.prix =
-prixReception;
-
-a.codeFournisseur =
-article.codeFournisseur || "";
-
-
-        article.montant =
-        montantReception;
+        article.prix =
+        prixReception;
 
         const destination =
         article.destination;
@@ -1210,9 +1101,7 @@ article.codeFournisseur || "";
         .find(a =>
 
             String(a.code)
-
             ===
-
             String(article.code)
 
         );
@@ -1248,6 +1137,9 @@ article.codeFournisseur || "";
                     a.prix =
                     prixReception;
 
+                    a.codeFournisseur =
+                    article.codeFournisseur || "";
+
                 }
 
             });
@@ -1278,7 +1170,6 @@ article.codeFournisseur || "";
     ouvrirDetailCommandeHDLP(id);
 
 }
-
 function majPrixReception(
     commandeId,
     code,
@@ -1404,6 +1295,77 @@ function supprimerLigneCommandeHDLP(
 
     ouvrirDetailCommandeHDLP(
         commandeId
+    );
+
+}
+function validerArticleCommandeHDLP(
+    code,
+    articleNom,
+    colisage,
+    prix
+){
+
+    const cartons =
+    Number(
+        document.getElementById(
+            "cartons_" + code
+        )?.value || 0
+    );
+
+    const pieces =
+    Number(
+        document.getElementById(
+            "pieces_" + code
+        )?.value || 0
+    );
+
+    const destination =
+    document.getElementById(
+        "destination_" + code
+    )?.value || "";
+
+    if(
+        cartons <= 0 &&
+        pieces <= 0
+    ){
+        alert(
+            "Aucune quantité saisie"
+        );
+        return;
+    }
+
+    const totalPieces =
+    (cartons * colisage)
+    + pieces;
+
+    const montant =
+    totalPieces * prix;
+
+    commandeHDLPArticles[code] = {
+
+        code: code,
+
+        article: articleNom,
+
+        cartons: cartons,
+
+        pieces: pieces,
+
+        colisage: colisage,
+
+        totalPieces: totalPieces,
+
+        prix: prix,
+
+        montant: montant,
+
+        destination: destination
+
+    };
+
+    alert(
+        articleNom +
+        " ajouté à la commande ✅"
     );
 
 }
