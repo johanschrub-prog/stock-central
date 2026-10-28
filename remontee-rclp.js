@@ -490,12 +490,11 @@ function validerRemonteeResumeRCLP(){
 
         if(articleStock){
 
-            articleStock.stock = Math.max(
-                0,
-                Number(articleStock.stock || 0)
-                - remontee
-                + redescente
-            );
+         articleStock.stock =
+Number(articleStock.stock || 0)
+- remontee
++ redescente;
+
 
         }
 
