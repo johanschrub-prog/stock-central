@@ -874,7 +874,7 @@ article.codeFournisseur || ""
 
     `;
 
-   if(
+  if(
     commande.statut ===
     "EN ATTENTE"
 ){
@@ -889,7 +889,7 @@ article.codeFournisseur || ""
         '${commande.id}'
         )
         ">
-            💾 Sauvegarder les modifications
+            💾 Sauvegarder
         </button>
 
         <br><br>
@@ -898,19 +898,40 @@ article.codeFournisseur || ""
         style="
         background:#28a745;
         color:white;
-        font-weight:bold;
         "
         onclick="
         receptionnerCommandeHDLP(
         '${commande.id}'
         )
         ">
-            ✅ Réceptionner la commande
+            ✅ Réceptionner
         </button>
 
     </div>
 
     `;
+
+}
+else{
+
+    html += `
+
+    <div class="card">
+
+        <button
+        onclick="
+        mettreAJourFactureHDLP(
+        '${commande.id}'
+        )
+        ">
+            💰 Mettre à jour avec la facture
+        </button>
+
+    </div>
+
+    `;
+
+}
 
 }
 
@@ -1472,5 +1493,106 @@ function listeCommandesReceptionneesHDLP(){
     document.getElementById(
         "cards"
     ).innerHTML = html;
+
+}
+function mettreAJourFactureHDLP(id){
+
+    const commande =
+    commandesHDLP.find(
+        c => c.id === id
+    );
+
+    if(!commande) return;
+
+    commande.articles.forEach(article => {
+
+        const prixFacture =
+
+        Number(
+        document.getElementById(
+        `prixReception_${id}_${article.code}`
+        )?.value
+
+        || article.prix
+
+        || 0
+        );
+
+        const montantFacture =
+
+        Number(
+        document.getElementById(
+        `montantReception_${id}_${article.code}`
+        )?.value
+
+        || article.montant
+
+        || 0
+        );
+
+        article.prix =
+        prixFacture;
+
+        article.montant =
+        montantFacture;
+
+        Object.keys(stock)
+        .forEach(categorie => {
+
+            stock[categorie]
+            .forEach(a => {
+
+                if(
+                    String(a.code)
+                    ===
+                    String(article.code)
+                ){
+
+                    a.prix =
+                    prixFacture;
+
+                    a.codeFournisseur =
+                    article.codeFournisseur || "";
+
+                }
+
+            });
+
+        });
+
+    });
+
+    commande.montantTotal =
+
+    commande.articles.reduce(
+
+        (t,a)=>
+
+        t +
+        Number(
+            a.montant || 0
+        ),
+
+        0
+
+    );
+
+    localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(stock)
+    );
+
+    localStorage.setItem(
+        "commandesHDLP",
+        JSON.stringify(
+            commandesHDLP
+        )
+    );
+
+    alert(
+        "Facture enregistrée ✅"
+    );
+
+    ouvrirDetailCommandeHDLP(id);
 
 }
