@@ -1549,7 +1549,7 @@ function ouvrirApplications(){
 
         <button
         style="width:100%;height:70px;"
-        onclick="ouvrirVentesBoutique()">
+      onclick="ouvrirSaisieVentesBoutique()">
 
         🛍️ Ventes Boutique
 
