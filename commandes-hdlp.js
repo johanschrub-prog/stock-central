@@ -117,61 +117,46 @@ function nouvelleCommandeHDLP(){
 }
 function listeCommandesHDLP(){
 
-    let html = `
+   html += `
 
-    <div class="card">
+<div class="card">
 
-        <button
-        onclick="ouvrirCommandeHDLP()">
-            ⬅ Retour
-        </button>
+    <b>
+    🚚 ${cmd.fournisseur}
+    </b>
 
-        <h2>
-        📋 Commandes enregistrées
-        </h2>
+    <br><br>
 
-    `;
+    📅 ${cmd.date}
 
-    if(
-        commandesHDLP.length === 0
-    ){
+    <br>
 
-        html += `
-        Aucun document.
-        `;
+    💰 ${Number(
+        cmd.montantTotal || 0
+    ).toFixed(2)} €
 
-    }else{
+    <br>
 
-        commandesHDLP
-        .slice()
-        .reverse()
-        .forEach(cmd => {
+    📦 ${cmd.articles.length}
+    article(s)
 
-            html += `
+    <br>
 
-            <div class="card">
+    📌 ${cmd.statut}
 
-                <b>
-                ${cmd.fournisseur}
-                </b>
+    <br><br>
 
-                <br>
+    <button
+    onclick="
+    ouvrirDetailCommandeHDLP(
+    '${cmd.id}'
+    )">
+        👁️ Ouvrir
+    </button>
 
-                ${cmd.date}
+</div>
 
-                <br>
-
-                ${cmd.statut}
-
-                <br><br>
-
-                ${Number(
-                    cmd.montantTotal || 0
-                ).toFixed(2)} €
-
-            </div>
-
-            `;
+`;
 
         });
 
@@ -373,10 +358,9 @@ ${article.fournisseur || "-"}
 
             <br><br>
 
-            <div
-            id="total_${article.code}">
-            Total : 0 €
-            </div>
+           <div id="total_${article.code}">
+0 pièce(s) - 0 €
+</div>
 
         </div>
 
@@ -425,21 +409,293 @@ function calculCommandeHDLP(
     );
 
     const totalPieces =
-
-        (cartons * colisage)
-        + pieces;
+    (cartons * colisage)
+    + pieces;
 
     const montant =
-
-        totalPieces
-        * prix;
+    totalPieces * prix;
 
     document.getElementById(
         "total_" + code
     ).innerHTML =
 
-    "Total : " +
+    totalPieces +
+    " pièce(s) - " +
+
     montant.toFixed(2) +
+
     " €";
+
+}
+function enregistrerCommandeHDLP(){
+
+    const fournisseur =
+
+    document.getElementById(
+        "fournisseurCommandeHDLP"
+    )?.value || "";
+
+    if(fournisseur === ""){
+
+        alert(
+            "Choisissez un fournisseur"
+        );
+
+        return;
+
+    }
+
+    const articlesCommande = [];
+
+    let montantTotal = 0;
+
+    const dejaVus = new Set();
+
+    Object.values(stock)
+    .flat()
+    .forEach(article => {
+
+        if(
+            dejaVus.has(
+                String(article.code)
+            )
+        ){
+            return;
+        }
+
+        dejaVus.add(
+            String(article.code)
+        );
+
+        const cartons =
+        Number(
+            document.getElementById(
+                "cartons_" + article.code
+            )?.value || 0
+        );
+
+        const pieces =
+        Number(
+            document.getElementById(
+                "pieces_" + article.code
+            )?.value || 0
+        );
+
+        if(
+            cartons <= 0 &&
+            pieces <= 0
+        ){
+            return;
+        }
+
+        const totalPieces =
+
+        (cartons *
+        Number(article.colisage || 1))
+
+        + pieces;
+
+        const montant =
+
+        totalPieces *
+
+        Number(
+            article.prix || 0
+        );
+
+        montantTotal += montant;
+
+        articlesCommande.push({
+
+            code:
+            article.code,
+
+            article:
+            article.article,
+
+            destination:
+
+            document.getElementById(
+                "destination_" +
+                article.code
+            )?.value || "",
+
+            cartons:
+            cartons,
+
+            pieces:
+            pieces,
+
+            colisage:
+            Number(
+                article.colisage || 1
+            ),
+
+            totalPieces:
+            totalPieces,
+
+            prix:
+            Number(
+                article.prix || 0
+            ),
+
+            montant:
+            montant
+
+        });
+
+    });
+
+    if(
+        articlesCommande.length === 0
+    ){
+
+        alert(
+            "Aucun article commandé"
+        );
+
+        return;
+
+    }
+
+    commandesHDLP.push({
+
+        id:
+        crypto.randomUUID(),
+
+        fournisseur:
+        fournisseur,
+
+        date:
+        new Date()
+        .toLocaleString(),
+
+        statut:
+        "EN ATTENTE",
+
+        montantTotal:
+        montantTotal,
+
+        articles:
+        articlesCommande
+
+    });
+
+    localStorage.setItem(
+        "commandesHDLP",
+        JSON.stringify(
+            commandesHDLP
+        )
+    );
+
+    alert(
+        "Commande enregistrée ✅"
+    );
+
+    listeCommandesHDLP();
+
+}
+function ouvrirDetailCommandeHDLP(id){
+
+    const commande =
+    commandesHDLP.find(
+        c => c.id === id
+    );
+
+    if(!commande) return;
+
+    let html = `
+
+    <div class="card">
+
+        <button
+        onclick="listeCommandesHDLP()">
+            ⬅ Retour
+        </button>
+
+        <h2>
+        🚚 ${commande.fournisseur}
+        </h2>
+
+        📅 ${commande.date}
+
+        <br>
+
+        📌 ${commande.statut}
+
+    </div>
+
+    `;
+
+    commande.articles
+    .forEach(article => {
+
+        html += `
+
+        <div class="card">
+
+            <b>
+            ${article.article}
+            </b>
+
+            <br>
+
+            Code :
+            ${article.code}
+
+            <br>
+
+            Destination :
+            ${article.destination}
+
+            <br>
+
+            Cartons :
+            ${article.cartons}
+
+            <br>
+
+            Pièces :
+            ${article.pieces}
+
+            <br>
+
+            Total :
+            ${article.totalPieces}
+
+            <br>
+
+            Montant :
+            ${Number(
+                article.montant
+            ).toFixed(2)} €
+
+        </div>
+
+        `;
+
+    });
+
+    html += `
+
+    <div class="card">
+
+        <b>
+
+        Total commande :
+
+        ${Number(
+            commande.montantTotal
+        ).toFixed(2)} €
+
+        </b>
+
+    </div>
+
+    `;
+
+    document.getElementById(
+        "cards"
+    ).innerHTML = html;
 
 }
