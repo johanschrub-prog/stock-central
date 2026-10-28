@@ -611,17 +611,21 @@ function renderContenuHDLP(){
 
             <br><br>
 
-            <input
-                type="number"
-                id="qty_${article.id}"
-                value="${article.quantite || ''}"
-                placeholder="Quantité"
-                style="
-                    width:120px;
-                    padding:8px;
-                "
-            >
-
+           <input
+    type="number"
+    id="qty_${article.id}"
+    value="${article.quantite || ''}"
+    placeholder="Quantité"
+    style="
+        width:120px;
+        padding:8px;
+    "
+    onkeydown="
+        if(event.key==='Enter'){
+            validerQuantiteHDLP('${article.id}');
+        }
+    "
+>
             <button
             onclick="validerQuantiteHDLP('${article.id}')">
                 ✅ OK
@@ -670,20 +674,39 @@ function supprimerArticleHDLP(id){
 
 }
 function validerQuantiteHDLP(id){
+
     const article =
     hdlpData[hdlpTab]
     .find(a => a.id === id);
+
     if(!article) return;
+
     const valeur =
     document.getElementById(
         "qty_" + id
     ).value;
+
     article.quantite =
     valeur === ""
     ? 0
     : Number(valeur);
+
     localStorage.setItem(
         "caveData",
         JSON.stringify(hdlpData)
     );
+
+    const recherche =
+    document.getElementById(
+        "rechercheHDLP"
+    );
+
+    if(recherche){
+
+        recherche.focus();
+
+        recherche.select();
+
+    }
+
 }
