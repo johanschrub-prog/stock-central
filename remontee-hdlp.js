@@ -256,21 +256,19 @@ function ajouterArticleDepuisStockHDLP(code){
 
     }
 
-    hdlpData[hdlpTab].push({
+   hdlpData[hdlpTab].push({
 
-        id: crypto.randomUUID(),
+    id: crypto.randomUUID(),
 
-        code: articleCentral.code,
+    code: articleCentral.code,
 
-        article: articleCentral.article,
+    article: articleCentral.article,
 
-        quantite: 0,
+    remontee: 0,
 
-        coche: false,
+    redescente: 0
 
-        redescente: false
-
-    });
+});
 
     localStorage.setItem(
         "caveData",
