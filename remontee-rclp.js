@@ -103,10 +103,11 @@ function chargerArticlesRCLP(){
 
     });
 
-    localStorage.setItem(
-        "rclpData",
-        JSON.stringify(rclpData)
-    );
+ localStorage.setItem(
+    "rclpData",
+    JSON.stringify(rclpData)
+);
+
 }
 function renderContenuRCLP(){
 
@@ -129,36 +130,37 @@ function renderContenuRCLP(){
 
     let html = "";
 
-    rclpData
+   rclpData
 
-    .filter(article => {
+.sort((a, b) =>
+    Number(a.code) - Number(b.code)
+)
 
-        const okTexte =
+.filter(article => {
 
-        String(article.article)
-        .toLowerCase()
-        .includes(recherche)
+    const okTexte =
+
+        recherche === ""
 
         ||
 
-        String(article.code)
+        String(article.article)
+        .toLowerCase()
         .includes(recherche);
 
-        const okCode =
+    const okCode =
 
         rechercheCode === ""
 
         ||
 
         String(article.code)
-        .includes(rechercheCode);
+        .startsWith(rechercheCode);
 
-        return okTexte && okCode;
+    return okTexte && okCode;
 
-    })
-
-    .forEach(article => {
-
+})
+.forEach(article => {
         const stockHDLP =
         getStockHDLP(article.code);
 
@@ -259,13 +261,24 @@ function validerQuantiteRCLP(id){
         "rechercheCodeRCLP"
     );
 
-    if(rechercheCode){
+ if(rechercheCode){
 
-        rechercheCode.focus();
+    rechercheCode.value = "";
 
-        rechercheCode.select();
+    const rechercheArticle =
+    document.getElementById(
+        "rechercheRCLP"
+    );
 
+    if(rechercheArticle){
+        rechercheArticle.value = "";
     }
+
+    rechercheCode.focus();
+
+    renderContenuRCLP();
+
+}
 
 }
 function renderResumeRCLP(){
@@ -380,7 +393,7 @@ function retirerArticleResumeRCLP(id){
     rclpData.find(
         a => a.id === id
     );
-
+save();
     if(article){
         article.quantite = 0;
     }
@@ -467,10 +480,8 @@ function validerRemonteeResumeRCLP(){
 
     });
 
-    localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify(stock)
-    );
+  save();
+
 
     localStorage.setItem(
         "rclpData",
@@ -496,5 +507,6 @@ function validerRemonteeResumeRCLP(){
         " article(s) validé(s)"
     );
 
-    renderResumeRCLP();
+changerOngletRCLP("rclp");
+
 }
