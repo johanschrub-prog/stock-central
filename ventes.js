@@ -631,15 +631,17 @@ function validerVenteBoutique(id){
     document.getElementById(
         "cave_" + id
     )?.value || "";
-if(article.cave === ""){
 
-    alert(
-        "Choisissez une cave"
-    );
+    if(article.cave === ""){
 
-    return;
+        alert(
+            "Choisissez une cave"
+        );
 
-}
+        return;
+
+    }
+
     article.vente =
     Number(
         document.getElementById(
@@ -658,40 +660,53 @@ if(article.cave === ""){
         article.vente <= 0 &&
         article.redescente <= 0
     ){
+
         alert(
             "Saisissez une vente ou une redescente"
         );
+
         return;
+
     }
 
-  localStorage.setItem(
-    "boutiqueData",
-    JSON.stringify(
-        boutiqueData
-    )
-);
+    localStorage.setItem(
+        "boutiqueData",
+        JSON.stringify(
+            boutiqueData
+        )
+    );
 
-alert(
-    article.article +
-    " ajouté au résumé ✅"
-);
+    alert(
+        article.article +
+        " ajouté au résumé ✅"
+    );
 
-document.getElementById(
-    "rechercheCodeBoutique"
-).value = "";
+    const champCode =
+    document.getElementById(
+        "rechercheCodeBoutique"
+    );
 
-document.getElementById(
-    "vente_" + id
-).value = "";
+    if(champCode){
+        champCode.value = "";
+    }
 
-document.getElementById(
-    "redescente_" + id
-).value = "";
+    const champRecherche =
+    document.getElementById(
+        "rechercheBoutique"
+    );
 
-document.getElementById(
-    "rechercheCodeBoutique"
-)?.focus();
+    if(champRecherche){
+        champRecherche.value = "";
+    }
 
+    ouvrirSaisieVentesBoutique();
+
+    setTimeout(() => {
+
+        document.getElementById(
+            "rechercheCodeBoutique"
+        )?.focus();
+
+    }, 200);
 
 }
-
