@@ -1058,6 +1058,26 @@ function sauvegarderCommandeHDLP(id){
         document.getElementById(
             `codeFournisseur_${id}_${article.code}`
         )?.value || "";
+        Object.keys(stock)
+.forEach(categorie => {
+
+    stock[categorie]
+    .forEach(a => {
+
+        if(
+            String(a.code)
+            ===
+            String(article.code)
+        ){
+
+            a.codeFournisseur =
+            article.codeFournisseur;
+
+        }
+
+    });
+
+});
 
         article.prix =
         Number(
@@ -1092,7 +1112,10 @@ function sauvegarderCommandeHDLP(id){
         0
 
     );
-
+localStorage.setItem(
+    STORAGE_KEY,
+    JSON.stringify(stock)
+);
     localStorage.setItem(
         "commandesHDLP",
         JSON.stringify(
