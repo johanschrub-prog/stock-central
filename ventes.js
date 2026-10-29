@@ -74,7 +74,19 @@ function changerOngletBoutique(tab){
 function chargerArticlesBoutique(){
 
     if(boutiqueData.length > 0){
+
+        boutiqueData.forEach(article => {
+
+            if(article.cave === undefined){
+
+                article.cave = "";
+
+            }
+
+        });
+
         return;
+
     }
 
     const dejaVus = new Set();
@@ -95,25 +107,29 @@ function chargerArticlesBoutique(){
             String(article.code)
         );
 
-     boutiqueData.push({
+        boutiqueData.push({
 
-    id: crypto.randomUUID(),
+            id: crypto.randomUUID(),
 
-    code: article.code,
+            code: article.code,
 
-    article: article.article,
+            article: article.article,
 
-    quantite: 0,
+            quantite: 0,
 
-    valide: false
+            valide: false,
 
-});
+            cave: ""
+
+        });
 
     });
 
     localStorage.setItem(
         "boutiqueData",
-        JSON.stringify(boutiqueData)
+        JSON.stringify(
+            boutiqueData
+        )
     );
 
 }
@@ -298,65 +314,71 @@ function validerVenteBoutique(id){
     );
 
     if(!article) return;
-article.cave =
-document.getElementById(
-    "cave_" + id
-)?.value || "";
+
+    article.cave =
+    document.getElementById(
+        "cave_" + id
+    )?.value || "";
+
     if(article.cave === ""){
 
-    alert(
-        "Choisissez une cave"
+        alert(
+            "Choisissez une cave"
+        );
+
+        return;
+
+    }
+
+    article.quantite =
+    Number(
+        document.getElementById(
+            "vente_" + id
+        )?.value || 0
     );
 
-    return;
+    if(article.quantite <= 0){
 
-}
- article.quantite =
-Number(
-    document.getElementById(
-        "vente_" + id
-    ).value || 0
-);
+        alert(
+            "Saisissez une quantité"
+        );
 
-if(article.quantite <= 0){
+        return;
 
-    alert(
-        "Saisissez une quantité"
-    );
+    }
 
-    return;
+    article.valide = true;
 
-}
-
-article.valide = true;
     localStorage.setItem(
         "boutiqueData",
         JSON.stringify(
             boutiqueData
         )
     );
-alert(
-    article.article +
-    " ajouté au résumé ✅"
-);
-    const rechercheCode =
-document.getElementById(
-    "rechercheCodeBoutique"
-);
 
-if(rechercheCode){
+    alert(
+        article.article +
+        " ajouté au résumé ✅"
+    );
 
-    rechercheCode.value = "";
-
-}
     renderContenuBoutique();
-setTimeout(() => {
 
-    document.getElementById(
-        "rechercheCodeBoutique"
-    )?.focus();
+    setTimeout(() => {
 
-}, 100);
+        const champCode =
+        document.getElementById(
+            "rechercheCodeBoutique"
+        );
+
+        if(champCode){
+
+            champCode.value = "";
+
+            champCode.focus();
+
+        }
+
+    }, 200);
 
 }
 function renderResumeBoutique(){
@@ -419,9 +441,7 @@ ${quantite}
 
             <br><br>
 
-       📦 Cave :
-
-${article.cave || "-"}
+      📦 Cave : ${article.cave || "-"}
 
             <br><br>
 
