@@ -4,14 +4,10 @@ let boutiqueData =
 JSON.parse(
     localStorage.getItem("boutiqueData")
 ) || [];
-function ouvrirVentesBoutique(){
+function ouvrirSaisieVentesBoutique(){
     renderVentesBoutique();
 }
-function ouvrirSaisieVentesBoutique(){
 
-    ouvrirVentesBoutique();
-
-}
 function renderVentesBoutique(){
 
     document.getElementById("cards").innerHTML = `
