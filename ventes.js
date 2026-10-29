@@ -261,7 +261,6 @@ function renderContenuBoutique(){
 
            <button
 onclick="
-alert('OK');
 validerQuantiteBoutique(
 '${article.id}'
 )">
@@ -278,7 +277,7 @@ validerQuantiteBoutique(
     ).innerHTML = html;
 }
 function validerQuantiteBoutique(id){
- alert(id);
+
     const article =
     boutiqueData.find(
         a => a.id === id
