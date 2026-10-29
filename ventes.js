@@ -68,6 +68,30 @@ function changerOngletBoutique(tab){
 }
 function chargerArticlesBoutique(){
 
+    // Réparation des anciens articles sans id
+    let modifie = false;
+
+    boutiqueData.forEach(article => {
+
+        if(!article.id){
+
+            article.id = crypto.randomUUID();
+            modifie = true;
+
+        }
+
+    });
+
+    if(modifie){
+
+        localStorage.setItem(
+            "boutiqueData",
+            JSON.stringify(boutiqueData)
+        );
+
+    }
+
+    // Si déjà chargé on ne recrée pas les articles
     if(boutiqueData.length > 0){
         return;
     }
@@ -90,26 +114,29 @@ function chargerArticlesBoutique(){
             String(article.code)
         );
 
-     boutiqueData.push({
+        boutiqueData.push({
 
-    id: crypto.randomUUID(),
+            id: crypto.randomUUID(),
 
-    code: article.code,
+            code: article.code,
 
-    article: article.article,
+            article: article.article,
 
-    vente: 0,
+            vente: 0,
 
-    redescente: 0
+            redescente: 0
 
-});
+        });
 
     });
 
- localStorage.setItem(
-    "boutiqueData",
-    JSON.stringify(boutiqueData)
-);
+    localStorage.setItem(
+
+        "boutiqueData",
+
+        JSON.stringify(boutiqueData)
+
+    );
 
 }
 function renderContenuBoutique(){
