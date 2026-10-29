@@ -269,7 +269,12 @@ function validerQuantiteBoutique(id){
             "redescente_" + id
         ).value || 0
     );
-
+if(
+    article.vente <= 0 &&
+    article.redescente <= 0
+){
+    return;
+}
     localStorage.setItem(
         "boutiqueData",
         JSON.stringify(boutiqueData)
@@ -293,9 +298,15 @@ if(rechercheArticle){
     rechercheArticle.value = "";
 }
 
-rechercheCode.focus();
-
 renderContenuBoutique();
+
+setTimeout(() => {
+
+    document.getElementById(
+        "rechercheCodeBoutique"
+    )?.focus();
+
+}, 100);
 
     }
 }
