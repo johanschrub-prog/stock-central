@@ -298,9 +298,13 @@ value="${article.redescente || ''}"
 
 onkeydown="
 if(event.key==='Enter'){
+
+    event.preventDefault();
+
     validerVenteBoutique(
-    '${article.id}'
+        '${article.id}'
     );
+
 }
 ">
 
@@ -486,15 +490,6 @@ totalArticles++;
 totalQuantites +=
 vente + redescente;
 
-if(
-    quantite <= 0
-){
-    return;
-}
-
-totalArticles++;
-
-totalQuantites += quantite;
 
         html += `
 
@@ -636,7 +631,15 @@ function validerVenteBoutique(id){
     document.getElementById(
         "cave_" + id
     )?.value || "";
+if(article.cave === ""){
 
+    alert(
+        "Choisissez une cave"
+    );
+
+    return;
+
+}
     article.vente =
     Number(
         document.getElementById(
@@ -661,16 +664,34 @@ function validerVenteBoutique(id){
         return;
     }
 
-    localStorage.setItem(
-        "boutiqueData",
-        JSON.stringify(
-            boutiqueData
-        )
-    );
+  localStorage.setItem(
+    "boutiqueData",
+    JSON.stringify(
+        boutiqueData
+    )
+);
 
-    document.getElementById(
-        "rechercheCodeBoutique"
-    )?.focus();
+alert(
+    article.article +
+    " ajouté au résumé ✅"
+);
+
+document.getElementById(
+    "rechercheCodeBoutique"
+).value = "";
+
+document.getElementById(
+    "vente_" + id
+).value = "";
+
+document.getElementById(
+    "redescente_" + id
+).value = "";
+
+document.getElementById(
+    "rechercheCodeBoutique"
+)?.focus();
+
 
 }
 
