@@ -19,18 +19,18 @@ function renderVentesBoutique(){
 
         <h2>🛍️ Ventes Boutique</h2>
 
-        <button onclick="changerOngletRCLP('resume')">
+       <button onclick="changerOngletBoutique('resume')">
             📋 RÉSUMÉ
         </button>
 
-        <button onclick="changerOngletRCLP('rclp')">
+     <button onclick="changerOngletBoutique('vente')">
             RCLP
         </button>
 
         <hr>
 
         <input
-        id="rechercheRCLP"
+        id="rechercheBoutique"
         placeholder="🔍 Recherche article"
         oninput="renderContenuBoutique()"
         style="
@@ -40,7 +40,7 @@ function renderVentesBoutique(){
         ">
 
      <input
-id="rechercheCodeRCLP"
+id="rechercheCodeBoutique"
 type="text"
 inputmode="numeric"
 pattern="[0-9]*"
@@ -61,8 +61,8 @@ autocomplete="off"
 
     renderContenuBoutique();
 }
-function changerOngletRCLP(tab){
-    rclpTab = tab;
+function changerOngletBoutique(tab){
+    boutiqueTab = tab;
     renderContenuBoutique();
 }
 function chargerArticlesRCLP(){
@@ -113,7 +113,7 @@ function chargerArticlesRCLP(){
 }
 function renderContenuBoutique(){
 
-    if(rclpTab === "resume"){
+  if(boutiqueTab === "resume"){
         renderResumeBoutique();
         return;
     }
@@ -122,7 +122,7 @@ function renderContenuBoutique(){
 
     const recherche =
     document.getElementById(
-        "rechercheRCLP"
+        "rechercheBoutique"
     )?.value?.toLowerCase() || "";
 
     const rechercheCode =
@@ -225,7 +225,7 @@ function renderContenuBoutique(){
 
             onkeydown="
             if(event.key==='Enter'){
-                validerQuantiteRCLP('${article.id}');
+                validerQuantiteBoutique('${article.id}');
             }
             ">
 
@@ -233,7 +233,7 @@ function renderContenuBoutique(){
 
             <button
             onclick="
-            validerQuantiteRCLP(
+            validerQuantiteBoutique(
             '${article.id}'
             )">
             ✅ OK
@@ -249,7 +249,7 @@ function renderContenuBoutique(){
         "contenuRCLP"
     ).innerHTML = html;
 }
-function validerQuantiteRCLP(id){
+function validerQuantiteBoutique(id){
 
     const article =
     boutiqueData.find(
@@ -286,7 +286,7 @@ function validerQuantiteRCLP(id){
 
 const rechercheArticle =
 document.getElementById(
-    "rechercheRCLP"
+    "rechercheBoutique"
 );
 
 if(rechercheArticle){
@@ -421,7 +421,7 @@ Code :
         <br><br>
 
         <button
-        onclick="validerVentesBoutique())">
+        onclick="validerVentesBoutique()">
             ✅ Valider la remontée
         </button>
 
@@ -458,7 +458,7 @@ function retirerArticleResumeRCLP(id){
     renderResumeBoutique();
 
 }
-function validerVentesBoutique()){
+function validerVentesBoutique(){
 
     const date =
     document.getElementById(
@@ -570,7 +570,7 @@ Number(articleStock.stock || 0)
         " article(s) validé(s)"
     );
 
-    changerOngletRCLP("rclp");
+    changerOngletBoutique("vente");
 
 }
 function surlignerArticleResume(id){
