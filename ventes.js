@@ -24,7 +24,7 @@ function renderVentesBoutique(){
         </button>
 
      <button onclick="changerOngletBoutique('vente')">
-            RCLP
+            VENTES
         </button>
 
         <hr>
@@ -53,7 +53,7 @@ autocomplete="off"
         margin-bottom:10px;
         ">
 
-        <div id="contenuRCLP"></div>
+        <div id="contenuBoutique"></div>
 
     </div>
 
@@ -65,7 +65,7 @@ function changerOngletBoutique(tab){
     boutiqueTab = tab;
     renderContenuBoutique();
 }
-function chargerArticlesRCLP(){
+function chargerArticlesBoutique(){
 
     if(boutiqueData.length > 0){
         return;
@@ -118,7 +118,7 @@ function renderContenuBoutique(){
         return;
     }
 
-    chargerArticlesRCLP();
+    chargerArticlesBoutique();
 
     const recherche =
     document.getElementById(
@@ -127,7 +127,7 @@ function renderContenuBoutique(){
 
     const rechercheCode =
     document.getElementById(
-        "rechercheCodeRCLP"
+         "rechercheCodeBoutique"
     )?.value || "";
 
     let html = "";
@@ -209,7 +209,7 @@ function renderContenuBoutique(){
             type="number"
             id="vente_${article.id}"
             value="${article.vente || ''}"
-            placeholder="Remontée">
+            placeholder="Vente">
 
             <br><br>
 
@@ -246,7 +246,7 @@ function renderContenuBoutique(){
     });
 
     document.getElementById(
-        "contenuRCLP"
+        "contenuBoutique"
     ).innerHTML = html;
 }
 function validerQuantiteBoutique(id){
@@ -277,7 +277,7 @@ function validerQuantiteBoutique(id){
 
     const rechercheCode =
     document.getElementById(
-        "rechercheCodeRCLP"
+         "rechercheCodeBoutique"
     );
 
     if(rechercheCode){
@@ -301,7 +301,7 @@ renderContenuBoutique();
 }
 function renderResumeBoutique(){
 
-    let html = "<h3>📋 Résumé des remontées RCLP</h3>";
+    let html = "<h3>📋 Résumé des ventes boutique</h3>";
 
     let totalArticles = 0;
     let totalQuantites = 0;
@@ -380,7 +380,7 @@ Code :
                 background:#dc3545;
                 color:white;
             "
-            onclick="retirerArticleResumeRCLP('${article.id}')">
+            onclick="retirerArticleResumeBoutique('${article.id}')">
                 🗑️ Retirer
             </button>
 
@@ -404,13 +404,13 @@ Code :
 
         <br><br>
 
-        Date de remontée
+        Date de vente
 
         <br>
 
         <input
             type="date"
-            id="dateventeRCLP"
+            id="dateVenteBoutique"
             value="${
                 new Date()
                 .toISOString()
@@ -422,7 +422,7 @@ Code :
 
         <button
         onclick="validerVentesBoutique()">
-            ✅ Valider la remontée
+            ✅ Valider les ventes
         </button>
 
     </div>
@@ -430,10 +430,10 @@ Code :
     `;
 
     document.getElementById(
-        "contenuRCLP"
+        "contenuBoutique"
     ).innerHTML = html;
 }
-function retirerArticleResumeRCLP(id){
+function retirerArticleResumeBoutique(id){
 
     const article =
     boutiqueData.find(
@@ -462,7 +462,7 @@ function validerVentesBoutique(){
 
     const date =
     document.getElementById(
-        "dateventeRCLP"
+       "dateVenteBoutique"
     ).value;
 
     const mouvements = [];
@@ -534,7 +534,7 @@ Number(articleStock.stock || 0)
             date,
 
             type:
-            "Mouvement RCLP"
+            "Vente Boutique"
 
         });
 
