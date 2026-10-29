@@ -1640,7 +1640,7 @@ onfocus="
 focusRechercheReceptionHDLP = true
 "
 
-oninput="
+onkeyup="
 listeCommandesReceptionneesHDLP()
 ">
 
