@@ -5,10 +5,10 @@ JSON.parse(
     localStorage.getItem("boutiqueData")
 ) || [];
 function ouvrirSaisieVentesBoutique(){
-    renderVentesBoutique();
+    renderSaisieVentesBoutique();
 }
 
-function renderVentesBoutique(){
+function renderSaisieVentesBoutique(){
 
     document.getElementById("cards").innerHTML = `
 
