@@ -313,12 +313,19 @@ function validerVenteBoutique(id){
         a => a.id === id
     );
 
-    if(!article) return;
+    if(!article){
+        return;
+    }
 
-    article.cave =
+    const selectCave =
     document.getElementById(
         "cave_" + id
-    )?.value || "";
+    );
+
+    article.cave =
+    selectCave
+    ? selectCave.value
+    : "";
 
     if(article.cave === ""){
 
@@ -361,7 +368,7 @@ function validerVenteBoutique(id){
         " ajouté au résumé ✅"
     );
 
-    renderContenuBoutique();
+    ouvrirSaisieVentesBoutique();
 
     setTimeout(() => {
 
@@ -441,7 +448,7 @@ ${quantite}
 
             <br><br>
 
-      📦 Cave : ${article.cave || "-"}
+    📦 Cave : <b>${article.cave || "-"}</b>
 
             <br><br>
 
