@@ -1627,7 +1627,7 @@ filtreFactureReceptionHDLP;
 
         <br>
 
-   <input
+  <input
 id="rechercheReceptionHDLP"
 
 value="${recherche}"
@@ -1636,12 +1636,8 @@ placeholder="
 Fournisseur ou article
 "
 
-onfocus="
-focusRechercheReceptionHDLP = true
-"
-
 onkeyup="
-listeCommandesReceptionneesHDLP()
+filtrerReceptionHDLP()
 ">
 
         <br><br>
@@ -1801,7 +1797,13 @@ listeCommandesReceptionneesHDLP()
             html += `
 
            <div
-class="card commandeReceptionHDLP">
+class="card commandeReceptionHDLP"
+
+data-fournisseur="${cmd.fournisseur}"
+
+data-articles="${cmd.articles
+.map(a => a.article)
+.join(' ')}">
 
                 <b>
                 🚚 ${cmd.fournisseur}
@@ -1856,26 +1858,6 @@ document.getElementById(
     "cards"
 ).innerHTML = html;
 
-setTimeout(() => {
-
-    const champ =
-    document.getElementById(
-        "rechercheReceptionHDLP"
-    );
-
-    if(champ){
-
-        champ.focus();
-
-        champ.setSelectionRange(
-            champ.value.length,
-            champ.value.length
-        );
-
-    }
-
-}, 10);
- 
 }
 function mettreAJourFactureHDLP(id){
 
@@ -2117,9 +2099,12 @@ function majFactureRecueHDLP(id){
 function filtrerReceptionHDLP(){
 
     const recherche =
+
     document.getElementById(
         "rechercheReceptionHDLP"
-    ).value.toLowerCase();
+    )
+    .value
+    .toLowerCase();
 
     document
     .querySelectorAll(
@@ -2127,20 +2112,28 @@ function filtrerReceptionHDLP(){
     )
     .forEach(carte => {
 
-        const texte =
-        carte.innerText.toLowerCase();
+        const fournisseur =
+        (
+            carte.dataset.fournisseur || ""
+        ).toLowerCase();
+
+        const articles =
+        (
+            carte.dataset.articles || ""
+        ).toLowerCase();
+
+        const visible =
+
+        fournisseur.includes(recherche)
+
+        ||
+
+        articles.includes(recherche);
 
         carte.style.display =
-
-        texte.includes(recherche)
-
-        ?
-
-        ""
-
-        :
-
-        "none";
+        visible
+        ? ""
+        : "none";
 
     });
 
