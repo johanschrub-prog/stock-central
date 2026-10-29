@@ -646,11 +646,48 @@ function ouvrirDetailCommandeHDLP(id){
         </h2>
 
         📅 ${commande.date}
+${commande.dateReception ?
 
+`<br>
+🚚 Réception :
+${commande.dateReception}`
+
+: ""}
+
+${commande.dateFacture ?
+
+`<br>
+🧾 Facture :
+${commande.dateFacture}`
+
+: ""}
         <br>
 
         📌 ${commande.statut}
+${commande.statut === "RECEPTIONNEE" ? `
 
+<br><br>
+
+<label>
+
+<input
+type="checkbox"
+
+id="factureRecue_${commande.id}"
+
+${commande.factureRecue ? "checked" : ""}
+
+onchange="
+majFactureRecueHDLP(
+'${commande.id}'
+)
+">
+
+🧾 Facture reçue
+
+</label>
+
+` : ""}
     </div>
 
     `;
@@ -1226,7 +1263,17 @@ document.getElementById(
 
     commande.statut =
     "RECEPTIONNEE";
+commande.dateReception =
+new Date()
+.toLocaleString();
 
+commande.dateReceptionISO =
+new Date()
+.toISOString()
+.split("T")[0];
+
+commande.factureRecue =
+false;
     localStorage.setItem(
         STORAGE_KEY,
         JSON.stringify(stock)
@@ -1476,6 +1523,26 @@ if(zoneTotal){
 }
 function listeCommandesReceptionneesHDLP(){
 
+    const recherche =
+    document.getElementById(
+        "rechercheReceptionHDLP"
+    )?.value?.toLowerCase() || "";
+
+    const dateDebut =
+    document.getElementById(
+        "dateDebutReceptionHDLP"
+    )?.value || "";
+
+    const dateFin =
+    document.getElementById(
+        "dateFinReceptionHDLP"
+    )?.value || "";
+
+    const factureSeulement =
+    document.getElementById(
+        "factureRecueFiltre"
+    )?.checked || false;
+
     let html = `
 
     <div class="card">
@@ -1489,9 +1556,81 @@ function listeCommandesReceptionneesHDLP(){
         ✅ Commandes réceptionnées
         </h2>
 
+        🔍 Recherche
+
+        <br>
+
+        <input
+        id="rechercheReceptionHDLP"
+
+        value="${recherche}"
+
+        placeholder="
+        Fournisseur ou article
+        "
+
+        oninput="
+        listeCommandesReceptionneesHDLP()
+        ">
+
+        <br><br>
+
+        📅 Du
+
+        <br>
+
+        <input
+        type="date"
+
+        id="dateDebutReceptionHDLP"
+
+        value="${dateDebut}"
+
+        onchange="
+        listeCommandesReceptionneesHDLP()
+        ">
+
+        <br><br>
+
+        📅 Au
+
+        <br>
+
+        <input
+        type="date"
+
+        id="dateFinReceptionHDLP"
+
+        value="${dateFin}"
+
+        onchange="
+        listeCommandesReceptionneesHDLP()
+        ">
+
+        <br><br>
+
+        <input
+        type="checkbox"
+
+        id="factureRecueFiltre"
+
+        ${
+            factureSeulement
+            ? "checked"
+            : ""
+        }
+
+        onchange="
+        listeCommandesReceptionneesHDLP()
+        ">
+
+        Facture reçue uniquement
+
+    </div>
+
     `;
 
-    const commandesReceptionnees =
+    let commandesReceptionnees =
 
     commandesHDLP.filter(
         c =>
@@ -1499,12 +1638,86 @@ function listeCommandesReceptionneesHDLP(){
         "RECEPTIONNEE"
     );
 
+    commandesReceptionnees =
+    commandesReceptionnees.filter(cmd => {
+
+        const matchRecherche =
+
+        recherche === ""
+
+        ||
+
+        cmd.fournisseur
+        ?.toLowerCase()
+        .includes(recherche)
+
+        ||
+
+        cmd.articles.some(a =>
+
+            a.article
+            ?.toLowerCase()
+            .includes(recherche)
+
+        );
+
+        const dateCommande =
+        cmd.dateReceptionISO || "";
+
+        const matchDateDebut =
+
+        dateDebut === ""
+
+        ||
+
+        dateCommande >= dateDebut;
+
+        const matchDateFin =
+
+        dateFin === ""
+
+        ||
+
+        dateCommande <= dateFin;
+
+        const matchFacture =
+
+        !factureSeulement
+
+        ||
+
+        cmd.factureRecue === true;
+
+        return (
+
+            matchRecherche
+
+            &&
+
+            matchDateDebut
+
+            &&
+
+            matchDateFin
+
+            &&
+
+            matchFacture
+
+        );
+
+    });
+
     if(
         commandesReceptionnees.length === 0
     ){
 
         html += `
-        Aucune commande réceptionnée.
+
+        <div class="card">
+        Aucune commande trouvée.
+        </div>
+
         `;
 
     }else{
@@ -1524,7 +1737,10 @@ function listeCommandesReceptionneesHDLP(){
 
                 <br><br>
 
-                📅 ${cmd.date}
+                📅 ${
+                    cmd.dateReception
+                    || cmd.date
+                }
 
                 <br>
 
@@ -1539,7 +1755,11 @@ function listeCommandesReceptionneesHDLP(){
 
                 <br>
 
-                ✅ Réceptionnée
+                🧾 ${
+                    cmd.factureRecue
+                    ? "Facture reçue ✅"
+                    : "Facture manquante ❌"
+                }
 
                 <br><br>
 
@@ -1559,8 +1779,6 @@ function listeCommandesReceptionneesHDLP(){
         });
 
     }
-
-    html += `</div>`;
 
     document.getElementById(
         "cards"
@@ -1777,5 +1995,30 @@ function supprimerCommandeReceptionneeHDLP(id){
     );
 
     listeCommandesReceptionneesHDLP();
+
+}
+function majFactureRecueHDLP(id){
+
+    const commande =
+    commandesHDLP.find(
+        c => c.id === id
+    );
+
+    if(!commande) return;
+
+    const caseFacture =
+    document.getElementById(
+        `factureRecue_${id}`
+    );
+
+    commande.factureRecue =
+    caseFacture?.checked || false;
+
+    localStorage.setItem(
+        "commandesHDLP",
+        JSON.stringify(
+            commandesHDLP
+        )
+    );
 
 }
