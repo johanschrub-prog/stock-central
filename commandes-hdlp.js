@@ -4,7 +4,10 @@ JSON.parse(
         "commandesHDLP"
     )
 ) || [];
-
+let filtreRechercheReceptionHDLP = "";
+let filtreDateDebutReceptionHDLP = "";
+let filtreDateFinReceptionHDLP = "";
+let filtreFactureReceptionHDLP = false;
 let commandeHDLPCourante = {};
 let commandeHDLPArticles = {};
 
@@ -1523,25 +1526,65 @@ if(zoneTotal){
 }
 function listeCommandesReceptionneesHDLP(){
 
-    const recherche =
-    document.getElementById(
-        "rechercheReceptionHDLP"
-    )?.value?.toLowerCase() || "";
+  const champRecherche =
+document.getElementById(
+    "rechercheReceptionHDLP"
+);
 
-    const dateDebut =
-    document.getElementById(
-        "dateDebutReceptionHDLP"
-    )?.value || "";
+if(champRecherche){
 
-    const dateFin =
-    document.getElementById(
-        "dateFinReceptionHDLP"
-    )?.value || "";
+    filtreRechercheReceptionHDLP =
+    champRecherche.value.toLowerCase();
 
-    const factureSeulement =
-    document.getElementById(
-        "factureRecueFiltre"
-    )?.checked || false;
+}
+
+const recherche =
+filtreRechercheReceptionHDLP;
+
+   const champDateDebut =
+document.getElementById(
+    "dateDebutReceptionHDLP"
+);
+
+if(champDateDebut){
+
+    filtreDateDebutReceptionHDLP =
+    champDateDebut.value;
+
+}
+
+const dateDebut =
+filtreDateDebutReceptionHDLP;
+
+  const champDateFin =
+document.getElementById(
+    "dateFinReceptionHDLP"
+);
+
+if(champDateFin){
+
+    filtreDateFinReceptionHDLP =
+    champDateFin.value;
+
+}
+
+const dateFin =
+filtreDateFinReceptionHDLP;
+
+  const caseFacture =
+document.getElementById(
+    "factureRecueFiltre"
+);
+
+if(caseFacture){
+
+    filtreFactureReceptionHDLP =
+    caseFacture.checked;
+
+}
+
+const factureSeulement =
+filtreFactureReceptionHDLP;
 
     let html = `
 
