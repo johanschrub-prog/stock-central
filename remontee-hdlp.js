@@ -370,7 +370,16 @@ function renderResumeHDLP(){
 
         html += `
 
-        <div class="card">
+       <div
+class="card card-resume"
+
+id="resume_${article.id}"
+
+onclick="
+surlignerArticleResume(
+'${article.id}'
+)
+">
 
             <b>${article.article}</b>
 
@@ -805,5 +814,19 @@ function validerQuantiteHDLP(id){
         recherche.select();
 
     }
+
+}
+function surlignerArticleResume(id){
+
+    const carte =
+    document.getElementById(
+        "resume_" + id
+    );
+
+    if(!carte) return;
+
+    carte.classList.toggle(
+        "article-selectionne"
+    );
 
 }
