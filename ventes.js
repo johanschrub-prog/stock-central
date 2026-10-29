@@ -232,14 +232,14 @@ function renderContenuBoutique(){
 
             <br><br>
 
-            <button
-            onclick="
-            validerQuantiteBoutique(
-            '${article.id}'
-            )">
-            ✅ OK
-            </button>
-
+           <button
+onclick="
+alert('OK');
+validerQuantiteBoutique(
+'${article.id}'
+)">
+✅ OK
+</button>
         </div>
 
         `;
@@ -251,7 +251,7 @@ function renderContenuBoutique(){
     ).innerHTML = html;
 }
 function validerQuantiteBoutique(id){
-
+ alert(id);
     const article =
     boutiqueData.find(
         a => a.id === id
