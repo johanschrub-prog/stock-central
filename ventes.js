@@ -7,6 +7,11 @@ JSON.parse(
 function ouvrirVentesBoutique(){
     renderVentesBoutique();
 }
+function ouvrirSaisieVentesBoutique(){
+
+    ouvrirVentesBoutique();
+
+}
 function renderVentesBoutique(){
 
     document.getElementById("cards").innerHTML = `
