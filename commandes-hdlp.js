@@ -1627,7 +1627,7 @@ filtreFactureReceptionHDLP;
 
         <br>
 
-       <input
+   <input
 id="rechercheReceptionHDLP"
 
 value="${recherche}"
@@ -1638,10 +1638,6 @@ Fournisseur ou article
 
 onfocus="
 focusRechercheReceptionHDLP = true
-"
-
-onblur="
-focusRechercheReceptionHDLP = false
 "
 
 oninput="
@@ -1859,9 +1855,26 @@ document.getElementById(
     "cards"
 ).innerHTML = html;
 
-if(
-    focusRechercheReceptionHDLP
-){
+setTimeout(() => {
+
+    const champ =
+    document.getElementById(
+        "rechercheReceptionHDLP"
+    );
+
+    if(champ){
+
+        champ.focus();
+
+        champ.setSelectionRange(
+            champ.value.length,
+            champ.value.length
+        );
+
+    }
+
+}, 10);
+
 
     setTimeout(() => {
 
@@ -1883,6 +1896,7 @@ if(
 
     }, 10);
 
+}
 }
 function mettreAJourFactureHDLP(id){
 
