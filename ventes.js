@@ -68,14 +68,38 @@ function changerOngletBoutique(tab){
 }
 function chargerArticlesBoutique(){
 
-    // Réparation des anciens articles sans id
+    // Répare les anciens enregistrements
+    // et synchronise les libellés avec la base article
     let modifie = false;
 
-    boutiqueData.forEach(article => {
+    boutiqueData.forEach(articleBoutique => {
 
-        if(!article.id){
+        if(!articleBoutique.id){
 
-            article.id = crypto.randomUUID();
+            articleBoutique.id =
+            crypto.randomUUID();
+
+            modifie = true;
+
+        }
+
+        const articleStock =
+        Object.values(stock)
+        .flat()
+        .find(a =>
+            String(a.code) ===
+            String(articleBoutique.code)
+        );
+
+        if(
+            articleStock &&
+            articleBoutique.article !==
+            articleStock.article
+        ){
+
+            articleBoutique.article =
+            articleStock.article;
+
             modifie = true;
 
         }
@@ -91,7 +115,6 @@ function chargerArticlesBoutique(){
 
     }
 
-    // Si déjà chargé on ne recrée pas les articles
     if(boutiqueData.length > 0){
         return;
     }
@@ -131,11 +154,8 @@ function chargerArticlesBoutique(){
     });
 
     localStorage.setItem(
-
         "boutiqueData",
-
         JSON.stringify(boutiqueData)
-
     );
 
 }
