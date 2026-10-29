@@ -326,7 +326,16 @@ if(
 
         html += `
 
-        <div class="card">
+       <div
+class="card card-resume"
+
+id="resume_${article.id}"
+
+onclick="
+surlignerArticleResume(
+'${article.id}'
+)
+">
 
             <b>${article.article}</b>
 
@@ -558,5 +567,19 @@ Number(articleStock.stock || 0)
     );
 
     changerOngletRCLP("rclp");
+
+}
+function surlignerArticleResume(id){
+
+    const carte =
+    document.getElementById(
+        "resume_" + id
+    );
+
+    if(!carte) return;
+
+    carte.classList.toggle(
+        "article-selectionne"
+    );
 
 }
