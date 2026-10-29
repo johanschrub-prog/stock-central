@@ -1800,7 +1800,8 @@ listeCommandesReceptionneesHDLP()
 
             html += `
 
-            <div class="card">
+           <div
+class="card commandeReceptionHDLP">
 
                 <b>
                 🚚 ${cmd.fournisseur}
@@ -2111,5 +2112,36 @@ function majFactureRecueHDLP(id){
             commandesHDLP
         )
     );
+
+}
+function filtrerReceptionHDLP(){
+
+    const recherche =
+    document.getElementById(
+        "rechercheReceptionHDLP"
+    ).value.toLowerCase();
+
+    document
+    .querySelectorAll(
+        ".commandeReceptionHDLP"
+    )
+    .forEach(carte => {
+
+        const texte =
+        carte.innerText.toLowerCase();
+
+        carte.style.display =
+
+        texte.includes(recherche)
+
+        ?
+
+        ""
+
+        :
+
+        "none";
+
+    });
 
 }
