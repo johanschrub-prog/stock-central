@@ -1874,29 +1874,7 @@ setTimeout(() => {
     }
 
 }, 10);
-
-
-    setTimeout(() => {
-
-        const champ =
-        document.getElementById(
-            "rechercheReceptionHDLP"
-        );
-
-        if(champ){
-
-            champ.focus();
-
-            champ.setSelectionRange(
-                champ.value.length,
-                champ.value.length
-            );
-
-        }
-
-    }, 10);
-
-}
+ 
 }
 function mettreAJourFactureHDLP(id){
 
