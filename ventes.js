@@ -95,19 +95,19 @@ function chargerArticlesBoutique(){
             String(article.code)
         );
 
-        boutiqueData.push({
+     boutiqueData.push({
 
-            id: crypto.randomUUID(),
+    id: crypto.randomUUID(),
 
-            code: article.code,
+    code: article.code,
 
-            article: article.article,
+    article: article.article,
 
-            vente: 0,
+    quantite: 0,
 
-            redescente: 0
+    valide: false
 
-        });
+});
 
     });
 
@@ -209,34 +209,65 @@ function renderContenuBoutique(){
             </span>
 
             <br><br>
+Cave d'origine
 
-            🛍️ Vente
+<br>
 
-            <br>
+<select
+id="cave_${article.id}">
 
-            <input
-            type="number"
-            id="vente_${article.id}"
-            value="${article.vente || ''}"
-            placeholder="Vente">
+<option ${
+article.cave==="HDLP SOFT"
+? "selected"
+: ""
+}>HDLP SOFT</option>
 
-            <br><br>
+<option ${
+article.cave==="HDLP BAR"
+? "selected"
+: ""
+}>HDLP BAR</option>
 
-            📦 Redescente Boutique
+<option ${
+article.cave==="HDLP MINI BAR"
+? "selected"
+: ""
+}>HDLP MINI BAR</option>
 
-            <br>
+<option ${
+article.cave==="HDLP SEMINAIRE"
+? "selected"
+: ""
+}>HDLP SEMINAIRE</option>
 
-            <input
-            type="number"
-            id="redescente_${article.id}"
-            value="${article.redescente || ''}"
-            placeholder="Redescente"
+<option ${
+article.cave==="RCLP SOFT"
+? "selected"
+: ""
+}>RCLP SOFT</option>
 
-            onkeydown="
-            if(event.key==='Enter'){
-                validerVenteBoutique('${article.id}');
-            }
-            ">
+<option ${
+article.cave==="RCLP VIN"
+? "selected"
+: ""
+}>RCLP VIN</option>
+
+<option ${
+article.cave==="RCLP ALCOOL"
+? "selected"
+: ""
+}>RCLP ALCOOL</option>
+
+</select>
+
+<br><br>
+        Quantité vendue
+
+<input
+type="number"
+id="vente_${article.id}"
+value="${article.quantite || ''}">
+
 
             <br><br>
 
@@ -267,38 +298,65 @@ function validerVenteBoutique(id){
     );
 
     if(!article) return;
+article.cave =
+document.getElementById(
+    "cave_" + id
+)?.value || "";
+    if(article.cave === ""){
 
-    article.vente = Number(
-        document.getElementById(
-            "vente_" + id
-        ).value || 0
+    alert(
+        "Choisissez une cave"
     );
 
-    article.redescente = Number(
-        document.getElementById(
-            "redescente_" + id
-        ).value || 0
+    return;
+
+}
+ article.quantite =
+Number(
+    document.getElementById(
+        "vente_" + id
+    ).value || 0
+);
+
+if(article.quantite <= 0){
+
+    alert(
+        "Saisissez une quantité"
     );
 
+    return;
+
+}
+
+article.valide = true;
     localStorage.setItem(
         "boutiqueData",
-        JSON.stringify(boutiqueData)
+        JSON.stringify(
+            boutiqueData
+        )
     );
-
+alert(
+    article.article +
+    " ajouté au résumé ✅"
+);
     const rechercheCode =
+document.getElementById(
+    "rechercheCodeBoutique"
+);
+
+if(rechercheCode){
+
+    rechercheCode.value = "";
+
+}
+    renderContenuBoutique();
+setTimeout(() => {
+
     document.getElementById(
         "rechercheCodeBoutique"
-    );
+    )?.focus();
 
-    if(rechercheCode){
-
-        rechercheCode.value = "";
-
-        rechercheCode.focus();
-
-        renderContenuBoutique();
-
-    }
+}, 100);
 
 }
 function renderResumeBoutique(){
@@ -312,39 +370,43 @@ function renderResumeBoutique(){
 
     boutiqueData.forEach(article => {
 
-        const vente =
-        Number(article.vente || 0);
+      const quantite =
+Number(article.quantite || 0);
 
-        const redescente =
-        Number(article.redescente || 0);
+if(
+    quantite <= 0
+){
+    return;
+}
 
-        if(
-            vente <= 0 &&
-            redescente <= 0
-        ){
-            return;
-        }
+totalArticles++;
 
-        totalArticles++;
-
-        totalQuantites +=
-        vente + redescente;
+totalQuantites += quantite;
 
         html += `
 
-        <div class="card">
+        <div
+class="card card-resume"
+
+id="resume_${article.id}"
+
+onclick="
+surlignerArticleResume(
+'${article.id}'
+)
+">
 
             <b>${article.article}</b>
 
             <br>
 
-            🛍️ Vente :
-            ${vente}
+          Code :
+${article.code}
 
-            <br>
+<br><br>
 
-            📦 Redescente :
-            ${redescente}
+🛍️ Quantité vendue :
+${quantite}
 
             <br><br>
 
@@ -357,17 +419,9 @@ function renderResumeBoutique(){
 
             <br><br>
 
-            Cave d'origine :
+       📦 Cave :
 
-            <select id="cave_${article.id}">
-                <option>HDLP SOFT</option>
-                <option>HDLP BAR</option>
-                <option>HDLP MINI BAR</option>
-                <option>HDLP SEMINAIRE</option>
-                <option>RCLP SOFT</option>
-                <option>RCLP VIN</option>
-                <option>RCLP ALCOOL</option>
-            </select>
+${article.cave || "-"}
 
             <br><br>
 
@@ -437,9 +491,10 @@ function retirerArticleResumeBoutique(id){
 
     if(article){
 
-        article.vente = 0;
+       article.quantite = 0;
 
-        article.redescente = 0;
+article.valide = false;
+article.cave = "";
 
     }
 
@@ -462,18 +517,14 @@ function validerVentesBoutique(){
 
     boutiqueData.forEach(article => {
 
-        const vente =
-        Number(article.vente || 0);
+       const quantite =
+Number(article.quantite || 0);
 
-        const redescente =
-        Number(article.redescente || 0);
-
-        if(
-            vente <= 0 &&
-            redescente <= 0
-        ){
-            return;
-        }
+if(
+    quantite <= 0
+){
+    return;
+}
 
         const coche =
         document.getElementById(
@@ -484,10 +535,9 @@ function validerVentesBoutique(){
             return;
         }
 
-        const cave =
-        document.getElementById(
-            "cave_" + article.id
-        ).value;
+       const cave =
+article.cave;
+
 
         const articleStock =
         (stock[cave] || [])
@@ -498,29 +548,24 @@ function validerVentesBoutique(){
 
         if(articleStock){
 
-            articleStock.stock =
+      articleStock.stock =
 
-            Number(articleStock.stock || 0)
+Number(articleStock.stock || 0)
 
-            - vente
-
-            + redescente;
+- quantite;
 
         }
 
-        mouvements.push({
+      mouvements.push({
 
-            article:
-            article.article,
+    article:
+    article.article,
 
-            code:
-            article.code,
+    code:
+    article.code,
 
-            vente:
-            vente,
-
-            redescente:
-            redescente,
+    quantite:
+    quantite,
 
             cave:
             cave,
@@ -533,10 +578,9 @@ function validerVentesBoutique(){
 
         });
 
-        article.vente = 0;
-
-        article.redescente = 0;
-
+      article.quantite = 0;
+article.valide = false;
+article.cave = "";
     });
 
     save();
