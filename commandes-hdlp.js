@@ -4,6 +4,7 @@ JSON.parse(
         "commandesHDLP"
     )
 ) || [];
+let focusRechercheReceptionHDLP = false;
 let filtreRechercheReceptionHDLP = "";
 let filtreDateDebutReceptionHDLP = "";
 let filtreDateFinReceptionHDLP = "";
@@ -1626,18 +1627,26 @@ filtreFactureReceptionHDLP;
 
         <br>
 
-        <input
-        id="rechercheReceptionHDLP"
+       <input
+id="rechercheReceptionHDLP"
 
-        value="${recherche}"
+value="${recherche}"
 
-        placeholder="
-        Fournisseur ou article
-        "
+placeholder="
+Fournisseur ou article
+"
 
-        oninput="
-        listeCommandesReceptionneesHDLP()
-        ">
+onfocus="
+focusRechercheReceptionHDLP = true
+"
+
+onblur="
+focusRechercheReceptionHDLP = false
+"
+
+oninput="
+listeCommandesReceptionneesHDLP()
+">
 
         <br><br>
 
@@ -1846,9 +1855,33 @@ filtreFactureReceptionHDLP;
 
     }
 
-    document.getElementById(
-        "cards"
-    ).innerHTML = html;
+document.getElementById(
+    "cards"
+).innerHTML = html;
+
+if(
+    focusRechercheReceptionHDLP
+){
+
+    setTimeout(() => {
+
+        const champ =
+        document.getElementById(
+            "rechercheReceptionHDLP"
+        );
+
+        if(champ){
+
+            champ.focus();
+
+            champ.setSelectionRange(
+                champ.value.length,
+                champ.value.length
+            );
+
+        }
+
+    }, 10);
 
 }
 function mettreAJourFactureHDLP(id){
