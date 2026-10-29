@@ -331,7 +331,9 @@ if(
             <b>${article.article}</b>
 
             <br>
-
+Code :
+ ${article.code}
+ <br><br>
             ⬆️ Remontée : ${remontee}
 
 <br>
