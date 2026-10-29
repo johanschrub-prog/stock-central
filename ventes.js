@@ -4,14 +4,10 @@ let boutiqueData =
 JSON.parse(
     localStorage.getItem("boutiqueData")
 ) || [];
-
-function ouvrirSaisieVentesBoutique(){
-
-    renderSaisieBoutique();
-
+function ouvrirVentesBoutique(){
+    renderVentesBoutique();
 }
-
-function renderSaisieBoutique(){
+function renderVentesBoutique(){
 
     document.getElementById("cards").innerHTML = `
 
@@ -23,18 +19,18 @@ function renderSaisieBoutique(){
 
         <h2>🛍️ Ventes Boutique</h2>
 
-        <button onclick="changerOngletBoutique('resume')">
+        <button onclick="changerOngletRCLP('resume')">
             📋 RÉSUMÉ
         </button>
 
-        <button onclick="changerOngletBoutique('vente')">
-            VENTES
+        <button onclick="changerOngletRCLP('rclp')">
+            RCLP
         </button>
 
         <hr>
 
         <input
-        id="rechercheBoutique"
+        id="rechercheRCLP"
         placeholder="🔍 Recherche article"
         oninput="renderContenuBoutique()"
         style="
@@ -43,10 +39,12 @@ function renderSaisieBoutique(){
         margin-bottom:10px;
         ">
 
-        <input
-        id="rechercheCodeBoutique"
-        type="text"
-        inputmode="numeric"
+     <input
+id="rechercheCodeRCLP"
+type="text"
+inputmode="numeric"
+pattern="[0-9]*"
+autocomplete="off"
         placeholder="📦 Code article"
         oninput="renderContenuBoutique()"
         style="
@@ -55,44 +53,22 @@ function renderSaisieBoutique(){
         margin-bottom:10px;
         ">
 
-        <div id="contenuBoutique"></div>
+        <div id="contenuRCLP"></div>
 
     </div>
 
     `;
 
     renderContenuBoutique();
-
 }
-function changerOngletBoutique(tab){
-
-    boutiqueTab = tab;
-
+function changerOngletRCLP(tab){
+    rclpTab = tab;
     renderContenuBoutique();
-
 }
-function chargerArticlesBoutique(){
+function chargerArticlesRCLP(){
 
     if(boutiqueData.length > 0){
-
-        boutiqueData.forEach(article => {
-
-            if(article.cave === undefined){
-                article.cave = "";
-            }
-
-            if(article.vente === undefined){
-                article.vente = 0;
-            }
-
-            if(article.redescente === undefined){
-                article.redescente = 0;
-            }
-
-        });
-
         return;
-
     }
 
     const dejaVus = new Set();
@@ -113,52 +89,45 @@ function chargerArticlesBoutique(){
             String(article.code)
         );
 
-        boutiqueData.push({
+     boutiqueData.push({
 
-            id: crypto.randomUUID(),
+    id: crypto.randomUUID(),
 
-            code: article.code,
+    code: article.code,
 
-            article: article.article,
+    article: article.article,
 
-            vente: 0,
+    vente: 0,
 
-            redescente: 0,
+    redescente: 0
 
-            cave: ""
-
-        });
+});
 
     });
 
-    localStorage.setItem(
-        "boutiqueData",
-        JSON.stringify(
-            boutiqueData
-        )
-    );
+ localStorage.setItem(
+    "boutiqueData",
+    JSON.stringify(boutiqueData)
+);
 
 }
 function renderContenuBoutique(){
 
-    if(boutiqueTab === "resume"){
-
+    if(rclpTab === "resume"){
         renderResumeBoutique();
-
         return;
-
     }
 
-    chargerArticlesBoutique();
+    chargerArticlesRCLP();
 
     const recherche =
     document.getElementById(
-        "rechercheBoutique"
+        "rechercheRCLP"
     )?.value?.toLowerCase() || "";
 
     const rechercheCode =
     document.getElementById(
-        "rechercheCodeBoutique"
+        "rechercheCodeRCLP"
     )?.value || "";
 
     let html = "";
@@ -169,7 +138,7 @@ function renderContenuBoutique(){
         Number(a.code)-Number(b.code)
     )
 
-    .filter(article => {
+    .filter(article=>{
 
         const okTexte =
 
@@ -194,7 +163,7 @@ function renderContenuBoutique(){
 
     })
 
-    .forEach(article => {
+    .forEach(article=>{
 
         const stockHDLP =
         getStockHDLP(article.code);
@@ -215,106 +184,56 @@ function renderContenuBoutique(){
             <br><br>
 
             <span style="
-            color:#1976d2;
-            font-weight:bold;
+                color:#1976d2;
+                font-weight:bold;
             ">
-            📦 HDLP : ${stockHDLP}
+                📦 HDLP : ${stockHDLP}
             </span>
 
             <br>
 
             <span style="
-            color:#ff9800;
-            font-weight:bold;
+                color:#ff9800;
+                font-weight:bold;
             ">
-            📦 RCLP : ${stockRCLP}
+                📦 RCLP : ${stockRCLP}
             </span>
 
             <br><br>
-Cave d'origine
 
-<br>
+            🛍️ Vente
 
-<select
-id="cave_${article.id}">
+            <br>
 
-<option ${
-article.cave==="HDLP SOFT"
-? "selected"
-: ""
-}>HDLP SOFT</option>
+            <input
+            type="number"
+            id="vente_${article.id}"
+            value="${article.vente || ''}"
+            placeholder="Remontée">
 
-<option ${
-article.cave==="HDLP BAR"
-? "selected"
-: ""
-}>HDLP BAR</option>
+            <br><br>
 
-<option ${
-article.cave==="HDLP MINI BAR"
-? "selected"
-: ""
-}>HDLP MINI BAR</option>
+            ⬇️ Redescente
 
-<option ${
-article.cave==="HDLP SEMINAIRE"
-? "selected"
-: ""
-}>HDLP SEMINAIRE</option>
+            <br>
 
-<option ${
-article.cave==="RCLP SOFT"
-? "selected"
-: ""
-}>RCLP SOFT</option>
+            <input
+            type="number"
+            id="redescente_${article.id}"
+            value="${article.redescente || ''}"
+            placeholder="Redescente"
 
-<option ${
-article.cave==="RCLP VIN"
-? "selected"
-: ""
-}>RCLP VIN</option>
-
-<option ${
-article.cave==="RCLP ALCOOL"
-? "selected"
-: ""
-}>RCLP ALCOOL</option>
-
-</select>
-
-<br><br>
-        Quantité vendue
-
-🛍️ Vente
-<input
-type="number"
-id="vente_${article.id}"
-value="${article.vente || ''}">
-📦 Redescente Boutique
-<input
-type="number"
-id="redescente_${article.id}"
-value="${article.redescente || ''}"
-
-onkeydown="
-if(event.key==='Enter'){
-
-    event.preventDefault();
-
-    validerVenteBoutique(
-        '${article.id}'
-    );
-
-}
-">
-
-
+            onkeydown="
+            if(event.key==='Enter'){
+                validerQuantiteRCLP('${article.id}');
+            }
+            ">
 
             <br><br>
 
             <button
             onclick="
-            validerVenteBoutique(
+            validerQuantiteRCLP(
             '${article.id}'
             )">
             ✅ OK
@@ -327,15 +246,223 @@ if(event.key==='Enter'){
     });
 
     document.getElementById(
-        "contenuBoutique"
+        "contenuRCLP"
     ).innerHTML = html;
+}
+function validerQuantiteRCLP(id){
+
+    const article =
+    boutiqueData.find(
+        a => a.id === id
+    );
+
+    if(!article) return;
+
+    article.vente = Number(
+        document.getElementById(
+            "vente_" + id
+        ).value || 0
+    );
+
+    article.redescente = Number(
+        document.getElementById(
+            "redescente_" + id
+        ).value || 0
+    );
+
+    localStorage.setItem(
+        "boutiqueData",
+        JSON.stringify(boutiqueData)
+    );
+
+    const rechercheCode =
+    document.getElementById(
+        "rechercheCodeRCLP"
+    );
+
+    if(rechercheCode){
+
+      rechercheCode.value = "";
+
+const rechercheArticle =
+document.getElementById(
+    "rechercheRCLP"
+);
+
+if(rechercheArticle){
+    rechercheArticle.value = "";
+}
+
+rechercheCode.focus();
+
+renderContenuBoutique();
+
+    }
+}
+function renderResumeBoutique(){
+
+    let html = "<h3>📋 Résumé des remontées RCLP</h3>";
+
+    let totalArticles = 0;
+    let totalQuantites = 0;
+
+    boutiqueData.forEach(article => {
+
+        const vente =
+Number(article.vente || 0);
+
+const redescente =
+Number(article.redescente || 0);
+
+if(
+    vente <= 0 &&
+    redescente <= 0
+){
+    return;
+}
+
+        totalArticles++;
+        totalQuantites += vente + redescente;
+
+        html += `
+
+       <div
+class="card card-resume"
+
+id="resume_${article.id}"
+
+onclick="
+surlignerArticleResume(
+'${article.id}'
+)
+">
+
+            <b>${article.article}</b>
+
+            <br>
+Code :
+ ${article.code}
+ <br><br>
+            🛍️ Vente : ${vente}
+
+<br>
+
+⬇️ Redescente : ${redescente}
+
+            <br><br>
+
+         <input
+    type="checkbox"
+    id="check_${article.id}"
+    checked
+>
+
+À traiter
+
+            <br><br>
+
+            Cave d'origine :
+
+           <select id="cave_${article.id}">
+    <option>HDLP SOFT</option>
+    <option>HDLP BAR</option>
+    <option>HDLP MINI BAR</option>
+    <option>HDLP SEMINAIRE</option>
+    <option>RCLP SOFT</option>
+    <option>RCLP VIN</option>
+    <option>RCLP ALCOOL</option>
+</select>
+
+            <br><br>
+
+            <button
+            style="
+                background:#dc3545;
+                color:white;
+            "
+            onclick="retirerArticleResumeRCLP('${article.id}')">
+                🗑️ Retirer
+            </button>
+
+        </div>
+
+        `;
+
+    });
+
+    html += `
+
+    <div class="card">
+
+        <b>Total articles :</b>
+        ${totalArticles}
+
+        <br>
+
+        <b>Total quantités :</b>
+        ${totalQuantites}
+
+        <br><br>
+
+        Date de remontée
+
+        <br>
+
+        <input
+            type="date"
+            id="dateventeRCLP"
+            value="${
+                new Date()
+                .toISOString()
+                .split("T")[0]
+            }"
+        >
+
+        <br><br>
+
+        <button
+        onclick="validerVentesBoutique())">
+            ✅ Valider la remontée
+        </button>
+
+    </div>
+
+    `;
+
+    document.getElementById(
+        "contenuRCLP"
+    ).innerHTML = html;
+}
+function retirerArticleResumeRCLP(id){
+
+    const article =
+    boutiqueData.find(
+        a => a.id === id
+    );
+
+    if(article){
+
+        article.vente = 0;
+
+        article.redescente = 0;
+
+    }
+
+    save();
+
+    localStorage.setItem(
+        "boutiqueData",
+        JSON.stringify(boutiqueData)
+    );
+
+    renderResumeBoutique();
 
 }
-function validerVentesBoutique(){
+function validerVentesBoutique()){
 
     const date =
     document.getElementById(
-        "dateVenteBoutique"
+        "dateventeRCLP"
     ).value;
 
     const mouvements = [];
@@ -360,15 +487,14 @@ function validerVentesBoutique(){
             "check_" + article.id
         );
 
-        if(
-            coche &&
-            !coche.checked
-        ){
+        if(!coche.checked){
             return;
         }
 
         const cave =
-        article.cave;
+        document.getElementById(
+            "cave_" + article.id
+        ).value;
 
         const articleStock =
         (stock[cave] || [])
@@ -379,15 +505,11 @@ function validerVentesBoutique(){
 
         if(articleStock){
 
-            articleStock.stock =
+         articleStock.stock =
+Number(articleStock.stock || 0)
+- vente
++ redescente;
 
-            Number(
-                articleStock.stock || 0
-            )
-
-            - vente
-
-            + redescente;
 
         }
 
@@ -412,7 +534,7 @@ function validerVentesBoutique(){
             date,
 
             type:
-            "Vente Boutique"
+            "Mouvement RCLP"
 
         });
 
@@ -420,17 +542,13 @@ function validerVentesBoutique(){
 
         article.redescente = 0;
 
-        article.cave = "";
-
     });
 
     save();
 
     localStorage.setItem(
         "boutiqueData",
-        JSON.stringify(
-            boutiqueData
-        )
+        JSON.stringify(boutiqueData)
     );
 
     let historique =
@@ -440,273 +558,32 @@ function validerVentesBoutique(){
         )
     ) || [];
 
-    historique.push(
-        ...mouvements
-    );
+    historique.push(...mouvements);
 
     localStorage.setItem(
         "mouvements",
-        JSON.stringify(
-            historique
-        )
+        JSON.stringify(historique)
     );
 
     alert(
         mouvements.length +
-        " mouvement(s) validé(s)"
+        " article(s) validé(s)"
     );
 
-    changerOngletBoutique(
-        "vente"
-    );
+    changerOngletRCLP("rclp");
 
 }
-function renderResumeBoutique(){
+function surlignerArticleResume(id){
 
-    let html =
-    "<h3>📋 Résumé des ventes</h3>";
-
-    let totalArticles = 0;
-
-    let totalQuantites = 0;
-
-    boutiqueData.forEach(article => {
-
-    const vente =
-Number(article.vente || 0);
-
-const redescente =
-Number(article.redescente || 0);
-
-if(
-    vente <= 0 &&
-    redescente <= 0
-){
-    return;
-}
-
-totalArticles++;
-
-totalQuantites +=
-vente + redescente;
-
-
-        html += `
-
-        <div
-class="card card-resume"
-
-id="resume_${article.id}"
-
-onclick="
-surlignerArticleResume(
-'${article.id}'
-)
-">
-
-            <b>${article.article}</b>
-
-            <br>
-
-          Code :
-${article.code}
-
-<br><br>
-
-🛍️ Vente :
-${vente}
-
-<br>
-
-📦 Redescente :
-${redescente}
-
-            <br><br>
-
-            <input
-            type="checkbox"
-            id="check_${article.id}"
-            checked>
-
-            À traiter
-
-            <br><br>
-
-    📦 Cave : <b>${article.cave || "-"}</b>
-
-            <br><br>
-
-            <button
-            style="
-                background:#dc3545;
-                color:white;
-            "
-            onclick="
-            retirerArticleResumeBoutique(
-            '${article.id}'
-            )">
-                🗑️ Retirer
-            </button>
-
-        </div>
-
-        `;
-
-    });
-
-    html += `
-
-    <div class="card">
-
-        <b>Total articles :</b>
-        ${totalArticles}
-
-        <br>
-
-        <b>Total quantités :</b>
-        ${totalQuantites}
-
-        <br><br>
-
-        <input
-        type="date"
-        id="dateVenteBoutique"
-        value="${
-            new Date()
-            .toISOString()
-            .split("T")[0]
-        }">
-
-        <br><br>
-
-        <button
-        onclick="validerVentesBoutique()">
-            ✅ Valider les ventes
-        </button>
-
-    </div>
-
-    `;
-
+    const carte =
     document.getElementById(
-        "contenuBoutique"
-    ).innerHTML = html;
-
-}
-function retirerArticleResumeBoutique(id){
-
-    const article =
-    boutiqueData.find(
-        a => a.id === id
+        "resume_" + id
     );
 
-    if(article){
+    if(!carte) return;
 
-    article.vente = 0;
-article.redescente = 0;
-article.cave = "";
-
-    }
-
-    localStorage.setItem(
-        "boutiqueData",
-        JSON.stringify(boutiqueData)
+    carte.classList.toggle(
+        "article-selectionne"
     );
-
-    renderResumeBoutique();
-
-}
-function validerVenteBoutique(id){
-
-    const article =
-    boutiqueData.find(
-        a => a.id === id
-    );
-
-    if(!article){
-        return;
-    }
-
-    article.cave =
-    document.getElementById(
-        "cave_" + id
-    )?.value || "";
-
-    if(article.cave === ""){
-
-        alert(
-            "Choisissez une cave"
-        );
-
-        return;
-
-    }
-
-    article.vente =
-    Number(
-        document.getElementById(
-            "vente_" + id
-        )?.value || 0
-    );
-
-    article.redescente =
-    Number(
-        document.getElementById(
-            "redescente_" + id
-        )?.value || 0
-    );
-
-    if(
-        article.vente <= 0 &&
-        article.redescente <= 0
-    ){
-
-        alert(
-            "Saisissez une vente ou une redescente"
-        );
-
-        return;
-
-    }
-
-    localStorage.setItem(
-        "boutiqueData",
-        JSON.stringify(
-            boutiqueData
-        )
-    );
-
-    alert(
-        article.article +
-        " ajouté au résumé ✅"
-    );
-
-    const champCode =
-    document.getElementById(
-        "rechercheCodeBoutique"
-    );
-
-    if(champCode){
-        champCode.value = "";
-    }
-
-    const champRecherche =
-    document.getElementById(
-        "rechercheBoutique"
-    );
-
-    if(champRecherche){
-        champRecherche.value = "";
-    }
-
-    ouvrirSaisieVentesBoutique();
-
-    setTimeout(() => {
-
-        document.getElementById(
-            "rechercheCodeBoutique"
-        )?.focus();
-
-    }, 200);
 
 }
