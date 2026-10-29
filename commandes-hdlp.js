@@ -93,26 +93,53 @@ function nouvelleCommandeHDLP(){
 
         <br><br>
 
-        <input
-        id="rechercheCommandeHDLP"
-        placeholder="
-        🔍 Article / Code / Code fournisseur
-        "
+       <input
+id="rechercheCommandeHDLP"
+placeholder="
+🔍 Article / Code / Code fournisseur
+"
 
-        oninput="
-        chargerArticlesCommandeHDLP()
-        "
+oninput="
+chargerArticlesCommandeHDLP()
+"
 
-        style="
-        width:100%;
-        padding:10px;
-        ">
+style="
+width:100%;
+padding:10px;
+">
 
-        <br><br>
+<br><br>
 
-        <div
-        id="contenuCommandeHDLP">
-        </div>
+<div class="card">
+
+    <b>
+    Total commande :
+    </b>
+
+    <span id="totalCommandeHDLP">
+    0.00 €
+    </span>
+
+    <br><br>
+
+    <button
+    onclick="
+    enregistrerCommandeHDLP()
+    "
+    style="
+    width:100%;
+    background:#28a745;
+    color:white;
+    font-weight:bold;
+    ">
+        ✅ Enregistrer commande
+    </button>
+
+</div>
+
+<div
+id="contenuCommandeHDLP">
+</div>
 
     </div>
 
@@ -445,30 +472,6 @@ ${article.prix || 0}
 
     });
 
-html += `
-
-<div class="card">
-
-    <b>
-    Total commande :
-    </b>
-
-    <span id="totalCommandeHDLP">
-        0.00 €
-    </span>
-
-</div>
-
-<div class="card">
-
-    <button
-    onclick="enregistrerCommandeHDLP()">
-        ✅ Enregistrer commande
-    </button>
-
-</div>
-
-`;
 
     document.getElementById(
         "contenuCommandeHDLP"
@@ -1401,6 +1404,35 @@ function validerArticleCommandeHDLP(
         cartons <= 0 &&
         pieces <= 0
     ){
+        let totalCommande =
+
+Object.values(
+    commandeHDLPArticles
+)
+
+.reduce(
+
+(total,a)=>
+
+total +
+Number(a.montant || 0),
+
+0
+
+);
+
+const zoneTotal =
+document.getElementById(
+    "totalCommandeHDLP"
+);
+
+if(zoneTotal){
+
+    zoneTotal.innerHTML =
+    totalCommande.toFixed(2)
+    + " €";
+
+}
         alert(
             "Aucune quantité saisie"
         );
