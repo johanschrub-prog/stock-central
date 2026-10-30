@@ -329,36 +329,6 @@ function validerQuantiteBoutique(id){
         JSON.stringify(boutiqueData)
     );
 
-    if(article.vente > 0){
-
-        const remontees =
-        getRemonteesEffectuees();
-
-        remontees.unshift({
-
-            id: crypto.randomUUID(),
-
-            date: new Date().toISOString(),
-
-            type: "BOUTIQUE",
-
-            cave: "BOUTIQUE",
-
-            articleId: article.id,
-
-            code: article.code || "",
-
-            designation: article.article || "",
-
-            quantite: article.vente
-
-        });
-
-        saveRemonteesEffectuees(
-            remontees
-        );
-    }
-
     const rechercheCode =
     document.getElementById(
          "rechercheCodeBoutique"
@@ -627,7 +597,58 @@ Number(articleStock.stock || 0)
             "Vente Boutique"
 
         });
+const remontees =
+getRemonteesEffectuees();
 
+if(vente > 0){
+
+    remontees.unshift({
+
+        id: crypto.randomUUID(),
+
+        date: date,
+
+        type: "BOUTIQUE",
+
+        cave: cave,
+
+        articleId: article.id,
+
+        code: article.code,
+
+        designation: article.article,
+
+        quantite: vente
+
+    });
+
+}
+
+if(redescente > 0){
+
+    remontees.unshift({
+
+        id: crypto.randomUUID(),
+
+        date: date,
+
+        type: "REDESCENTE BOUTIQUE",
+
+        cave: cave,
+
+        articleId: article.id,
+
+        code: article.code,
+
+        designation: article.article,
+
+        quantite: redescente
+
+    });
+
+}
+
+saveRemonteesEffectuees(remontees);
         article.vente = 0;
 
         article.redescente = 0;
