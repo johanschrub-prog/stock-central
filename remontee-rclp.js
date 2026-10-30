@@ -258,22 +258,56 @@ function validerQuantiteRCLP(id){
 
     if(!article) return;
 
-    article.remontee = Number(
+    const remontee = Number(
         document.getElementById(
             "remontee_" + id
         ).value || 0
     );
 
-    article.redescente = Number(
+    const redescente = Number(
         document.getElementById(
             "redescente_" + id
         ).value || 0
     );
 
+    article.remontee = remontee;
+    article.redescente = redescente;
+
     localStorage.setItem(
         "rclpData",
         JSON.stringify(rclpData)
     );
+
+    if(remontee > 0){
+
+        const remontees =
+        getRemonteesEffectuees();
+
+        remontees.unshift({
+
+            id: crypto.randomUUID(),
+
+            date: new Date().toISOString(),
+
+            type: "RCLP",
+
+            cave: "RCLP",
+
+            articleId: article.id,
+
+            code: article.code || "",
+
+            designation: article.article || "",
+
+            quantite: remontee
+
+        });
+
+        saveRemonteesEffectuees(
+            remontees
+        );
+
+    }
 
     const rechercheCode =
     document.getElementById(
@@ -282,21 +316,20 @@ function validerQuantiteRCLP(id){
 
     if(rechercheCode){
 
-      rechercheCode.value = "";
+        rechercheCode.value = "";
 
-const rechercheArticle =
-document.getElementById(
-    "rechercheRCLP"
-);
+        const rechercheArticle =
+        document.getElementById(
+            "rechercheRCLP"
+        );
 
-if(rechercheArticle){
-    rechercheArticle.value = "";
-}
+        if(rechercheArticle){
+            rechercheArticle.value = "";
+        }
 
-rechercheCode.focus();
+        rechercheCode.focus();
 
-renderContenuRCLP();
-
+        renderContenuRCLP();
     }
 }
 function renderResumeRCLP(){
