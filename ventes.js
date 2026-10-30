@@ -598,53 +598,65 @@ function validerVentesBoutique(){
 
         if(vente > 0){
 
-            remontees.unshift({
+remontees.unshift({
 
-                id: crypto.randomUUID(),
+    id: crypto.randomUUID(),
 
-                validationId: validationId,
+    validationId: validationId,
 
-                date: date,
-dateHeure: new Date().toISOString(),
-                type: "BOUTIQUE",
+    date: date,
 
-                cave: cave,
+    dateHeure: new Date().toISOString(),
 
-                articleId: article.id,
+    type: "BOUTIQUE",
 
-                code: article.code,
+    cave: cave,
 
-                designation: article.article,
+    caveOrigine: cave,
 
-                quantite: vente
+    articleId: article.id,
 
-            });
+    code: article.code,
+
+    designation: article.article,
+
+    quantite: vente,
+
+    quantiteOrigine: vente
+
+});
 
         }
 
         if(redescente > 0){
 
-            remontees.unshift({
+           remontees.unshift({
 
-                id: crypto.randomUUID(),
+    id: crypto.randomUUID(),
 
-                validationId: validationId,
+    validationId: validationId,
 
-                date: date,
+    date: date,
 
-                type: "REDESCENTE BOUTIQUE",
+    dateHeure: new Date().toISOString(),
 
-                cave: cave,
+    type: "REDESCENTE BOUTIQUE",
 
-                articleId: article.id,
+    cave: cave,
 
-                code: article.code,
+    caveOrigine: cave,
 
-                designation: article.article,
+    articleId: article.id,
 
-                quantite: redescente
+    code: article.code,
 
-            });
+    designation: article.article,
+
+    quantite: redescente,
+
+    quantiteOrigine: redescente
+
+});
 
         }
 
