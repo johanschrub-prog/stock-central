@@ -5942,35 +5942,29 @@ margin-bottom:10px;
 }
         function calculerStatsBoutique(){
 
-  let ventes = [];
+ const ventes =
 
-Object.keys(stock).forEach(categorie => {
+getRemonteesEffectuees()
 
-    stock[categorie].forEach(article => {
+.filter(v =>
 
-        (article.mouvements || []).forEach(m => {
+    v.type === "BOUTIQUE"
 
-            if(m.origine === "VENTE BOUTIQUE"){
+)
 
-                ventes.push({
+.map(v => ({
 
-                    article: article.article,
+    article: v.designation,
 
-                    code: article.code,
+    code: v.code,
 
-                    quantite: Number(m.quantite || 0),
+    quantite: Number(
+        v.quantite || 0
+    ),
 
-                    date: m.date
+    date: v.date
 
-                });
-
-            }
-
-        });
-
-    });
-
-});
+}));
 
             const ventesJour = {};
             
@@ -6052,16 +6046,21 @@ Number(v.quantite || 0);
 
         articles[v.article] +=
         Number(v.quantite || 0);
-let categorieArticle = "";
+let categorieArticle =
+"Sans catégorie";
 
 Object.values(stock)
 .flat()
 .forEach(a => {
 
-    if(String(a.code) === String(v.code)){
+    if(
+        String(a.code) ===
+        String(v.code)
+    ){
 
         categorieArticle =
-        a.categorie || "Sans catégorie";
+        a.categorie ||
+        "Sans catégorie";
 
     }
 
@@ -6135,10 +6134,13 @@ Number(v.quantite || 0);
     ).innerHTML =
     html;
 const labels =
-Object.keys(categoriesVentes);
+Object.keys(ventesJour)
+.sort();
 
 const data =
-Object.values(categoriesVentes);
+labels.map(
+    d => ventesJour[d]
+);
 
 const canvas =
 document.getElementById(
@@ -6170,7 +6172,7 @@ Math.max(
 
             datasets:[{
 
-                label:"Quantités vendues",
+              label:"Ventes par jour",
 
                 data:data,
 
