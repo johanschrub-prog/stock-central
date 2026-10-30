@@ -4294,50 +4294,101 @@ render();
 
         `;
 
-        if(validationOuverte === id){
+      if(validationOuverte === id){
 
-            validation.lignes
-            .forEach(ligne => {
+    html += `
 
-                html += `
+    <div style="margin-top:10px;">
 
-                <div style="
-                    border-top:1px solid #ddd;
-                    padding:10px;
-                    margin-top:5px;
-                ">
+        <button
+        style="
+        background:#dc3545;
+        color:white;
+        "
+        onclick="
+        event.stopPropagation();
+        supprimerValidation('${id}');
+        ">
+        🗑️ Supprimer la validation
+        </button>
 
-                    <b>
-                    ${ligne.designation}
-                    </b>
+    </div>
 
-                    <br>
+    `;
 
-                    Code :
-                    ${ligne.code}
+    validation.lignes.forEach(ligne => {
 
-                    <br>
+        html += `
 
-                    Cave :
-                    ${ligne.cave}
+        <div style="
+            border-top:1px solid #ddd;
+            padding:10px;
+            margin-top:5px;
+        ">
 
-                    <br>
+            <b>${ligne.designation}</b>
 
-                    Type :
-                    ${ligne.type}
+            <br>
 
-                    <br>
+            Code :
+            ${ligne.code}
 
-                    Quantité :
-                    ${ligne.quantite}
+            <br><br>
 
-                </div>
+            Cave :
 
-                `;
+            <input
+            id="cave_${ligne.id}"
+            value="${ligne.cave}"
+            style="width:100%;"
+            >
 
-            });
+            <br><br>
 
-        }
+            Type :
+            ${ligne.type}
+
+            <br><br>
+
+            Quantité :
+
+            <input
+            type="number"
+            id="quantite_${ligne.id}"
+            value="${ligne.quantite}"
+            style="width:100%;"
+            >
+
+            <br><br>
+
+            <button
+            onclick="
+            modifierRemontee(
+            '${ligne.id}'
+            )">
+            💾 Enregistrer
+            </button>
+
+            <button
+            style="
+            background:#dc3545;
+            color:white;
+            margin-left:5px;
+            "
+            onclick="
+            supprimerRemontee(
+            '${ligne.id}'
+            )">
+            🗑️ Supprimer
+            </button>
+
+        </div>
+
+        `;
+
+    });
+
+}
 
         html += `
         </div>
@@ -5162,7 +5213,98 @@ document.getElementById(
 ).innerHTML = html;
 
 }
+function supprimerValidation(validationId){
 
+    if(
+        !confirm(
+            "Supprimer toute la validation ?"
+        )
+    ){
+        return;
+    }
+
+    let remontees =
+    getRemonteesEffectuees();
+
+    remontees =
+    remontees.filter(r =>
+
+        r.validationId !==
+        validationId
+
+    );
+
+    saveRemonteesEffectuees(
+        remontees
+    );
+
+    validationOuverte = null;
+
+    render();
+
+}
+function supprimerRemontee(id){
+
+    if(
+        !confirm(
+            "Supprimer cet article ?"
+        )
+    ){
+        return;
+    }
+
+    let remontees =
+    getRemonteesEffectuees();
+
+    remontees =
+    remontees.filter(
+        r => r.id !== id
+    );
+
+    saveRemonteesEffectuees(
+        remontees
+    );
+
+    render();
+
+}
+function modifierRemontee(id){
+
+    const remontees =
+    getRemonteesEffectuees();
+
+    const ligne =
+    remontees.find(
+        r => r.id === id
+    );
+
+    if(!ligne){
+        return;
+    }
+
+    ligne.cave =
+    document.getElementById(
+        "cave_" + id
+    ).value;
+
+    ligne.quantite =
+    Number(
+        document.getElementById(
+            "quantite_" + id
+        ).value || 0
+    );
+
+    saveRemonteesEffectuees(
+        remontees
+    );
+
+    alert(
+        "Modification enregistrée"
+    );
+
+    render();
+
+}
 function exportHistoriqueExcel(){
 
     const filtreSite =
