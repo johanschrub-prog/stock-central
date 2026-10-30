@@ -316,16 +316,48 @@ function validerQuantiteBoutique(id){
             "redescente_" + id
         ).value || 0
     );
-if(
-    article.vente <= 0 &&
-    article.redescente <= 0
-){
-    return;
-}
+
+    if(
+        article.vente <= 0 &&
+        article.redescente <= 0
+    ){
+        return;
+    }
+
     localStorage.setItem(
         "boutiqueData",
         JSON.stringify(boutiqueData)
     );
+
+    if(article.vente > 0){
+
+        const remontees =
+        getRemonteesEffectuees();
+
+        remontees.unshift({
+
+            id: crypto.randomUUID(),
+
+            date: new Date().toISOString(),
+
+            type: "BOUTIQUE",
+
+            cave: "BOUTIQUE",
+
+            articleId: article.id,
+
+            code: article.code || "",
+
+            designation: article.article || "",
+
+            quantite: article.vente
+
+        });
+
+        saveRemonteesEffectuees(
+            remontees
+        );
+    }
 
     const rechercheCode =
     document.getElementById(
@@ -334,26 +366,26 @@ if(
 
     if(rechercheCode){
 
-      rechercheCode.value = "";
+        rechercheCode.value = "";
 
-const rechercheArticle =
-document.getElementById(
-    "rechercheBoutique"
-);
+        const rechercheArticle =
+        document.getElementById(
+            "rechercheBoutique"
+        );
 
-if(rechercheArticle){
-    rechercheArticle.value = "";
-}
+        if(rechercheArticle){
+            rechercheArticle.value = "";
+        }
 
-renderContenuBoutique();
+        renderContenuBoutique();
 
-setTimeout(() => {
+        setTimeout(() => {
 
-    document.getElementById(
-        "rechercheCodeBoutique"
-    )?.focus();
+            document.getElementById(
+                "rechercheCodeBoutique"
+            )?.focus();
 
-}, 100);
+        }, 100);
 
     }
 }
