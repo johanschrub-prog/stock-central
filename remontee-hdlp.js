@@ -785,22 +785,55 @@ function validerQuantiteHDLP(id){
 
     if(!article) return;
 
-    article.remontee = Number(
+    const remontee = Number(
         document.getElementById(
             "remontee_" + id
         ).value || 0
     );
 
-    article.redescente = Number(
+    const redescente = Number(
         document.getElementById(
             "redescente_" + id
         ).value || 0
     );
 
+    article.remontee = remontee;
+    article.redescente = redescente;
+
     localStorage.setItem(
         "caveData",
         JSON.stringify(hdlpData)
     );
+
+    if(remontee > 0){
+
+        const remontees =
+        getRemonteesEffectuees();
+
+        remontees.unshift({
+
+            id: crypto.randomUUID(),
+
+            date: new Date().toISOString(),
+
+            type: "HDLP",
+
+            cave: hdlpTab,
+
+            articleId: article.id,
+
+            code: article.code || "",
+
+            designation: article.article || "",
+
+            quantite: remontee
+
+        });
+
+        saveRemonteesEffectuees(
+            remontees
+        );
+    }
 
     const recherche =
     document.getElementById(
