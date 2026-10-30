@@ -465,6 +465,9 @@ function validerRemonteeResumeRCLP(){
 
     const mouvements = [];
 
+    const remontees =
+    getRemonteesEffectuees();
+
     rclpData.forEach(article => {
 
         const remontee =
@@ -503,99 +506,85 @@ function validerRemonteeResumeRCLP(){
 
         if(articleStock){
 
-         articleStock.stock =
-Number(articleStock.stock || 0)
-- remontee
-+ redescente;
-
+            articleStock.stock =
+            Number(articleStock.stock || 0)
+            - remontee
+            + redescente;
 
         }
 
-       mouvements.push({
+        mouvements.push({
 
-    article:
-    article.article,
+            article: article.article,
 
-    code:
-    article.code,
+            code: article.code,
 
-    remontee:
-    remontee,
+            remontee: remontee,
 
-    redescente:
-    redescente,
+            redescente: redescente,
 
-    cave:
-    cave,
+            cave: cave,
 
-    date:
-    date,
+            date: date,
 
-    type:
-    "Mouvement RCLP"
-
-});
-
-const remontees =
-getRemonteesEffectuees();
-
-if(remontee > 0){
-
-    remontees.unshift({
-
-        id: crypto.randomUUID(),
-
-        date: date,
-
-        type: "RCLP",
-
-        cave: cave,
-
-        articleId: article.id,
-
-        code: article.code,
-
-        designation: article.article,
-
-        quantite: remontee
-
-    });
-
-}
-
-if(redescente > 0){
-
-    remontees.unshift({
-
-        id: crypto.randomUUID(),
-
-        date: date,
-
-        type: "REDESCENTE RCLP",
-
-        cave: cave,
-
-        articleId: article.id,
-
-        code: article.code,
-
-        designation: article.article,
-
-        quantite: redescente
-
-    });
-
-}
-
-saveRemonteesEffectuees(remontees);
+            type: "Mouvement RCLP"
 
         });
 
-        article.remontee = 0;
+        if(remontee > 0){
 
+            remontees.unshift({
+
+                id: crypto.randomUUID(),
+
+                date: date,
+
+                type: "RCLP",
+
+                cave: cave,
+
+                articleId: article.id,
+
+                code: article.code,
+
+                designation: article.article,
+
+                quantite: remontee
+
+            });
+
+        }
+
+        if(redescente > 0){
+
+            remontees.unshift({
+
+                id: crypto.randomUUID(),
+
+                date: date,
+
+                type: "REDESCENTE RCLP",
+
+                cave: cave,
+
+                articleId: article.id,
+
+                code: article.code,
+
+                designation: article.article,
+
+                quantite: redescente
+
+            });
+
+        }
+
+        article.remontee = 0;
         article.redescente = 0;
 
     });
+
+    saveRemonteesEffectuees(remontees);
 
     save();
 
