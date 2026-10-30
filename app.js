@@ -4335,13 +4335,47 @@ render();
 
             <br><br>
 
-            Cave :
+           <select
+id="cave_${ligne.id}"
+style="width:100%;"
+>
 
-            <input
-            id="cave_${ligne.id}"
-            value="${ligne.cave}"
-            style="width:100%;"
-            >
+<option value="HDLP SOFT"
+${ligne.cave === "HDLP SOFT" ? "selected" : ""}>
+HDLP SOFT
+</option>
+
+<option value="HDLP BAR"
+${ligne.cave === "HDLP BAR" ? "selected" : ""}>
+HDLP BAR
+</option>
+
+<option value="HDLP MINI BAR"
+${ligne.cave === "HDLP MINI BAR" ? "selected" : ""}>
+HDLP MINI BAR
+</option>
+
+<option value="HDLP SEMINAIRE"
+${ligne.cave === "HDLP SEMINAIRE" ? "selected" : ""}>
+HDLP SEMINAIRE
+</option>
+
+<option value="RCLP SOFT"
+${ligne.cave === "RCLP SOFT" ? "selected" : ""}>
+RCLP SOFT
+</option>
+
+<option value="RCLP VIN"
+${ligne.cave === "RCLP VIN" ? "selected" : ""}>
+RCLP VIN
+</option>
+
+<option value="RCLP ALCOOL"
+${ligne.cave === "RCLP ALCOOL" ? "selected" : ""}>
+RCLP ALCOOL
+</option>
+
+</select>
 
             <br><br>
 
