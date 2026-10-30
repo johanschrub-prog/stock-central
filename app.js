@@ -4114,32 +4114,53 @@ if(categorieActive === "FOURNISSEURS"){
             margin-bottom:15px;
         ">
 
-            <button
-            class="tab"
-            onclick="
-            ongletRemontees='HDLP';
-            render();
-            ">
-            🏨 HDLP
-            </button>
+           <button
+class="tab"
+style="
+${
+ongletRemontees === 'HDLP'
+? 'background:#1976d2;color:white;'
+: ''
+}
+"
+onclick="
+ongletRemontees='HDLP';
+render();
+">
+🏨 HDLP
+</button>
 
-            <button
-            class="tab"
-            onclick="
-            ongletRemontees='RCLP';
-            render();
-            ">
-            🍴 RCLP
-            </button>
+<button
+class="tab"
+style="
+${
+ongletRemontees === 'RCLP'
+? 'background:#ff9800;color:white;'
+: ''
+}
+"
+onclick="
+ongletRemontees='RCLP';
+render();
+">
+🍴 RCLP
+</button>
 
-            <button
-            class="tab"
-            onclick="
-            ongletRemontees='BOUTIQUE';
-            render();
-            ">
-            🛍️ Boutique
-            </button>
+<button
+class="tab"
+style="
+${
+ongletRemontees === 'BOUTIQUE'
+? 'background:#e91e63;color:white;'
+: ''
+}
+"
+onclick="
+ongletRemontees='BOUTIQUE';
+render();
+">
+🛍️ Boutique
+</button>
 
         </div>
 
