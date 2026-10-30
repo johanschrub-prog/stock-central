@@ -6507,6 +6507,18 @@ function mettreAJourStockJson(){
     lien.click();
 
 }
+function getRemonteesEffectuees() {
+    return JSON.parse(
+        localStorage.getItem('remonteesEffectuees') || '[]'
+    );
+}
+
+function saveRemonteesEffectuees(data) {
+    localStorage.setItem(
+        'remonteesEffectuees',
+        JSON.stringify(data)
+    );
+}
 function supprimerFournisseur(id){
 
     if(!confirm("Supprimer ce fournisseur ?")){
