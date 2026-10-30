@@ -14,6 +14,7 @@ localStorage.getItem(
 ) === "1";
 
 let ongletRemontees = "HDLP";
+let validationOuverte = null;
 let categorieActive = "";
 
 const categories = {
