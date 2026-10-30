@@ -4173,7 +4173,18 @@ render();
         padding:10px;
         "
         >
+<br><br>
 
+<input
+type="text"
+id="filtreArticleRemontees"
+placeholder="🔎 Code ou article"
+oninput="render()"
+style="
+width:100%;
+padding:10px;
+"
+>
     </div>
     `;
 
@@ -4181,7 +4192,13 @@ render();
     document.getElementById(
         "filtreDateRemontees"
     )?.value || "";
-
+const rechercheArticle =
+(
+    document.getElementById(
+        "filtreArticleRemontees"
+    )?.value || ""
+)
+.toLowerCase();
     const validations = {};
 
     remontees.forEach(r => {
@@ -4204,6 +4221,32 @@ render();
             }
 
         }
+if(rechercheArticle){
+
+    const trouve =
+    String(
+        r.code || ""
+    )
+    .toLowerCase()
+    .includes(
+        rechercheArticle
+    )
+
+    ||
+
+    String(
+        r.designation || ""
+    )
+    .toLowerCase()
+    .includes(
+        rechercheArticle
+    );
+
+    if(!trouve){
+        return;
+    }
+
+}
 
         if(!validations[id]){
 
