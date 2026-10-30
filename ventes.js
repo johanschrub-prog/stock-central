@@ -605,7 +605,7 @@ function validerVentesBoutique(){
                 validationId: validationId,
 
                 date: date,
-
+dateHeure: new Date().toISOString(),
                 type: "BOUTIQUE",
 
                 cave: cave,
