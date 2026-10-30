@@ -4070,7 +4070,7 @@ if(categorieActive === "FOURNISSEURS"){
     return;
 
 }    
-  if(categorieActive === "REMONTEES_EFFECTUEES"){
+ if(categorieActive === "REMONTEES_EFFECTUEES"){
 
     let remontees =
     getRemonteesEffectuees();
@@ -4111,39 +4111,78 @@ if(categorieActive === "FOURNISSEURS"){
         <div style="
             display:flex;
             gap:10px;
-            flex-wrap:wrap;
+            margin-bottom:15px;
         ">
 
             <button
             class="tab"
-            onclick="changerOngletRemontees('HDLP')">
-                🏨 HDLP
+            onclick="
+            ongletRemontees='HDLP';
+            render();
+            ">
+            🏨 HDLP
             </button>
 
             <button
             class="tab"
-            onclick="changerOngletRemontees('RCLP')">
-                🍴 RCLP
+            onclick="
+            ongletRemontees='RCLP';
+            render();
+            ">
+            🍴 RCLP
             </button>
 
             <button
             class="tab"
-            onclick="changerOngletRemontees('BOUTIQUE')">
-                🛍️ Boutique
+            onclick="
+            ongletRemontees='BOUTIQUE';
+            render();
+            ">
+            🛍️ Boutique
             </button>
 
         </div>
 
-    </div>
+        <input
+        type="date"
+        id="filtreDateRemontees"
+        onchange="render()"
+        style="
+        width:100%;
+        padding:10px;
+        "
+        >
 
+    </div>
     `;
+
+    const dateRecherche =
+    document.getElementById(
+        "filtreDateRemontees"
+    )?.value || "";
 
     const validations = {};
 
     remontees.forEach(r => {
 
         const id =
-        r.validationId || "sans_validation";
+        r.validationId ||
+        "sansValidation";
+
+        if(dateRecherche){
+
+            const dateLigne =
+            String(r.date || "")
+            .substring(0,10);
+
+            if(
+                dateLigne !==
+                dateRecherche
+            ){
+                return;
+            }
+
+        }
 
         if(!validations[id]){
 
@@ -4151,7 +4190,8 @@ if(categorieActive === "FOURNISSEURS"){
 
                 date: r.date,
 
-                type: r.type,
+                dateHeure:
+                r.dateHeure,
 
                 lignes: []
 
@@ -4169,10 +4209,25 @@ if(categorieActive === "FOURNISSEURS"){
     .reverse()
     .forEach(([id, validation]) => {
 
-        const totalQuantite =
+        const heure =
+        validation.dateHeure
+        ?
+        new Date(
+            validation.dateHeure
+        ).toLocaleTimeString(
+            "fr-FR",
+            {
+                hour:"2-digit",
+                minute:"2-digit"
+            }
+        )
+        :
+        "--:--";
+
+        const total =
         validation.lignes.reduce(
-            (t,l) =>
-            t + Number(l.quantite || 0),
+            (s,r) =>
+            s + Number(r.quantite || 0),
             0
         );
 
@@ -4180,72 +4235,88 @@ if(categorieActive === "FOURNISSEURS"){
 
         <div class="card">
 
-            <b>
-            ✅ Validation
-            </b>
+            <button
+            style="
+                width:100%;
+                text-align:left;
+                padding:15px;
+                font-size:18px;
+                font-weight:bold;
+            "
+            onclick="
+            validationOuverte =
+            validationOuverte === '${id}'
+            ? null
+            : '${id}';
+            render();
+            ">
+
+            📦 Validation
+
+            ${new Date(
+                validation.date
+            ).toLocaleDateString()}
+
+            - ${heure}
 
             <br><br>
 
-            Date :
-            ${
-                new Date(validation.date)
-                .toLocaleDateString()
-            }
-
-            <br><br>
-
-            Articles :
             ${validation.lignes.length}
+            article(s)
 
-            <br><br>
+            -
 
-            Quantités :
-            ${totalQuantite}
+            ${total}
+            quantité(s)
 
-            <br><br>
+            </button>
 
         `;
 
-        validation.lignes
-        .forEach(ligne => {
+        if(validationOuverte === id){
 
-            html += `
+            validation.lignes
+            .forEach(ligne => {
 
-            <div style="
-                border-top:1px solid #ddd;
-                margin-top:8px;
-                padding-top:8px;
-            ">
+                html += `
 
-                <b>
-                ${ligne.designation}
-                </b>
+                <div style="
+                    border-top:1px solid #ddd;
+                    padding:10px;
+                    margin-top:5px;
+                ">
 
-                <br>
+                    <b>
+                    ${ligne.designation}
+                    </b>
 
-                Code :
-                ${ligne.code}
+                    <br>
 
-                <br>
+                    Code :
+                    ${ligne.code}
 
-                Cave :
-                ${ligne.cave}
+                    <br>
 
-                <br>
+                    Cave :
+                    ${ligne.cave}
 
-                Type :
-                ${ligne.type}
+                    <br>
 
-                <br>
+                    Type :
+                    ${ligne.type}
 
-                Quantité :
-                ${ligne.quantite}
+                    <br>
 
-            </div>
+                    Quantité :
+                    ${ligne.quantite}
 
-            `;
+                </div>
 
-        });
+                `;
+
+            });
+
+        }
 
         html += `
         </div>
