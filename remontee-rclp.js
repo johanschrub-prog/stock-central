@@ -543,7 +543,7 @@ function validerRemonteeResumeRCLP(){
                 validationId: validationId,
 
                 date: date,
-
+ dateHeure: new Date().toISOString(),
                 type: "RCLP",
 
                 cave: cave,
