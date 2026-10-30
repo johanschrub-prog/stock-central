@@ -587,7 +587,58 @@ Number(articleStock.stock || 0)
                 "Mouvement HDLP"
 
             });
+const remontees =
+getRemonteesEffectuees();
 
+if(remontee > 0){
+
+    remontees.unshift({
+
+        id: crypto.randomUUID(),
+
+        date: date,
+
+        type: "HDLP",
+
+        cave: cave,
+
+        articleId: article.id,
+
+        code: article.code,
+
+        designation: article.article,
+
+        quantite: remontee
+
+    });
+
+}
+
+if(redescente > 0){
+
+    remontees.unshift({
+
+        id: crypto.randomUUID(),
+
+        date: date,
+
+        type: "REDESCENTE HDLP",
+
+        cave: cave,
+
+        articleId: article.id,
+
+        code: article.code,
+
+        designation: article.article,
+
+        quantite: redescente
+
+    });
+
+}
+
+saveRemonteesEffectuees(remontees);
             article.remontee = 0;
 
             article.redescente = 0;
@@ -804,36 +855,6 @@ function validerQuantiteHDLP(id){
         "caveData",
         JSON.stringify(hdlpData)
     );
-
-    if(remontee > 0){
-console.log(article);
-        const remontees =
-        getRemonteesEffectuees();
-
-        remontees.unshift({
-
-            id: crypto.randomUUID(),
-
-            date: new Date().toISOString(),
-
-            type: "HDLP",
-
-            cave: hdlpTab,
-
-            articleId: article.id,
-
-            code: article.code || "",
-
-            designation: article.article || "",
-
-            quantite: remontee
-
-        });
-
-        saveRemonteesEffectuees(
-            remontees
-        );
-    }
 
     const recherche =
     document.getElementById(
