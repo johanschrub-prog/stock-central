@@ -527,6 +527,12 @@ function validerVentesBoutique(){
 
     const mouvements = [];
 
+    const validationId =
+    crypto.randomUUID();
+
+    const remontees =
+    getRemonteesEffectuees();
+
     boutiqueData.forEach(article => {
 
         const vente =
@@ -565,95 +571,89 @@ function validerVentesBoutique(){
 
         if(articleStock){
 
-         articleStock.stock =
-Number(articleStock.stock || 0)
-- vente
-+ redescente;
-
+            articleStock.stock =
+            Number(articleStock.stock || 0)
+            - vente
+            + redescente;
 
         }
 
         mouvements.push({
 
-            article:
-            article.article,
+            article: article.article,
 
-            code:
-            article.code,
+            code: article.code,
 
-            vente:
-            vente,
+            vente: vente,
 
-            redescente:
-            redescente,
+            redescente: redescente,
 
-            cave:
-            cave,
+            cave: cave,
 
-            date:
-            date,
+            date: date,
 
-            type:
-            "Vente Boutique"
+            type: "Vente Boutique"
 
         });
-const remontees =
-getRemonteesEffectuees();
 
-if(vente > 0){
+        if(vente > 0){
 
-    remontees.unshift({
+            remontees.unshift({
 
-        id: crypto.randomUUID(),
+                id: crypto.randomUUID(),
 
-        date: date,
+                validationId: validationId,
 
-        type: "BOUTIQUE",
+                date: date,
 
-        cave: cave,
+                type: "BOUTIQUE",
 
-        articleId: article.id,
+                cave: cave,
 
-        code: article.code,
+                articleId: article.id,
 
-        designation: article.article,
+                code: article.code,
 
-        quantite: vente
+                designation: article.article,
 
-    });
+                quantite: vente
 
-}
+            });
 
-if(redescente > 0){
+        }
 
-    remontees.unshift({
+        if(redescente > 0){
 
-        id: crypto.randomUUID(),
+            remontees.unshift({
 
-        date: date,
+                id: crypto.randomUUID(),
 
-        type: "REDESCENTE BOUTIQUE",
+                validationId: validationId,
 
-        cave: cave,
+                date: date,
 
-        articleId: article.id,
+                type: "REDESCENTE BOUTIQUE",
 
-        code: article.code,
+                cave: cave,
 
-        designation: article.article,
+                articleId: article.id,
 
-        quantite: redescente
+                code: article.code,
 
-    });
+                designation: article.article,
 
-}
+                quantite: redescente
 
-saveRemonteesEffectuees(remontees);
+            });
+
+        }
+
         article.vente = 0;
-
         article.redescente = 0;
 
     });
+
+    saveRemonteesEffectuees(remontees);
 
     save();
 
