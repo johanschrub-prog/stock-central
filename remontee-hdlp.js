@@ -590,7 +590,7 @@ function validerRemonteeResumeHDLP(){
                     validationId: validationId,
 
                     date: date,
-
+dateHeure: new Date().toISOString(),
                     type: "HDLP",
 
                     cave: cave,
