@@ -5260,6 +5260,23 @@ function supprimerValidation(validationId){
     let remontees =
     getRemonteesEffectuees();
 
+    remontees
+    .filter(r =>
+
+        r.validationId ===
+        validationId
+
+    )
+    .forEach(ligne => {
+
+        annulerImpactStock(
+            ligne
+        );
+
+    });
+
+    save();
+
     remontees =
     remontees.filter(r =>
 
@@ -5277,6 +5294,102 @@ function supprimerValidation(validationId){
     render();
 
 }
+function estRedescente(type){
+
+    return String(type)
+    .startsWith("REDESCENTE");
+
+}
+function trouverArticleStock(
+    cave,
+    code
+){
+
+    return (
+        stock[cave] || []
+    ).find(a =>
+
+        String(a.code) ===
+        String(code)
+
+    );
+
+}
+function annulerImpactStock(ligne){
+
+    const articleStock =
+    trouverArticleStock(
+        ligne.caveOrigine || ligne.cave,
+        ligne.code
+    );
+
+    if(!articleStock){
+        return;
+    }
+
+    if(
+        estRedescente(
+            ligne.type
+        )
+    ){
+
+        articleStock.stock =
+        Number(articleStock.stock || 0)
+        - Number(
+            ligne.quantiteOrigine ??
+            ligne.quantite ??
+            0
+        );
+
+    }else{
+
+        articleStock.stock =
+        Number(articleStock.stock || 0)
+        + Number(
+            ligne.quantiteOrigine ??
+            ligne.quantite ??
+            0
+        );
+
+    }
+
+}
+function appliquerImpactStock(ligne){
+
+    const articleStock =
+    trouverArticleStock(
+        ligne.cave,
+        ligne.code
+    );
+
+    if(!articleStock){
+        return;
+    }
+
+    if(
+        estRedescente(
+            ligne.type
+        )
+    ){
+
+        articleStock.stock =
+        Number(articleStock.stock || 0)
+        + Number(
+            ligne.quantite || 0
+        );
+
+    }else{
+
+        articleStock.stock =
+        Number(articleStock.stock || 0)
+        - Number(
+            ligne.quantite || 0
+        );
+
+    }
+
+}
+
 function supprimerRemontee(id){
 
     if(
@@ -5290,6 +5403,21 @@ function supprimerRemontee(id){
     let remontees =
     getRemonteesEffectuees();
 
+    const ligne =
+    remontees.find(
+        r => r.id === id
+    );
+
+    if(ligne){
+
+        annulerImpactStock(
+            ligne
+        );
+
+        save();
+
+    }
+
     remontees =
     remontees.filter(
         r => r.id !== id
@@ -5302,6 +5430,7 @@ function supprimerRemontee(id){
     render();
 
 }
+
 function modifierRemontee(id){
 
     const remontees =
@@ -5316,6 +5445,10 @@ function modifierRemontee(id){
         return;
     }
 
+    annulerImpactStock(
+        ligne
+    );
+
     ligne.cave =
     document.getElementById(
         "cave_" + id
@@ -5327,6 +5460,18 @@ function modifierRemontee(id){
             "quantite_" + id
         ).value || 0
     );
+
+    appliquerImpactStock(
+        ligne
+    );
+
+    ligne.caveOrigine =
+    ligne.cave;
+
+    ligne.quantiteOrigine =
+    ligne.quantite;
+
+    save();
 
     saveRemonteesEffectuees(
         remontees
