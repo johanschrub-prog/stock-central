@@ -6988,6 +6988,41 @@ function mettreAJourStockJson(){
     lien.click();
 
 }
+function migrerRemontees(){
+
+    const remontees =
+    getRemonteesEffectuees();
+
+    remontees.forEach(r => {
+
+        if(!r.caveOrigine){
+
+            r.caveOrigine = r.cave;
+
+        }
+
+        if(
+            r.quantiteOrigine ===
+            undefined
+        ){
+
+            r.quantiteOrigine =
+            r.quantite;
+
+        }
+
+    });
+
+    saveRemonteesEffectuees(
+        remontees
+    );
+
+    alert(
+        "Migration terminée"
+    );
+
+}
+
 function getRemonteesEffectuees(){
 
     return JSON.parse(
