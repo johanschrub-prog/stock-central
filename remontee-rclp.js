@@ -511,28 +511,31 @@ Number(articleStock.stock || 0)
 
         }
 
-        mouvements.push({
+       mouvements.push({
 
-            article:
-            article.article,
+    article:
+    article.article,
 
-            code:
-            article.code,
+    code:
+    article.code,
 
-            remontee:
-            remontee,
+    remontee:
+    remontee,
 
-            redescente:
-            redescente,
+    redescente:
+    redescente,
 
-            cave:
-            cave,
+    cave:
+    cave,
 
-            date:
-            date,
+    date:
+    date,
 
-            type:
-            "Mouvement RCLP"
+    type:
+    "Mouvement RCLP"
+
+});
+
 const remontees =
 getRemonteesEffectuees();
 
@@ -585,6 +588,7 @@ if(redescente > 0){
 }
 
 saveRemonteesEffectuees(remontees);
+
         });
 
         article.remontee = 0;
