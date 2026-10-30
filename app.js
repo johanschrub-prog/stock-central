@@ -13,7 +13,7 @@ localStorage.getItem(
     "analyseOuverte"
 ) === "1";
 
-
+let ongletRemontees = "HDLP";
 let categorieActive = "";
 
 const categories = {
@@ -116,6 +116,13 @@ function toggleAnalyse(){
         "analyseOuverte",
         analyseOuverte ? "1" : "0"
     );
+
+    render();
+
+}
+function changerOngletRemontees(type){
+
+    ongletRemontees = type;
 
     render();
 
@@ -4062,97 +4069,195 @@ if(categorieActive === "FOURNISSEURS"){
     return;
 
 }    
-    if(categorieActive === "REMONTEES_EFFECTUEES"){
+  if(categorieActive === "REMONTEES_EFFECTUEES"){
 
-    const remontees = getRemonteesEffectuees();
+    let remontees =
+    getRemonteesEffectuees();
 
-    let html = `
-    <div class="card">
-        <h2>🍾 Remontées effectuées</h2>
+    if(ongletRemontees === "HDLP"){
 
-        <input
-            id="rechercheRemontee"
-            placeholder="Code ou article"
-            oninput="render()"
-            style="width:100%;"
-        >
-    </div>
-    `;
-
-    const recherche =
-        (
-            document.getElementById(
-                "rechercheRemontee"
-            )?.value || ""
-        ).toLowerCase();
-
-    remontees
-    .filter(r => {
-
-        if(!recherche){
-            return true;
-        }
-
-        return (
-            String(r.code || "")
-            .toLowerCase()
-            .includes(recherche)
-
-            ||
-
-            String(r.designation || "")
-            .toLowerCase()
-            .includes(recherche)
+        remontees = remontees.filter(r =>
+            r.type === "HDLP" ||
+            r.type === "REDESCENTE HDLP"
         );
 
-    })
-    .forEach(r => {
+    }
+
+    if(ongletRemontees === "RCLP"){
+
+        remontees = remontees.filter(r =>
+            r.type === "RCLP" ||
+            r.type === "REDESCENTE RCLP"
+        );
+
+    }
+
+    if(ongletRemontees === "BOUTIQUE"){
+
+        remontees = remontees.filter(r =>
+            r.type === "BOUTIQUE" ||
+            r.type === "REDESCENTE BOUTIQUE"
+        );
+
+    }
+
+    let html = `
+
+    <div class="card">
+
+        <h2>🍾 Remontées effectuées</h2>
+
+        <div style="
+            display:flex;
+            gap:10px;
+            flex-wrap:wrap;
+        ">
+
+            <button
+            class="tab"
+            onclick="changerOngletRemontees('HDLP')">
+                🏨 HDLP
+            </button>
+
+            <button
+            class="tab"
+            onclick="changerOngletRemontees('RCLP')">
+                🍴 RCLP
+            </button>
+
+            <button
+            class="tab"
+            onclick="changerOngletRemontees('BOUTIQUE')">
+                🛍️ Boutique
+            </button>
+
+        </div>
+
+    </div>
+
+    `;
+
+    const validations = {};
+
+    remontees.forEach(r => {
+
+        const id =
+        r.validationId || "sans_validation";
+
+        if(!validations[id]){
+
+            validations[id] = {
+
+                date: r.date,
+
+                type: r.type,
+
+                lignes: []
+
+            };
+
+        }
+
+        validations[id]
+        .lignes
+        .push(r);
+
+    });
+
+    Object.entries(validations)
+    .reverse()
+    .forEach(([id, validation]) => {
+
+        const totalQuantite =
+        validation.lignes.reduce(
+            (t,l) =>
+            t + Number(l.quantite || 0),
+            0
+        );
 
         html += `
+
         <div class="card">
 
-            <b>${r.designation}</b>
-
-            <br><br>
-
-            Code : ${r.code}
-
-            <br><br>
-
-            Type : ${r.type}
-
-            <br><br>
-
-            Cave :
-
-            <input
-                value="${r.cave}"
-                readonly
-            >
-
-            <br><br>
-
-            Quantité :
-
-            <input
-                type="number"
-                value="${r.quantite}"
-            >
+            <b>
+            ✅ Validation
+            </b>
 
             <br><br>
 
             Date :
+            ${
+                new Date(validation.date)
+                .toLocaleDateString()
+            }
 
-            ${new Date(r.date)
-                .toLocaleDateString()}
+            <br><br>
 
+            Articles :
+            ${validation.lignes.length}
+
+            <br><br>
+
+            Quantités :
+            ${totalQuantite}
+
+            <br><br>
+
+        `;
+
+        validation.lignes
+        .forEach(ligne => {
+
+            html += `
+
+            <div style="
+                border-top:1px solid #ddd;
+                margin-top:8px;
+                padding-top:8px;
+            ">
+
+                <b>
+                ${ligne.designation}
+                </b>
+
+                <br>
+
+                Code :
+                ${ligne.code}
+
+                <br>
+
+                Cave :
+                ${ligne.cave}
+
+                <br>
+
+                Type :
+                ${ligne.type}
+
+                <br>
+
+                Quantité :
+                ${ligne.quantite}
+
+            </div>
+
+            `;
+
+        });
+
+        html += `
         </div>
         `;
+
     });
 
-    document.getElementById("cards").innerHTML = html;
+    document.getElementById(
+        "cards"
+    ).innerHTML = html;
 
     return;
+
 }
 if(categorieActive === "DASHBOARD"){
     
