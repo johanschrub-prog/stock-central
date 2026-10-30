@@ -1683,6 +1683,9 @@ function changerSite(site){
     else if(site === "STAT_RCLP"){
         categorieActive = "STAT_RCLP";
     }
+    else if(site === "REMONTEES_EFFECTUEES"){
+        categorieActive = "REMONTEES_EFFECTUEES";
+    }
     else{
         categorieActive = "DASHBOARD";
     }
@@ -4059,6 +4062,98 @@ if(categorieActive === "FOURNISSEURS"){
     return;
 
 }    
+    if(categorieActive === "REMONTEES_EFFECTUEES"){
+
+    const remontees = getRemonteesEffectuees();
+
+    let html = `
+    <div class="card">
+        <h2>🍾 Remontées effectuées</h2>
+
+        <input
+            id="rechercheRemontee"
+            placeholder="Code ou article"
+            oninput="render()"
+            style="width:100%;"
+        >
+    </div>
+    `;
+
+    const recherche =
+        (
+            document.getElementById(
+                "rechercheRemontee"
+            )?.value || ""
+        ).toLowerCase();
+
+    remontees
+    .filter(r => {
+
+        if(!recherche){
+            return true;
+        }
+
+        return (
+            String(r.code || "")
+            .toLowerCase()
+            .includes(recherche)
+
+            ||
+
+            String(r.designation || "")
+            .toLowerCase()
+            .includes(recherche)
+        );
+
+    })
+    .forEach(r => {
+
+        html += `
+        <div class="card">
+
+            <b>${r.designation}</b>
+
+            <br><br>
+
+            Code : ${r.code}
+
+            <br><br>
+
+            Type : ${r.type}
+
+            <br><br>
+
+            Cave :
+
+            <input
+                value="${r.cave}"
+                readonly
+            >
+
+            <br><br>
+
+            Quantité :
+
+            <input
+                type="number"
+                value="${r.quantite}"
+            >
+
+            <br><br>
+
+            Date :
+
+            ${new Date(r.date)
+                .toLocaleDateString()}
+
+        </div>
+        `;
+    });
+
+    document.getElementById("cards").innerHTML = html;
+
+    return;
+}
 if(categorieActive === "DASHBOARD"){
     
 
@@ -6519,17 +6614,23 @@ function mettreAJourStockJson(){
     lien.click();
 
 }
-function getRemonteesEffectuees() {
+function getRemonteesEffectuees(){
+
     return JSON.parse(
-        localStorage.getItem('remonteesEffectuees') || '[]'
+        localStorage.getItem(
+            "remonteesEffectuees"
+        ) || "[]"
     );
+
 }
 
-function saveRemonteesEffectuees(data) {
+function saveRemonteesEffectuees(data){
+
     localStorage.setItem(
-        'remonteesEffectuees',
+        "remonteesEffectuees",
         JSON.stringify(data)
     );
+
 }
 function supprimerFournisseur(id){
 
