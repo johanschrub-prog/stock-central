@@ -1444,14 +1444,28 @@ onclick="changerSite('APPLICATIONS')">
 class="tab"
 style="
 ${
+siteActif==='REMONTEES_EFFECTUEES'
+? 'background:#4caf50;color:white;'
+: ''
+}"
+onclick="changerSite('REMONTEES_EFFECTUEES')">
+🍾 REMONTÉES EFFECTUÉES
+</button>
+
+</div>
+
+<div style="width:100%;display:flex;gap:10px;">
+
+<button
+class="tab"
+style="
+${
 siteActif==='ARTICLES'
 ? 'background:#795548;color:white;'
 : ''
 }"
 onclick="changerSite('ARTICLES')">
-
 📦 ARTICLES
-
 </button>
 
 <button
@@ -1463,9 +1477,7 @@ siteActif==='FOURNISSEURS'
 : ''
 }"
 onclick="changerSite('FOURNISSEURS')">
-
 🚚 FOURNISSEURS
-
 </button>
 
 </div>
