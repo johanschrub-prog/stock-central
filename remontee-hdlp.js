@@ -806,7 +806,7 @@ function validerQuantiteHDLP(id){
     );
 
     if(remontee > 0){
-
+console.log(article);
         const remontees =
         getRemonteesEffectuees();
 
