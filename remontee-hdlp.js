@@ -514,6 +514,12 @@ function validerRemonteeResumeHDLP(){
 
     const mouvements = [];
 
+    const validationId =
+    crypto.randomUUID();
+
+    const remontees =
+    getRemonteesEffectuees();
+
     ["devant","champagne","alcool"]
     .forEach(onglet => {
 
@@ -556,96 +562,85 @@ function validerRemonteeResumeHDLP(){
 
             if(articleStock){
 
-               articleStock.stock =
-Number(articleStock.stock || 0)
-- remontee
-+ redescente;
+                articleStock.stock =
+                Number(articleStock.stock || 0)
+                - remontee
+                + redescente;
 
             }
 
             mouvements.push({
 
-                article:
-                article.article,
-
-                code:
-                article.code,
-
-                remontee:
-                remontee,
-
-                redescente:
-                redescente,
-
-                cave:
-                cave,
-
-                date:
-                date,
-
-                type:
-                "Mouvement HDLP"
+                article: article.article,
+                code: article.code,
+                remontee: remontee,
+                redescente: redescente,
+                cave: cave,
+                date: date,
+                type: "Mouvement HDLP"
 
             });
-const remontees =
-getRemonteesEffectuees();
 
-if(remontee > 0){
+            if(remontee > 0){
 
-    remontees.unshift({
+                remontees.unshift({
 
-        id: crypto.randomUUID(),
+                    id: crypto.randomUUID(),
 
-        date: date,
+                    validationId: validationId,
 
-        type: "HDLP",
+                    date: date,
 
-        cave: cave,
+                    type: "HDLP",
 
-        articleId: article.id,
+                    cave: cave,
 
-        code: article.code,
+                    articleId: article.id,
 
-        designation: article.article,
+                    code: article.code,
 
-        quantite: remontee
+                    designation: article.article,
 
-    });
+                    quantite: remontee
 
-}
+                });
 
-if(redescente > 0){
+            }
 
-    remontees.unshift({
+            if(redescente > 0){
 
-        id: crypto.randomUUID(),
+                remontees.unshift({
 
-        date: date,
+                    id: crypto.randomUUID(),
 
-        type: "REDESCENTE HDLP",
+                    validationId: validationId,
 
-        cave: cave,
+                    date: date,
 
-        articleId: article.id,
+                    type: "REDESCENTE HDLP",
 
-        code: article.code,
+                    cave: cave,
 
-        designation: article.article,
+                    articleId: article.id,
 
-        quantite: redescente
+                    code: article.code,
 
-    });
+                    designation: article.article,
 
-}
+                    quantite: redescente
 
-saveRemonteesEffectuees(remontees);
+                });
+
+            }
+
             article.remontee = 0;
-
             article.redescente = 0;
 
         });
 
     });
+
+    saveRemonteesEffectuees(remontees);
 
     save();
 
