@@ -278,37 +278,6 @@ function validerQuantiteRCLP(id){
         JSON.stringify(rclpData)
     );
 
-    if(remontee > 0){
-
-        const remontees =
-        getRemonteesEffectuees();
-
-        remontees.unshift({
-
-            id: crypto.randomUUID(),
-
-            date: new Date().toISOString(),
-
-            type: "RCLP",
-
-            cave: "RCLP",
-
-            articleId: article.id,
-
-            code: article.code || "",
-
-            designation: article.article || "",
-
-            quantite: remontee
-
-        });
-
-        saveRemonteesEffectuees(
-            remontees
-        );
-
-    }
-
     const rechercheCode =
     document.getElementById(
         "rechercheCodeRCLP"
@@ -564,7 +533,58 @@ Number(articleStock.stock || 0)
 
             type:
             "Mouvement RCLP"
+const remontees =
+getRemonteesEffectuees();
 
+if(remontee > 0){
+
+    remontees.unshift({
+
+        id: crypto.randomUUID(),
+
+        date: date,
+
+        type: "RCLP",
+
+        cave: cave,
+
+        articleId: article.id,
+
+        code: article.code,
+
+        designation: article.article,
+
+        quantite: remontee
+
+    });
+
+}
+
+if(redescente > 0){
+
+    remontees.unshift({
+
+        id: crypto.randomUUID(),
+
+        date: date,
+
+        type: "REDESCENTE RCLP",
+
+        cave: cave,
+
+        articleId: article.id,
+
+        code: article.code,
+
+        designation: article.article,
+
+        quantite: redescente
+
+    });
+
+}
+
+saveRemonteesEffectuees(remontees);
         });
 
         article.remontee = 0;
