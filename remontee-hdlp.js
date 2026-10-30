@@ -583,53 +583,65 @@ function validerRemonteeResumeHDLP(){
 
             if(remontee > 0){
 
-                remontees.unshift({
+             remontees.unshift({
 
-                    id: crypto.randomUUID(),
+    id: crypto.randomUUID(),
 
-                    validationId: validationId,
+    validationId: validationId,
 
-                    date: date,
-dateHeure: new Date().toISOString(),
-                    type: "HDLP",
+    date: date,
 
-                    cave: cave,
+    dateHeure: new Date().toISOString(),
 
-                    articleId: article.id,
+    type: "HDLP",
 
-                    code: article.code,
+    cave: cave,
 
-                    designation: article.article,
+    caveOrigine: cave,
 
-                    quantite: remontee
+    articleId: article.id,
 
-                });
+    code: article.code,
+
+    designation: article.article,
+
+    quantite: remontee,
+
+    quantiteOrigine: remontee
+
+});
 
             }
 
             if(redescente > 0){
 
-                remontees.unshift({
+               remontees.unshift({
 
-                    id: crypto.randomUUID(),
+    id: crypto.randomUUID(),
 
-                    validationId: validationId,
+    validationId: validationId,
 
-                    date: date,
+    date: date,
 
-                    type: "REDESCENTE HDLP",
+    dateHeure: new Date().toISOString(),
 
-                    cave: cave,
+    type: "REDESCENTE HDLP",
 
-                    articleId: article.id,
+    cave: cave,
 
-                    code: article.code,
+    caveOrigine: cave,
 
-                    designation: article.article,
+    articleId: article.id,
 
-                    quantite: redescente
+    code: article.code,
 
-                });
+    designation: article.article,
+
+    quantite: redescente,
+
+    quantiteOrigine: redescente
+
+});
 
             }
 
