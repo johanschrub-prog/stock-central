@@ -465,6 +465,9 @@ function validerRemonteeResumeRCLP(){
 
     const mouvements = [];
 
+    const validationId =
+    crypto.randomUUID();
+
     const remontees =
     getRemonteesEffectuees();
 
@@ -537,6 +540,8 @@ function validerRemonteeResumeRCLP(){
 
                 id: crypto.randomUUID(),
 
+                validationId: validationId,
+
                 date: date,
 
                 type: "RCLP",
@@ -560,6 +565,8 @@ function validerRemonteeResumeRCLP(){
             remontees.unshift({
 
                 id: crypto.randomUUID(),
+
+                validationId: validationId,
 
                 date: date,
 
