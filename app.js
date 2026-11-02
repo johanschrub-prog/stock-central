@@ -5661,18 +5661,9 @@ JSON.parse(
 localStorage.getItem(STORAGE_KEY)
 ) || {};
 
-stock = {
-
-"HDLP MINI BAR": [],
-"HDLP SOFT": [],
-"HDLP BAR": [],
-"HDLP SEMINAIRE": [],
-
-"RCLP ALCOOL": [],
-"RCLP SOFT": [],
-"RCLP VIN": []
-
-};
+stock = JSON.parse(
+    localStorage.getItem(STORAGE_KEY)
+) || {};
      
 
      function importerFeuille(
