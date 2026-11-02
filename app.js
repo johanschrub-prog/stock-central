@@ -5793,8 +5793,11 @@ alert("1");
             "RCLP VIN"
         );
 alert(
-    "HDLP BAR : " +
-    stock["HDLP BAR"][0].stock
+    JSON.stringify(
+        stock["HDLP BAR"][0],
+        null,
+        2
+    )
 );
         save();
         mettreAJourSuggestions();
