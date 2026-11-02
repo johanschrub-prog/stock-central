@@ -5676,117 +5676,163 @@ stock = {
 };
      
 
-    function importerFeuille(nomFeuille, categorie){
+  function importerExcel(event){
 
-    const sheet = workbook.Sheets[nomFeuille];
+    const file = event.target.files[0];
 
-    if(!sheet){
-        console.error("Feuille introuvable :", nomFeuille);
-        return;
-    }
+    if(!file) return;
 
-    const rows = XLSX.utils.sheet_to_json(
-        sheet,
-        { defval: "" }
-    );
+    const reader = new FileReader();
 
-    rows.forEach(row => {
+    reader.onload = function(e){
 
-        const code =
-            row.NA ||
-            row.CODE ||
-            "";
+        const workbook = XLSX.read(
+            e.target.result,
+            { type: "array" }
+        );
 
-        const ancien =
-            ancienStock[categorie]
-            ?.find(a =>
-                String(a.code) === String(code)
-            );
+        const ancienStock =
+            JSON.parse(
+                localStorage.getItem(STORAGE_KEY)
+            ) || {};
 
-        const colisage =
-            Number(ancien?.colisage || 1);
+        stock = {
+            "HDLP MINI BAR": [],
+            "HDLP SOFT": [],
+            "HDLP BAR": [],
+            "HDLP SEMINAIRE": [],
+            "RCLP ALCOOL": [],
+            "RCLP SOFT": [],
+            "RCLP VIN": []
+        };
 
-        const stockInventaire =
-            (Number(row.PAQUET || 0) * colisage)
-            +
-            Number(row.PIECE || 0);
+        function importerFeuille(
+            nomFeuille,
+            categorie
+        ){
 
-        stock[categorie].push({
+            const sheet =
+                workbook.Sheets[nomFeuille];
 
-            id: ancien?.id || crypto.randomUUID(),
+            if(!sheet){
+                console.error(
+                    "Feuille introuvable :",
+                    nomFeuille
+                );
+                return;
+            }
 
-            code: code,
+            const rows =
+                XLSX.utils.sheet_to_json(
+                    sheet,
+                    { defval: "" }
+                );
 
-            article:
-                ancien?.article ||
-                row.ARTICLE ||
-                "",
+            rows.forEach(row => {
 
-            categorie:
-                ancien?.categorie || "",
+                const code =
+                    row.NA ||
+                    row.CODE ||
+                    "";
 
-            stock: stockInventaire,
+                const ancien =
+                    ancienStock[categorie]
+                    ?.find(a =>
+                        String(a.code) ===
+                        String(code)
+                    );
 
-            prix:
-                ancien?.prix || 0,
+                const colisage =
+                    Number(
+                        ancien?.colisage || 1
+                    );
 
-            fournisseur:
-                ancien?.fournisseur || "",
+                const stockInventaire =
+                    (
+                        Number(row.PAQUET || 0)
+                        * colisage
+                    )
+                    +
+                    Number(row.PIECE || 0);
 
-            codeFournisseur:
-                ancien?.codeFournisseur || "",
+                stock[categorie].push({
 
-            colisage: colisage,
+                    id:
+                        ancien?.id ||
+                        crypto.randomUUID(),
 
-            mouvements:
-                ancien?.mouvements || []
+                    code: code,
 
-        });
+                    article:
+                        ancien?.article ||
+                        row.ARTICLE ||
+                        "",
 
-    });
+                    categorie:
+                        ancien?.categorie || "",
 
-}
+                    stock: stockInventaire,
 
+                    prix:
+                        ancien?.prix || 0,
 
- importerFeuille(
-    "INVENTAIRE HDLP CAVE MINI BAR",
-    "HDLP MINI BAR"
-);
+                    fournisseur:
+                        ancien?.fournisseur || "",
 
-importerFeuille(
-    "INVENTAIRE HDLP CAVE SOFT",
-    "HDLP SOFT"
-);
+                    codeFournisseur:
+                        ancien?.codeFournisseur || "",
 
-importerFeuille(
-    "INVENTAIRE CAVE BAR",
-    "HDLP BAR"
-);
+                    colisage: colisage,
 
-importerFeuille(
-    "INVENTAIRE CAVE SEMINAIRE",
-    "HDLP SEMINAIRE"
-);
+                    mouvements:
+                        ancien?.mouvements || []
 
-importerFeuille(
-    "INVENTAIRE RCLP CAVE ALCOOL",
-    "RCLP ALCOOL"
-);
+                });
 
-importerFeuille(
-    "INVENTAIRE RCLP CAVE SOFT",
-    "RCLP SOFT"
-);
+            });
 
-importerFeuille(
-    "INVENTAIRE RCLP CAVE VIN",
-    "RCLP VIN"
-);
-save();
-mettreAJourSuggestions();
-render();
+        }
 
-alert("✅ Inventaire importé");
+        importerFeuille(
+            "INVENTAIRE HDLP CAVE MINI BAR",
+            "HDLP MINI BAR"
+        );
+
+        importerFeuille(
+            "INVENTAIRE HDLP CAVE SOFT",
+            "HDLP SOFT"
+        );
+
+        importerFeuille(
+            "INVENTAIRE CAVE BAR",
+            "HDLP BAR"
+        );
+
+        importerFeuille(
+            "INVENTAIRE CAVE SEMINAIRE",
+            "HDLP SEMINAIRE"
+        );
+
+        importerFeuille(
+            "INVENTAIRE RCLP CAVE ALCOOL",
+            "RCLP ALCOOL"
+        );
+
+        importerFeuille(
+            "INVENTAIRE RCLP CAVE SOFT",
+            "RCLP SOFT"
+        );
+
+        importerFeuille(
+            "INVENTAIRE RCLP CAVE VIN",
+            "RCLP VIN"
+        );
+
+        save();
+        mettreAJourSuggestions();
+        render();
+
+        alert("✅ Inventaire importé");
 
     };
 
