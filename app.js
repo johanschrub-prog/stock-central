@@ -5641,41 +5641,6 @@ function exportHistoriqueExcel(){
     );
 
 }
-function importerExcel(event){
-
-    alert("import lancé");
-
-    const file = event.target.files[0];
-
-    if(!file) return;
-const file = event.target.files[0];
-
-alert(file.name);
-    const reader = new FileReader();
-
-    reader.onload = function(e){
-
-        const workbook =
-        XLSX.read(
-            e.target.result,
-            {type:"array"}
-        );
-const ancienStock =
-JSON.parse(
-localStorage.getItem(STORAGE_KEY)
-) || {};
-
-stock = {
-    "HDLP MINI BAR": [],
-    "HDLP SOFT": [],
-    "HDLP BAR": [],
-    "HDLP SEMINAIRE": [],
-    "RCLP ALCOOL": [],
-    "RCLP SOFT": [],
-    "RCLP VIN": []
-};
-     
-
   function importerExcel(event){
 
     const file = event.target.files[0];
