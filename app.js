@@ -1,4 +1,3 @@
-alert "bonjour"
 const STORAGE_KEY = "StockCentral";
 let siteActif = "DASHBOARD";
 let stock =
