@@ -5717,7 +5717,7 @@ stock[categorie].push({
     mouvements: ancien?.mouvements || []
 });
 
-  
+  });
 
 }
 
