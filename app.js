@@ -5667,12 +5667,14 @@ function importerExcel(event){
 
     const reader = new FileReader();
 
-    reader.onload = function(e){
+  reader.onload = function(e){
 
-        const workbook = XLSX.read(
-            e.target.result,
-            { type: "array" }
-        );
+    alert("DEBUT IMPORT");
+
+    const workbook = XLSX.read(
+        e.target.result,
+        { type: "array" }
+    );
 
         const ancienStock =
             JSON.parse(
@@ -5807,9 +5809,11 @@ function importerExcel(event){
             "INVENTAIRE RCLP CAVE VIN",
             "RCLP VIN"
         );
+alert("AVANT SAVE");
+      
+save();
 
-        save();
-
+alert("APRES SAVE");
         alert(
             "Vérification stock code 60 : " +
             (
