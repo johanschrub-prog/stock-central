@@ -5712,47 +5712,62 @@ alert("1");
                         ancien?.colisage || 1
                     );
 
-                const stockInventaire =
-                    (
-                        Number(row.PAQUET || 0)
-                        * colisage
-                    )
-                    +
-                    Number(row.PIECE || 0);
+          const stockInventaire =
+(
+    Number(row.PAQUET || 0)
+    * colisage
+)
++
+Number(row.PIECE || 0);
 
-                stock[categorie].push({
+if(code){
 
-                    id:
-                        ancien?.id ||
-                        crypto.randomUUID(),
+    alert(
+        "CODE = " + code +
+        "\nARTICLE = " + row.ARTICLE +
+        "\nPAQUET = " + row.PAQUET +
+        "\nPIECE = " + row.PIECE +
+        "\nCOLISAGE = " + colisage +
+        "\nSTOCK CALCULE = " + stockInventaire
+    );
 
-                    code: code,
+    return;
 
-                    article:
-                        ancien?.article ||
-                        row.ARTICLE ||
-                        "",
+}
 
-                    categorie:
-                        ancien?.categorie || "",
+stock[categorie].push({
 
-  stock: stockInventaire,
+    id:
+        ancien?.id ||
+        crypto.randomUUID(),
 
-                    prix:
-                        ancien?.prix || 0,
+    code: code,
 
-                    fournisseur:
-                        ancien?.fournisseur || "",
+    article:
+        ancien?.article ||
+        row.ARTICLE ||
+        "",
 
-                    codeFournisseur:
-                        ancien?.codeFournisseur || "",
+    categorie:
+        ancien?.categorie || "",
 
-                    colisage: colisage,
+    stock: stockInventaire,
 
-                    mouvements:
-                        ancien?.mouvements || []
+    prix:
+        ancien?.prix || 0,
 
-                });
+    fournisseur:
+        ancien?.fournisseur || "",
+
+    codeFournisseur:
+        ancien?.codeFournisseur || "",
+
+    colisage: colisage,
+
+    mouvements:
+        ancien?.mouvements || []
+
+});
 
             });
 
@@ -6085,6 +6100,7 @@ if(!stock[categorie]){
     console.error("Catégorie introuvable :", categorie);
     return;
 }
+  
         stock[categorie].push({
 
             id: crypto.randomUUID(),
