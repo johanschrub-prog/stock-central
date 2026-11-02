@@ -5671,107 +5671,87 @@ alert("1");
             "RCLP VIN": []
         };
 
-        function importerFeuille(
-            nomFeuille,
-            categorie
-        ){
+    function importerFeuille(nomFeuille, categorie){
 
-            const sheet =
-                workbook.Sheets[nomFeuille];
+    const sheet = workbook.Sheets[nomFeuille];
 
-            if(!sheet){
-                console.error(
-                    "Feuille introuvable :",
-                    nomFeuille
-                );
-                return;
-            }
+    if(!sheet){
+        console.error(
+            "Feuille introuvable :",
+            nomFeuille
+        );
+        return;
+    }
 
-            const rows =
-                XLSX.utils.sheet_to_json(
-                    sheet,
-                    { defval: "" }
-                );
-
-            rows.forEach(row => {
-
-                const code =
-                    row.NA ||
-                    row.CODE ||
-                    "";
-
-                const ancien =
-                    ancienStock[categorie]
-                    ?.find(a =>
-                        String(a.code) ===
-                        String(code)
-                    );
-
-                const colisage =
-                    Number(
-                        ancien?.colisage || 1
-                    );
-
-          const stockInventaire =
-(
-    Number(row.PAQUET || 0)
-    * colisage
-)
-+
-Number(row.PIECE || 0);
-
-if(code){
-
-    alert(
-        "CODE = " + code +
-        "\nARTICLE = " + row.ARTICLE +
-        "\nPAQUET = " + row.PAQUET +
-        "\nPIECE = " + row.PIECE +
-        "\nCOLISAGE = " + colisage +
-        "\nSTOCK CALCULE = " + stockInventaire
+    const rows = XLSX.utils.sheet_to_json(
+        sheet,
+        { defval: "" }
     );
 
-    return;
+    rows.forEach(row => {
+
+        const code =
+            row.NA ||
+            row.CODE ||
+            "";
+
+        const ancien =
+            ancienStock[categorie]
+            ?.find(a =>
+                String(a.code) ===
+                String(code)
+            );
+
+        const colisage =
+            Number(
+                ancien?.colisage || 1
+            );
+
+        const stockInventaire =
+            (
+                Number(row.PAQUET || 0)
+                * colisage
+            )
+            +
+            Number(row.PIECE || 0);
+
+        stock[categorie].push({
+
+            id:
+                ancien?.id ||
+                crypto.randomUUID(),
+
+            code: code,
+
+            article:
+                ancien?.article ||
+                row.ARTICLE ||
+                "",
+
+            categorie:
+                ancien?.categorie || "",
+
+            stock: stockInventaire,
+
+            prix:
+                ancien?.prix || 0,
+
+            fournisseur:
+                ancien?.fournisseur || "",
+
+            codeFournisseur:
+                ancien?.codeFournisseur || "",
+
+            colisage: colisage,
+
+            mouvements:
+                ancien?.mouvements || []
+
+        });
+
+    });
 
 }
-
-stock[categorie].push({
-
-    id:
-        ancien?.id ||
-        crypto.randomUUID(),
-
-    code: code,
-
-    article:
-        ancien?.article ||
-        row.ARTICLE ||
-        "",
-
-    categorie:
-        ancien?.categorie || "",
-
-    stock: stockInventaire,
-
-    prix:
-        ancien?.prix || 0,
-
-    fournisseur:
-        ancien?.fournisseur || "",
-
-    codeFournisseur:
-        ancien?.codeFournisseur || "",
-
-    colisage: colisage,
-
-    mouvements:
-        ancien?.mouvements || []
-
-});
-
-            });
-
-        }
 
         importerFeuille(
             "INVENTAIRE HDLP CAVE MINI BAR",
@@ -5810,6 +5790,15 @@ stock[categorie].push({
 alert(
     "Stock importé : " +
     stock["HDLP BAR"][0].stock
+);
+        const test60 =
+Object.values(stock)
+.flat()
+.find(a => String(a.code) === "60");
+
+console.log(
+    "ARTICLE 60 APRES IMPORT :",
+    test60
 );
         save();
         mettreAJourSuggestions();
