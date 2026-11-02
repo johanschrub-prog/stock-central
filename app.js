@@ -5790,9 +5790,12 @@ render();
 save();
 
 alert(
+"Articles HDLP BAR après save : " +
 JSON.parse(localStorage.getItem("StockCentral"))["HDLP BAR"].length
 );
-alert("Import terminé");
+
+categorieActive = "ARTICLES";
+render();
 
 
     };
