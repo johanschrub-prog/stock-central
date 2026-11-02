@@ -5773,21 +5773,13 @@ importerFeuille(
     "INVENTAIRE RCLP CAVE VIN",
     "RCLP VIN"
 );
-
-        save();
+console.log(stock["HDLP BAR"].length);
+    save();
 mettreAJourSuggestions();
-     changerSite("DASHBOARD");
+render();
 
-  alert(
-    JSON.stringify(
-        Object.fromEntries(
-            Object.entries(stock)
-                .map(([c,v]) => [c,v.length])
-        ),
-        null,
-        2
-    )
-);
+alert("Import terminé");
+
 
     };
 
