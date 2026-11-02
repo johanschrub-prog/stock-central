@@ -36,28 +36,25 @@ RCLP:[
 
 function save(){
 
-    localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify(stock)
-    );
+    try{
 
-    const test =
-    JSON.parse(
-        localStorage.getItem(STORAGE_KEY)
-    );
+        localStorage.setItem(
+            STORAGE_KEY,
+            JSON.stringify(stock)
+        );
 
-    const article60 =
-    test["HDLP BAR"]
-    ?.find(a =>
-        String(a.code) === "60"
-    );
+        alert("SAVE OK");
 
-    alert(
-        "SAVE OK : " +
-        (article60
-            ? article60.stock
-            : "introuvable")
-    );
+    }catch(e){
+
+        alert(
+            "ERREUR SAVE :\n" +
+            e.message
+        );
+
+        console.error(e);
+
+    }
 
 }
 function modifierFournisseur(
