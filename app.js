@@ -5774,6 +5774,16 @@ importerFeuille(
     "RCLP VIN"
 );
 console.log(stock["HDLP BAR"].length);
+alert(
+JSON.stringify(
+Object.fromEntries(
+Object.entries(stock)
+.map(([k,v]) => [k,v.length])
+),
+null,
+2
+)
+);
     save();
 mettreAJourSuggestions();
 render();
