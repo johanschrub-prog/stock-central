@@ -5706,7 +5706,13 @@ nomFeuille + " = " + rows.length + " lignes"
         ?.find(a =>
             String(a.code) === String(code)
         );
-
+if(String(code) === "60"){
+    alert(
+        "Article 60\n" +
+        "PAQUET=" + row.PAQUET + "\n" +
+        "PIECE=" + row.PIECE
+    );
+}
 stock[categorie].push({
 
     id: ancien?.id || crypto.randomUUID(),
