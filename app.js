@@ -5703,45 +5703,21 @@ stock = {
         ?.find(a =>
             String(a.code) === String(code)
         );
-if(String(code) === "60"){
- 
-}
+
 stock[categorie].push({
-
     id: ancien?.id || crypto.randomUUID(),
-
     code: code,
-
     article: row.ARTICLE || "",
-
     categorie: ancien?.categorie || "",
-
-  stock:
-(
-    Number(row.PAQUET || 0)
-    *
-    Number(ancien?.colisage || 1)
-)
-+
-Number(row.PIECE || 0),
-
+    stock: ancien?.stock || 0,
     prix: ancien?.prix || 0,
-
-    fournisseur:
-    ancien?.fournisseur || "",
-
-    codeFournisseur:
-    ancien?.codeFournisseur || "",
-
-    colisage:
-    ancien?.colisage || 1,
-
-    mouvements:
-    ancien?.mouvements || []
-
+    fournisseur: ancien?.fournisseur || "",
+    codeFournisseur: ancien?.codeFournisseur || "",
+    colisage: ancien?.colisage || 1,
+    mouvements: ancien?.mouvements || []
 });
 
-    });
+  
 
 }
 
@@ -5779,20 +5755,10 @@ importerFeuille(
     "INVENTAIRE RCLP CAVE VIN",
     "RCLP VIN"
 );
-
-JSON.stringify(
-Object.fromEntries(
-Object.entries(stock)
-.map(([k,v]) => [k,v.length])
-),
-null,
-2
-)
-);
-    save();
+ save();
 mettreAJourSuggestions();
 render();
-save();
+alert("Import terminé");
 
 categorieActive = "ARTICLES";
 render();
