@@ -179,7 +179,7 @@ function mettreAJourSuggestions(){
 
 }
 function importerFournisseurs(event){
-
+alert(Object.keys(stock));
     const fichier = event.target.files[0];
 
     if(!fichier) return;
