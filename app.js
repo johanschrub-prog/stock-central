@@ -5642,20 +5642,20 @@ function exportHistoriqueExcel(){
 
 }
   function importerExcel(event){
-
+alert("1");
     const file = event.target.files[0];
 
     if(!file) return;
-
+ alert("2");
     const reader = new FileReader();
 
     reader.onload = function(e){
-
+    alert("3");
         const workbook = XLSX.read(
             e.target.result,
             { type: "array" }
         );
-
+    alert("4");
         const ancienStock =
             JSON.parse(
                 localStorage.getItem(STORAGE_KEY)
