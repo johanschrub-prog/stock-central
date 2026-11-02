@@ -5717,7 +5717,10 @@ stock[categorie].push({
 
     categorie: ancien?.categorie || "",
 
-    stock: ancien?.stock || 0,
+    stock:
+    (Number(row.PAQUET || 0) * 12)
+    +
+    Number(row.PIECE || 0),
 
     prix: ancien?.prix || 0,
 
