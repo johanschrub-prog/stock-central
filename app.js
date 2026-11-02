@@ -1,4 +1,5 @@
 const STORAGE_KEY = "StockCentral";
+const STORAGE_MOUVEMENTS = "HistoriqueStock";
 let siteActif = "DASHBOARD";
 let stock =
 JSON.parse(
@@ -36,25 +37,60 @@ RCLP:[
 
 function save(){
 
-    try{
+    const stockSansMouvements = {};
 
-        localStorage.setItem(
-            STORAGE_KEY,
-            JSON.stringify(stock)
-        );
+    Object.keys(stock).forEach(categorie => {
 
-        alert("SAVE OK");
+        stockSansMouvements[categorie] =
+        stock[categorie].map(article => ({
 
-    }catch(e){
+            ...article,
 
-        alert(
-            "ERREUR SAVE :\n" +
-            e.message
-        );
+            mouvements: []
 
-        console.error(e);
+        }));
 
-    }
+    });
+
+    localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(stockSansMouvements)
+    );
+
+}
+function migrerMouvements(){
+
+    let mouvements = [];
+
+    Object.keys(stock).forEach(categorie => {
+
+        stock[categorie].forEach(article => {
+
+            (article.mouvements || [])
+            .forEach(m => {
+
+                mouvements.push({
+
+                    code: article.code,
+                    article: article.article,
+                    cave: categorie,
+
+                    ...m
+
+                });
+
+            });
+
+        });
+
+    });
+
+    saveMouvements(mouvements);
+
+    alert(
+        mouvements.length +
+        " mouvements migrés ✅"
+    );
 
 }
 function modifierFournisseur(
@@ -150,6 +186,19 @@ function saveFournisseurs(){
         JSON.stringify(fournisseurs)
     );
 
+}
+function getMouvements(){
+    return JSON.parse(
+        localStorage.getItem(STORAGE_MOUVEMENTS)
+        || "[]"
+    );
+}
+
+function saveMouvements(data){
+    localStorage.setItem(
+        STORAGE_MOUVEMENTS,
+        JSON.stringify(data)
+    );
 }
 function mettreAJourSuggestions(){
 
