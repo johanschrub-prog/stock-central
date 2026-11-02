@@ -5643,10 +5643,14 @@ function exportHistoriqueExcel(){
 }
 function importerExcel(event){
 
+    alert("import lancé");
+
     const file = event.target.files[0];
 
     if(!file) return;
+const file = event.target.files[0];
 
+alert(file.name);
     const reader = new FileReader();
 
     reader.onload = function(e){
