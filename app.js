@@ -5690,10 +5690,7 @@ stock = {
         sheet,
         {defval:""}
     );
-     alert(JSON.stringify(rows[0], null, 2));    
-alert(
-nomFeuille + " = " + rows.length + " lignes"
-);
+
     rows.forEach(row=>{
 
         const code =
@@ -5707,11 +5704,7 @@ nomFeuille + " = " + rows.length + " lignes"
             String(a.code) === String(code)
         );
 if(String(code) === "60"){
-    alert(
-        "Article 60\n" +
-        "PAQUET=" + row.PAQUET + "\n" +
-        "PIECE=" + row.PIECE
-    );
+ 
 }
 stock[categorie].push({
 
@@ -5786,8 +5779,7 @@ importerFeuille(
     "INVENTAIRE RCLP CAVE VIN",
     "RCLP VIN"
 );
-console.log(stock["HDLP BAR"].length);
-alert(
+
 JSON.stringify(
 Object.fromEntries(
 Object.entries(stock)
@@ -5801,11 +5793,6 @@ null,
 mettreAJourSuggestions();
 render();
 save();
-
-alert(
-"Articles HDLP BAR après save : " +
-JSON.parse(localStorage.getItem("StockCentral"))["HDLP BAR"].length
-);
 
 categorieActive = "ARTICLES";
 render();
