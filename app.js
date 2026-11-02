@@ -5787,7 +5787,11 @@ null,
     save();
 mettreAJourSuggestions();
 render();
+save();
 
+alert(
+JSON.parse(localStorage.getItem("StockCentral"))["HDLP BAR"].length
+);
 alert("Import terminé");
 
 
