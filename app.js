@@ -5736,7 +5736,7 @@ alert("1");
                     categorie:
                         ancien?.categorie || "",
 
-               stock: ancien?.stock || 0,
+              stock: stockInventaire,
 
                     prix:
                         ancien?.prix || 0,
@@ -5792,7 +5792,10 @@ alert("1");
             "INVENTAIRE RCLP CAVE VIN",
             "RCLP VIN"
         );
-
+alert(
+    "HDLP BAR : " +
+    stock["HDLP BAR"][0].stock
+);
         save();
         mettreAJourSuggestions();
         render();
