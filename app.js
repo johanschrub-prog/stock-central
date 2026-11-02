@@ -5736,7 +5736,7 @@ alert("1");
                     categorie:
                         ancien?.categorie || "",
 
-           stock: ancien?.stock || 0,
+  stock: stockInventaire,
 
                     prix:
                         ancien?.prix || 0,
@@ -5793,11 +5793,8 @@ alert("1");
             "RCLP VIN"
         );
 alert(
-    JSON.stringify(
-        stock["HDLP BAR"][0],
-        null,
-        2
-    )
+    "Stock importé : " +
+    stock["HDLP BAR"][0].stock
 );
         save();
         mettreAJourSuggestions();
