@@ -5771,7 +5771,7 @@ stock = {
                     categorie:
                         ancien?.categorie || "",
 
-                    stock: stockInventaire,
+               stock: ancien?.stock || 0,
 
                     prix:
                         ancien?.prix || 0,
