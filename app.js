@@ -192,6 +192,7 @@ function importerFournisseurs(event){
             e.target.result,
             {type:"array"}
         );
+console.log(workbook.SheetNames);
 
         const sheet =
         workbook.Sheets[
@@ -5682,7 +5683,10 @@ stock = {
     const sheet =
     workbook.Sheets[nomFeuille];
 
-    if(!sheet) return;
+  if(!sheet){
+    console.error("Feuille introuvable :", nomFeuille);
+    return;
+}
 
     const rows =
     XLSX.utils.sheet_to_json(
@@ -6056,7 +6060,10 @@ function nouvelArticle(){
     if(!article) return;
 
     Object.keys(stock).forEach(categorie => {
-
+if(!stock[categorie]){
+    console.error("Catégorie introuvable :", categorie);
+    return;
+}
         stock[categorie].push({
 
             id: crypto.randomUUID(),
