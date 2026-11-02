@@ -5641,7 +5641,7 @@ function exportHistoriqueExcel(){
     );
 
 }
-  function importerExcel(event){
+function importerExcel(event){
 
     const file = event.target.files[0];
 
@@ -5650,7 +5650,7 @@ function exportHistoriqueExcel(){
     const reader = new FileReader();
 
     reader.onload = function(e){
- 
+
         const workbook = XLSX.read(
             e.target.result,
             { type: "array" }
@@ -5671,87 +5671,89 @@ function exportHistoriqueExcel(){
             "RCLP VIN": []
         };
 
-    function importerFeuille(nomFeuille, categorie){
+        function importerFeuille(nomFeuille, categorie){
 
-    const sheet = workbook.Sheets[nomFeuille];
+            const sheet =
+                workbook.Sheets[nomFeuille];
 
-    if(!sheet){
-        console.error(
-            "Feuille introuvable :",
-            nomFeuille
-        );
-        return;
-    }
+            if(!sheet){
+                console.log(
+                    "Feuille introuvable :",
+                    nomFeuille
+                );
+                return;
+            }
 
-    const rows = XLSX.utils.sheet_to_json(
-        sheet,
-        { defval: "" }
-    );
+            const rows =
+                XLSX.utils.sheet_to_json(
+                    sheet,
+                    { defval: "" }
+                );
 
-    rows.forEach(row => {
+            rows.forEach(row => {
 
-        const code =
-            row.NA ||
-            row.CODE ||
-            "";
+                const code =
+                    row.NA ||
+                    row.CODE ||
+                    "";
 
-        const ancien =
-            ancienStock[categorie]
-            ?.find(a =>
-                String(a.code) ===
-                String(code)
-            );
+                const ancien =
+                    ancienStock[categorie]
+                    ?.find(a =>
+                        String(a.code) ===
+                        String(code)
+                    );
 
-        const colisage =
-            Number(
-                ancien?.colisage || 1
-            );
+                const colisage =
+                    Number(
+                        ancien?.colisage || 1
+                    );
 
-        const stockInventaire =
-            (
-                Number(row.PAQUET || 0)
-                * colisage
-            )
-            +
-            Number(row.PIECE || 0);
+                const stockInventaire =
+                    (
+                        Number(row.PAQUET || 0)
+                        * colisage
+                    )
+                    +
+                    Number(row.PIECE || 0);
 
-        stock[categorie].push({
+                stock[categorie].push({
 
-            id:
-                ancien?.id ||
-                crypto.randomUUID(),
+                    id:
+                        ancien?.id ||
+                        crypto.randomUUID(),
 
-            code: code,
+                    code: code,
 
-            article:
-                ancien?.article ||
-                row.ARTICLE ||
-                "",
+                    article:
+                        ancien?.article ||
+                        row.ARTICLE ||
+                        "",
 
-            categorie:
-                ancien?.categorie || "",
+                    categorie:
+                        ancien?.categorie || "",
 
-            stock: stockInventaire,
+                    stock: stockInventaire,
 
-            prix:
-                ancien?.prix || 0,
+                    prix:
+                        ancien?.prix || 0,
 
-            fournisseur:
-                ancien?.fournisseur || "",
+                    fournisseur:
+                        ancien?.fournisseur || "",
 
-            codeFournisseur:
-                ancien?.codeFournisseur || "",
+                    codeFournisseur:
+                        ancien?.codeFournisseur || "",
 
-            colisage: colisage,
+                    colisage: colisage,
 
-            mouvements:
-                ancien?.mouvements || []
+                    mouvements:
+                        ancien?.mouvements || []
 
-        });
+                });
 
-    });
+            });
 
-}
+        }
 
         importerFeuille(
             "INVENTAIRE HDLP CAVE MINI BAR",
@@ -5788,30 +5790,18 @@ function exportHistoriqueExcel(){
             "RCLP VIN"
         );
 
-        const test60 =
-Object.values(stock)
-.flat()
-.find(a => String(a.code) === "60");
-
-console.log(
-    "ARTICLE 60 APRES IMPORT :",
-    test60
-);
-        console.log(
-    "ARTICLE 60 AVANT SAVE",
-    stock["HDLP BAR"]
-    .find(a => String(a.code) === "60")
-);
-        save();
         save();
 
-console.log(
-    "LOCALSTORAGE",
-    JSON.parse(
-        localStorage.getItem(STORAGE_KEY)
-    )["HDLP BAR"]
-    .find(a => String(a.code) === "60")
-);
+        alert(
+            "Vérification stock code 60 : " +
+            (
+                stock["HDLP BAR"]
+                ?.find(
+                    a => String(a.code) === "60"
+                )?.stock || "introuvable"
+            )
+        );
+
         mettreAJourSuggestions();
         render();
 
