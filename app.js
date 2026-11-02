@@ -192,7 +192,7 @@ function importerFournisseurs(event){
             e.target.result,
             {type:"array"}
         );
-console.log(workbook.SheetNames);
+console.log("Feuilles trouvées :", workbook.SheetNames);
 
         const sheet =
         workbook.Sheets[
@@ -5778,7 +5778,16 @@ importerFeuille(
 mettreAJourSuggestions();
      changerSite("DASHBOARD");
 
-        alert("Import terminé");
+  alert(
+    JSON.stringify(
+        Object.fromEntries(
+            Object.entries(stock)
+                .map(([c,v]) => [c,v.length])
+        ),
+        null,
+        2
+    )
+);
 
     };
 
