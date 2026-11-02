@@ -5655,7 +5655,7 @@ alert("1");
             e.target.result,
             { type: "array" }
         );
-    alert("4");
+   alert(workbook.SheetNames.join("\n"));
         const ancienStock =
             JSON.parse(
                 localStorage.getItem(STORAGE_KEY)
