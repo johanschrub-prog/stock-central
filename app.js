@@ -5642,20 +5642,20 @@ function exportHistoriqueExcel(){
 
 }
   function importerExcel(event){
-alert("1");
+
     const file = event.target.files[0];
 
     if(!file) return;
- alert("2");
+
     const reader = new FileReader();
 
     reader.onload = function(e){
-    alert("3");
+ 
         const workbook = XLSX.read(
             e.target.result,
             { type: "array" }
         );
-   alert(workbook.SheetNames.join("\n"));
+
         const ancienStock =
             JSON.parse(
                 localStorage.getItem(STORAGE_KEY)
@@ -5787,10 +5787,7 @@ alert("1");
             "INVENTAIRE RCLP CAVE VIN",
             "RCLP VIN"
         );
-alert(
-    "Stock importé : " +
-    stock["HDLP BAR"][0].stock
-);
+
         const test60 =
 Object.values(stock)
 .flat()
@@ -5800,7 +5797,21 @@ console.log(
     "ARTICLE 60 APRES IMPORT :",
     test60
 );
+        console.log(
+    "ARTICLE 60 AVANT SAVE",
+    stock["HDLP BAR"]
+    .find(a => String(a.code) === "60")
+);
         save();
+        save();
+
+console.log(
+    "LOCALSTORAGE",
+    JSON.parse(
+        localStorage.getItem(STORAGE_KEY)
+    )["HDLP BAR"]
+    .find(a => String(a.code) === "60")
+);
         mettreAJourSuggestions();
         render();
 
@@ -6833,4 +6844,10 @@ function supprimerFournisseur(id){
 mettreAJourSuggestions();
 
 changerSite("DASHBOARD");
-
+console.log(
+    "Stock 60 au démarrage :",
+    JSON.parse(
+        localStorage.getItem(STORAGE_KEY)
+    )?.["HDLP BAR"]
+    ?.find(a => String(a.code) === "60")
+);
