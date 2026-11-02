@@ -5784,8 +5784,11 @@ render();
 
 alert("✅ Inventaire importé");
 
+    };
+
+    reader.readAsArrayBuffer(file);
+
 }
-  
 function renderArticles(){
 
     const fournisseurs = [
