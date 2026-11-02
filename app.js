@@ -5690,6 +5690,7 @@ stock = {
         sheet,
         {defval:""}
     );
+     alert(JSON.stringify(rows[0], null, 2));    
 alert(
 nomFeuille + " = " + rows.length + " lignes"
 );
