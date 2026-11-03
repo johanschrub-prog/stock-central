@@ -900,23 +900,33 @@ article.codeFournisseur || ""
 
     });
 
-    html += `
+html += `
+<div class="card">
 
-    <div class="card">
+    <b>
+    Total commande :
+    ${Number(
+        commande.montantTotal || 0
+    ).toFixed(2)} €
+    </b>
 
-        <b>
+    <br><br>
 
-        Total commande :
+    <button
+    style="
+    background:#007bff;
+    color:white;
+    "
+    onclick="
+    ajouterProduitCommandeHDLP(
+    '${commande.id}'
+    )
+    ">
+        ➕ Ajouter un produit
+    </button>
 
-        ${Number(
-            commande.montantTotal || 0
-        ).toFixed(2)} €
-
-        </b>
-
-    </div>
-
-    `;
+</div>
+`;
 
 if(
     commande.statut ===
@@ -1024,7 +1034,128 @@ document.getElementById(
 ).innerHTML = html;
 
 }
-       
+  function ajouterProduitCommandeHDLP(commandeId){
+
+    const commande =
+    commandesHDLP.find(
+        c => c.id === commandeId
+    );
+
+    if(!commande) return;
+
+    const recherche =
+    prompt(
+        "Code ou nom de l'article"
+    );
+
+    if(!recherche){
+        return;
+    }
+
+    const articleTrouve =
+    Object.values(stock)
+    .flat()
+    .find(a =>
+
+        String(a.article || "")
+        .toLowerCase()
+        .includes(recherche.toLowerCase())
+
+        ||
+
+        String(a.code || "")
+        .toLowerCase()
+        .includes(recherche.toLowerCase())
+
+        ||
+
+        String(a.codeFournisseur || "")
+        .toLowerCase()
+        .includes(recherche.toLowerCase())
+    );
+
+    if(!articleTrouve){
+
+        alert(
+            "Article introuvable"
+        );
+
+        return;
+    }
+
+    const existe =
+    commande.articles.find(
+        a =>
+        String(a.code)
+        ===
+        String(articleTrouve.code)
+    );
+
+    if(existe){
+
+        alert(
+            "Cet article est déjà présent"
+        );
+
+        return;
+    }
+
+    commande.articles.push({
+
+        code:
+        articleTrouve.code,
+
+        article:
+        articleTrouve.article,
+
+        codeFournisseur:
+        articleTrouve.codeFournisseur || "",
+
+        cartons: 0,
+
+        pieces: 0,
+
+        colisage:
+        Number(
+            articleTrouve.colisage || 1
+        ),
+
+        totalPieces: 0,
+
+        prix:
+        Number(
+            articleTrouve.prix || 0
+        ),
+
+        montant: 0,
+
+        destination:
+        Object.keys(stock)
+        .find(cat =>
+            stock[cat]
+            .some(a =>
+                String(a.code)
+                ===
+                String(articleTrouve.code)
+            )
+        ) || "HDLP SOFT"
+    });
+
+    localStorage.setItem(
+        "commandesHDLP",
+        JSON.stringify(
+            commandesHDLP
+        )
+    );
+
+    ouvrirDetailCommandeHDLP(
+        commandeId
+    );
+
+    alert(
+        "Article ajouté ✅"
+    );
+}     
 function sauvegarderCommandeHDLP(id){
 
     const commande =
