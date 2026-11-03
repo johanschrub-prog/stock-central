@@ -447,8 +447,22 @@ ${article.colisage || 1}
 
             <br>
 
-            <select
-            id="destination_${article.code}">
+      <select
+id="destination_${article.code}"
+onchange="
+document.getElementById(
+'cartons_${article.code}'
+).focus();
+"
+onkeydown="
+if(event.key==='Enter'){
+    event.preventDefault();
+    document.getElementById(
+    'cartons_${article.code}'
+    ).focus();
+}
+">
+
 
                 <option>
                 HDLP SOFT
@@ -486,10 +500,18 @@ ${article.colisage || 1}
 
             <br>
 
-            <input
-            type="number"
+         <input
+type="number"
+id="cartons_${article.code}"
 
-            id="cartons_${article.code}"
+onkeydown="
+if(event.key==='Enter'){
+    event.preventDefault();
+    document.getElementById(
+    'pieces_${article.code}'
+    ).focus();
+}
+"
 
           value="${
 commandeHDLPCourante[
@@ -511,10 +533,24 @@ article.code
 
             <br>
 
-            <input
-            type="number"
+         <input
+type="number"
+id="pieces_${article.code}"
 
-            id="pieces_${article.code}"
+onkeydown="
+if(event.key==='Enter'){
+
+    event.preventDefault();
+
+    validerArticleCommandeHDLP(
+    '${article.code}',
+    '${article.article}',
+    ${article.colisage || 1},
+    ${article.prix || 0}
+    );
+
+}
+"
 
           value="${
 commandeHDLPCourante[
