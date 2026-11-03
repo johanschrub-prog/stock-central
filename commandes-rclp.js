@@ -96,7 +96,39 @@ function nouvelleCommandeRCLP(){
         </datalist>
 
         <br><br>
+<b>Code article</b>
+<br>
 
+<input
+id="codeCommandeHDLP"
+type="number"
+inputmode="numeric"
+placeholder="Code article"
+
+onkeydown="
+if(event.key==='Enter'){
+    rechercherCodeCommandeHDLP();
+}
+"
+
+style="
+width:100%;
+padding:10px;
+font-size:18px;
+">
+
+<button
+onclick="rechercherCodeCommandeHDLP()"
+style="
+width:100%;
+margin-top:5px;
+background:#007bff;
+color:white;
+">
+➡️ Aller à
+</button>
+
+<br><br>
        <input
 id="rechercheCommandeRCLP"
 placeholder="
@@ -148,6 +180,53 @@ id="contenuCommandeRCLP">
     </div>
 
     `;
+
+}
+function rechercherCodeCommandeRCLP(){
+
+    const code =
+    document.getElementById(
+        "codeCommandeRCLP"
+    )?.value || "";
+
+    if(code === ""){
+        return;
+    }
+
+    const carte =
+    document.getElementById(
+        "article_" + code
+    );
+
+    if(!carte){
+
+        alert(
+            "Article introuvable"
+        );
+
+        return;
+    }
+
+    carte.scrollIntoView({
+        behavior:"smooth",
+        block:"center"
+    });
+
+    carte.style.background =
+    "#fff3cd";
+
+    setTimeout(()=>{
+        carte.style.background = "";
+    },2000);
+
+    const destination =
+    document.getElementById(
+        "destination_" + code
+    );
+
+    if(destination){
+        destination.focus();
+    }
 
 }
 function ajouterProduitCommandeHDLP(commandeId){
@@ -312,9 +391,10 @@ function listeCommandesRCLP(){
         .reverse()
         .forEach(cmd => {
 
-            html += `
-
-            <div class="card">
+           html += `
+<div
+id="article_${article.code}"
+class="card"
 
                 <b>
                 🚚 ${cmd.fournisseur}
@@ -441,9 +521,10 @@ function chargerArticlesCommandeRCLP(){
             return;
         }
 
-        html += `
-
-       <div class="card"
+       html += `
+<div
+id="article_${article.code}"
+class="card"
 style="
 ${
 commandeRCLPArticles[
@@ -821,8 +902,9 @@ majFactureRecueRCLP(
     commande.articles.forEach(article => {
 
         html += `
-
-        <div class="card">
+<div
+id="article_${article.code}"
+class="card"
 
             <b>
             ${article.article}
@@ -1022,8 +1104,10 @@ article.codeFournisseur || ""
 
     });
 
-   html += `
-<div class="card">
+  html += `
+<div
+id="article_${article.code}"
+class="card"
 
     <b>
     Total commande :
@@ -1055,9 +1139,10 @@ if(
     "EN ATTENTE"
 ){
 
-    html += `
-
-    <div class="card">
+  html += `
+<div
+id="article_${article.code}"
+class="card"
 
         <button
         onclick="
@@ -1103,9 +1188,10 @@ supprimerCommandeRCLP(
 }
 else{
 
-    html += `
-
-    <div class="card">
+   html += `
+<div
+id="article_${article.code}"
+class="card"
 
         <button
         style="
@@ -1673,6 +1759,18 @@ if(zoneTotal){
         destination: destination
 
     };
+const champCode =
+document.getElementById(
+    "codeCommandeRCLP"
+);
+
+if(champCode){
+
+    champCode.focus();
+
+    champCode.select();
+
+}
 
     alert(
         articleNom +
@@ -1911,9 +2009,10 @@ filtrerReceptionRCLP()
         commandesReceptionnees.length === 0
     ){
 
-        html += `
-
-        <div class="card">
+    html += `
+<div
+id="article_${article.code}"
+class="card"
         Aucune commande trouvée.
         </div>
 
