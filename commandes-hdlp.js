@@ -215,9 +215,11 @@ function rechercherCodeCommandeHDLP(){
     carte.style.background =
     "#fff3cd";
 
-    setTimeout(()=>{
+    setTimeout(() => {
+
         carte.style.background = "";
-    },2000);
+
+    }, 2000);
 
     const destination =
     document.getElementById(
@@ -227,7 +229,6 @@ function rechercherCodeCommandeHDLP(){
     if(destination){
         destination.focus();
     }
-
 }
 function listeCommandesHDLP(){
 
@@ -729,81 +730,55 @@ function ouvrirDetailCommandeHDLP(id){
         </h2>
 
         📅 ${commande.date}
-${commande.dateReception ?
 
-`<br>
-🚚 Réception :
-${commande.dateReception}`
+        ${commande.dateReception ?
+        `<br>
+        🚚 Réception :
+        ${commande.dateReception}`
+        : ""}
 
-: ""}
+        ${commande.dateFacture ?
+        `<br>
+        🧾 Facture :
+        ${commande.dateFacture}`
+        : ""}
 
-${commande.dateFacture ?
-
-`<br>
-🧾 Facture :
-${commande.dateFacture}`
-
-: ""}
         <br>
 
         📌 ${commande.statut}
-${commande.statut === "RECEPTIONNEE" ? `
 
-<br><br>
+        ${commande.statut === "RECEPTIONNEE" ? `
 
-<label>
+        <br><br>
 
-<input
-type="checkbox"
+        <label>
 
-id="factureRecue_${commande.id}"
+        <input
+        type="checkbox"
+        id="factureRecue_${commande.id}"
+        ${commande.factureRecue ? "checked" : ""}
+        onchange="
+        majFactureRecueHDLP(
+        '${commande.id}'
+        )
+        ">
 
-${commande.factureRecue ? "checked" : ""}
+        🧾 Facture reçue
 
-onchange="
-majFactureRecueHDLP(
-'${commande.id}'
-)
-">
+        </label>
 
-🧾 Facture reçue
+        ` : ""}
 
-</label>
-
-` : ""}
     </div>
-
     `;
 
     commande.articles.forEach(article => {
 
- html += `
-<div class="card">
+        html += `
 
-    <b>
-    Total commande :
-    ${Number(
-        commande.montantTotal || 0
-    ).toFixed(2)} €
-    </b>
-
-    <br><br>
-
-    <button
-    style="
-    background:#007bff;
-    color:white;
-    "
-    onclick="
-    ajouterProduitCommandeHDLP(
-    '${commande.id}'
-    )
-    ">
-        ➕ Ajouter un produit
-    </button>
-
-</div>
-`;
+        <div
+        id="article_${article.code}"
+        class="card">
 
             <b>
             ${article.article}
@@ -813,20 +788,18 @@ majFactureRecueHDLP(
 
             Code :
             ${article.code}
-<br><br>
 
-Code fournisseur :
+            <br><br>
 
-<br>
+            Code fournisseur :
 
-<input
-type="text"
+            <br>
 
-id="codeFournisseur_${commande.id}_${article.code}"
+            <input
+            type="text"
+            id="codeFournisseur_${commande.id}_${article.code}"
+            value="${article.codeFournisseur || ""}">
 
-value="${
-article.codeFournisseur || ""
-}">
             <br><br>
 
             Destination :
@@ -836,52 +809,31 @@ article.codeFournisseur || ""
             <select
             id="destination_${commande.id}_${article.code}">
 
-                <option ${
-                article.destination==="HDLP SOFT"
-                ? "selected" : ""
-                }>
+                <option ${article.destination==="HDLP SOFT" ? "selected" : ""}>
                 HDLP SOFT
                 </option>
 
-                <option ${
-                article.destination==="HDLP BAR"
-                ? "selected" : ""
-                }>
+                <option ${article.destination==="HDLP BAR" ? "selected" : ""}>
                 HDLP BAR
                 </option>
 
-                <option ${
-                article.destination==="HDLP MINI BAR"
-                ? "selected" : ""
-                }>
+                <option ${article.destination==="HDLP MINI BAR" ? "selected" : ""}>
                 HDLP MINI BAR
                 </option>
 
-                <option ${
-                article.destination==="HDLP SEMINAIRE"
-                ? "selected" : ""
-                }>
+                <option ${article.destination==="HDLP SEMINAIRE" ? "selected" : ""}>
                 HDLP SEMINAIRE
                 </option>
 
-                <option ${
-                article.destination==="RCLP SOFT"
-                ? "selected" : ""
-                }>
+                <option ${article.destination==="RCLP SOFT" ? "selected" : ""}>
                 RCLP SOFT
                 </option>
 
-                <option ${
-                article.destination==="RCLP VIN"
-                ? "selected" : ""
-                }>
+                <option ${article.destination==="RCLP VIN" ? "selected" : ""}>
                 RCLP VIN
                 </option>
 
-                <option ${
-                article.destination==="RCLP ALCOOL"
-                ? "selected" : ""
-                }>
+                <option ${article.destination==="RCLP ALCOOL" ? "selected" : ""}>
                 RCLP ALCOOL
                 </option>
 
@@ -897,7 +849,6 @@ article.codeFournisseur || ""
             type="number"
             id="cartons_${commande.id}_${article.code}"
             value="${article.cartons}"
-
             oninput="
             recalculerDetailCommande(
             '${commande.id}',
@@ -916,7 +867,6 @@ article.codeFournisseur || ""
             type="number"
             id="pieces_${commande.id}_${article.code}"
             value="${article.pieces}"
-
             oninput="
             recalculerDetailCommande(
             '${commande.id}',
@@ -945,11 +895,8 @@ article.codeFournisseur || ""
             <input
             type="number"
             step="0.01"
-
             id="prixReception_${commande.id}_${article.code}"
-
             value="${article.prix}"
-
             oninput="
             majMontantReception(
             '${commande.id}',
@@ -966,13 +913,10 @@ article.codeFournisseur || ""
             <input
             type="number"
             step="0.01"
-
             id="montantReception_${commande.id}_${article.code}"
-
             value="${Number(
                 article.montant || 0
             ).toFixed(2)}"
-
             oninput="
             majPrixReception(
             '${commande.id}',
@@ -998,146 +942,142 @@ article.codeFournisseur || ""
             </button>
 
         </div>
-
         `;
-
     });
 
-html += `
-<div
-id="article_${article.code}"
-class="card"
+    html += `
 
-    <b>
-    Total commande :
-    ${Number(
-        commande.montantTotal || 0
-    ).toFixed(2)} €
-    </b>
+    <div class="card">
 
-    <br><br>
-
-    <button
-    style="
-    background:#007bff;
-    color:white;
-    "
-    onclick="
-    ajouterProduitCommandeHDLP(
-    '${commande.id}'
-    )
-    ">
-        ➕ Ajouter un produit
-    </button>
-
-</div>
-`;
-
-if(
-    commande.statut ===
-    "EN ATTENTE"
-){
-
-html += `
-<div class="card">
-
-        <button
-        onclick="
-        sauvegarderCommandeHDLP(
-        '${commande.id}'
-        )
-        ">
-            💾 Sauvegarder
-        </button>
+        <b>
+        Total commande :
+        ${Number(
+            commande.montantTotal || 0
+        ).toFixed(2)} €
+        </b>
 
         <br><br>
 
         <button
         style="
-        background:#28a745;
+        background:#007bff;
         color:white;
         "
         onclick="
-        receptionnerCommandeHDLP(
+        ajouterProduitCommandeHDLP(
         '${commande.id}'
         )
         ">
-            ✅ Réceptionner
-        </button>
-<br><br>
-
-<button
-style="
-background:#dc3545;
-color:white;
-"
-onclick="
-supprimerCommandeHDLP(
-'${commande.id}'
-)
-">
-🗑️ Supprimer la commande
-</button>
-    </div>
-
-    `;
-
-}
-else{
-
-  html += `
-<div
-id="article_${article.code}"
-class="card"
-
-        <button
-        style="
-        background:#ffc107;
-        color:black;
-        font-weight:bold;
-        "
-        onclick="
-        mettreAJourFactureHDLP(
-        '${commande.id}'
-        )
-        ">
-            💰 Mettre à jour avec la facture
-        </button>
-<br><br>
-
-<button
-style="
-background:#dc3545;
-color:white;
-"
-onclick="
-supprimerCommandeReceptionneeHDLP(
-'${commande.id}'
-)
-">
-↩️ Annuler la réception
-</button>
-        <br><br>
-
-        <button
-        onclick="
-        sauvegarderCommandeHDLP(
-        '${commande.id}'
-        )
-        ">
-            💾 Sauvegarder les modifications
+            ➕ Ajouter un produit
         </button>
 
     </div>
-
     `;
 
-}
+    if(
+        commande.statut ===
+        "EN ATTENTE"
+    ){
 
-document.getElementById(
-    "cards"
-).innerHTML = html;
+        html += `
 
+        <div class="card">
+
+            <button
+            onclick="
+            sauvegarderCommandeHDLP(
+            '${commande.id}'
+            )
+            ">
+                💾 Sauvegarder
+            </button>
+
+            <br><br>
+
+            <button
+            style="
+            background:#28a745;
+            color:white;
+            "
+            onclick="
+            receptionnerCommandeHDLP(
+            '${commande.id}'
+            )
+            ">
+                ✅ Réceptionner
+            </button>
+
+            <br><br>
+
+            <button
+            style="
+            background:#dc3545;
+            color:white;
+            "
+            onclick="
+            supprimerCommandeHDLP(
+            '${commande.id}'
+            )
+            ">
+                🗑️ Supprimer la commande
+            </button>
+
+        </div>
+        `;
+
+    }else{
+
+        html += `
+
+        <div class="card">
+
+            <button
+            style="
+            background:#ffc107;
+            color:black;
+            font-weight:bold;
+            "
+            onclick="
+            mettreAJourFactureHDLP(
+            '${commande.id}'
+            )
+            ">
+                💰 Mettre à jour avec la facture
+            </button>
+
+            <br><br>
+
+            <button
+            style="
+            background:#dc3545;
+            color:white;
+            "
+            onclick="
+            supprimerCommandeReceptionneeHDLP(
+            '${commande.id}'
+            )
+            ">
+                ↩️ Annuler la réception
+            </button>
+
+            <br><br>
+
+            <button
+            onclick="
+            sauvegarderCommandeHDLP(
+            '${commande.id}'
+            )
+            ">
+                💾 Sauvegarder les modifications
+            </button>
+
+        </div>
+        `;
+    }
+
+    document.getElementById(
+        "cards"
+    ).innerHTML = html;
 }
   function ajouterProduitCommandeHDLP(commandeId){
 
