@@ -391,10 +391,9 @@ function listeCommandesRCLP(){
         .reverse()
         .forEach(cmd => {
 
-           html += `
-<div
-id="article_${article.code}"
-class="card"
+        html += `
+<div class="card">
+
 
                 <b>
                 🚚 ${cmd.fournisseur}
@@ -901,10 +900,33 @@ majFactureRecueRCLP(
 
     commande.articles.forEach(article => {
 
-        html += `
-<div
-id="article_${article.code}"
-class="card"
+ html += `
+<div class="card">
+
+    <b>
+    Total commande :
+    ${Number(
+        commande.montantTotal || 0
+    ).toFixed(2)} €
+    </b>
+
+    <br><br>
+
+    <button
+    style="
+    background:#007bff;
+    color:white;
+    "
+    onclick="
+    ajouterProduitCommandeHDLP(
+    '${commande.id}'
+    )
+    ">
+        ➕ Ajouter un produit
+    </button>
+
+</div>
+`;
 
             <b>
             ${article.article}
@@ -1139,10 +1161,8 @@ if(
     "EN ATTENTE"
 ){
 
-  html += `
-<div
-id="article_${article.code}"
-class="card"
+html += `
+<div class="card">
 
         <button
         onclick="
@@ -2009,14 +2029,11 @@ filtrerReceptionRCLP()
         commandesReceptionnees.length === 0
     ){
 
-    html += `
-<div
-id="article_${article.code}"
-class="card"
-        Aucune commande trouvée.
-        </div>
-
-        `;
+ html += `
+<div class="card">
+Aucune commande trouvée.
+</div>
+`;
 
     }else{
 
