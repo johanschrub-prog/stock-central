@@ -73,7 +73,10 @@ function chargerArticlesBoutique(){
     let modifie = false;
 
     boutiqueData.forEach(articleBoutique => {
-
+if(!articleBoutique.cave){
+    articleBoutique.cave = "HDLP MINI BAR";
+    modifie = true;
+}
         if(!articleBoutique.id){
 
             articleBoutique.id =
@@ -137,19 +140,14 @@ function chargerArticlesBoutique(){
             String(article.code)
         );
 
-        boutiqueData.push({
-
-            id: crypto.randomUUID(),
-
-            code: article.code,
-
-            article: article.article,
-
-            vente: 0,
-
-            redescente: 0
-
-        });
+    boutiqueData.push({
+    id: crypto.randomUUID(),
+    code: article.code,
+    article: article.article,
+    vente: 0,
+    redescente: 0,
+    cave: "HDLP MINI BAR"
+});
 
     });
 
@@ -429,14 +427,65 @@ Code :
 
             Cave d'origine :
 
-           <select id="cave_${article.id}">
-    <option>HDLP SOFT</option>
-    <option>HDLP BAR</option>
-    <option>HDLP MINI BAR</option>
-    <option>HDLP SEMINAIRE</option>
-    <option>RCLP SOFT</option>
-    <option>RCLP VIN</option>
-    <option>RCLP ALCOOL</option>
+    <select
+id="cave_${article.id}"
+onchange="
+changerCaveBoutique(
+'${article.id}',
+this.value
+)
+"
+>
+
+<option ${
+article.cave === "HDLP SOFT"
+? "selected" : ""
+}>
+HDLP SOFT
+</option>
+
+<option ${
+article.cave === "HDLP BAR"
+? "selected" : ""
+}>
+HDLP BAR
+</option>
+
+<option ${
+article.cave === "HDLP MINI BAR"
+? "selected" : ""
+}>
+HDLP MINI BAR
+</option>
+
+<option ${
+article.cave === "HDLP SEMINAIRE"
+? "selected" : ""
+}>
+HDLP SEMINAIRE
+</option>
+
+<option ${
+article.cave === "RCLP SOFT"
+? "selected" : ""
+}>
+RCLP SOFT
+</option>
+
+<option ${
+article.cave === "RCLP VIN"
+? "selected" : ""
+}>
+RCLP VIN
+</option>
+
+<option ${
+article.cave === "RCLP ALCOOL"
+? "selected" : ""
+}>
+RCLP ALCOOL
+</option>
+
 </select>
 
             <br><br>
@@ -498,6 +547,28 @@ Code :
     document.getElementById(
         "contenuBoutique"
     ).innerHTML = html;
+}
+function changerCaveBoutique(
+    id,
+    cave
+){
+    const article =
+    boutiqueData.find(
+        a => a.id === id
+    );
+
+    if(!article){
+        return;
+    }
+
+    article.cave = cave;
+
+    localStorage.setItem(
+        "boutiqueData",
+        JSON.stringify(
+            boutiqueData
+        )
+    );
 }
 function retirerArticleResumeBoutique(id){
 
@@ -563,10 +634,11 @@ function validerVentesBoutique(){
             return;
         }
 
-        const cave =
-        document.getElementById(
-            "cave_" + article.id
-        ).value;
+      const cave =
+article.cave ||
+document.getElementById(
+    "cave_" + article.id
+).value;
 
         const articleStock =
         (stock[cave] || [])
