@@ -13,6 +13,9 @@ let commandeRCLPCourante = {};
 let commandeRCLPArticles = {};
 
 let fournisseurCommandeRCLP = "";
+let destinationDefautRCLP =
+localStorage.getItem("destinationDefautRCLP")
+|| "RCLP VIN";
 
 function ouvrirCommandeRCLP(){
 
@@ -333,7 +336,7 @@ function ajouterProduitCommandeRCLP(commandeId){
                 ===
                 String(articleTrouve.code)
             )
-        ) || "HDLP SOFT"
+    ) || destinationDefautRCLP
     });
 
     localStorage.setItem(
@@ -569,10 +572,17 @@ ${article.colisage || 1}
 
             <br>
 
-            <select
+  <select
 id="destination_${article.code}"
 
 onchange="
+destinationDefautRCLP=this.value;
+
+localStorage.setItem(
+'destinationDefautRCLP',
+this.value
+);
+
 document.getElementById(
 'cartons_${article.code}'
 ).focus();
@@ -588,33 +598,54 @@ document.getElementById(
 "
 >
 
-                <option>
-                HDLP SOFT
-                </option>
+             <option ${
+destinationDefautRCLP==="HDLP SOFT"
+? "selected" : ""
+}>
+HDLP SOFT
+</option>
 
-                <option>
-                HDLP BAR
-                </option>
+<option ${
+destinationDefautRCLP==="HDLP BAR"
+? "selected" : ""
+}>
+HDLP BAR
+</option>
 
-                <option>
-                HDLP MINI BAR
-                </option>
+<option ${
+destinationDefautRCLP==="HDLP MINI BAR"
+? "selected" : ""
+}>
+HDLP MINI BAR
+</option>
 
-                <option>
-                HDLP SEMINAIRE
-                </option>
+<option ${
+destinationDefautRCLP==="HDLP SEMINAIRE"
+? "selected" : ""
+}>
+HDLP SEMINAIRE
+</option>
 
-                <option>
-                RCLP SOFT
-                </option>
+<option ${
+destinationDefautRCLP==="RCLP SOFT"
+? "selected" : ""
+}>
+RCLP SOFT
+</option>
 
-                <option>
-                RCLP VIN
-                </option>
+<option ${
+destinationDefautRCLP==="RCLP VIN"
+? "selected" : ""
+}>
+RCLP VIN
+</option>
 
-                <option>
-                RCLP ALCOOL
-                </option>
+<option ${
+destinationDefautRCLP==="RCLP ALCOOL"
+? "selected" : ""
+}>
+RCLP ALCOOL
+</option>
 
             </select>
 
@@ -1687,7 +1718,12 @@ function validerArticleCommandeRCLP(
     document.getElementById(
         "destination_" + code
     )?.value || "";
+destinationDefautRCLP = destination;
 
+localStorage.setItem(
+    "destinationDefautRCLP",
+    destination
+);
     if(
         cartons <= 0 &&
         pieces <= 0
