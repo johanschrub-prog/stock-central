@@ -349,13 +349,19 @@ function validerQuantiteBoutique(id){
 
         renderContenuBoutique();
 
-        setTimeout(() => {
+     setTimeout(() => {
 
-            document.getElementById(
-                "rechercheCodeBoutique"
-            )?.focus();
+    const recherche =
+    document.getElementById(
+        "rechercheBoutique"
+    );
 
-        }, 100);
+    if(recherche){
+        recherche.focus();
+        recherche.select();
+    }
+
+}, 100);
 
     }
 }
