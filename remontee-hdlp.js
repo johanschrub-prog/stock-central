@@ -408,13 +408,12 @@ Code :
 
             Cave d'origine :
 
-            <select id="cave_${article.id}">
-                <option>HDLP SOFT</option>
-                <option>HDLP BAR</option>
-                <option>HDLP MINI BAR</option>
-                <option>HDLP SEMINAIRE</option>
-            </select>
-
+          <select id="cave_${article.id}">
+    <option selected>HDLP BAR</option>
+    <option>HDLP SOFT</option>
+    <option>HDLP MINI BAR</option>
+    <option>HDLP SEMINAIRE</option>
+</select>
             <br><br>
 
             <button
