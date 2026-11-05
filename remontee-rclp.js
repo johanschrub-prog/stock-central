@@ -4,6 +4,9 @@ let rclpData =
 JSON.parse(
     localStorage.getItem("rclpData")
 ) || [];
+let caveDefautRCLP =
+localStorage.getItem("caveDefautRCLP")
+|| "RCLP VIN";
 function ouvrirRemonteeRCLP(){
     renderRemonteeRCLP();
 }
@@ -365,11 +368,35 @@ Code :
 
             Cave d'origine :
 
-            <select id="cave_${article.id}">
-                <option>RCLP SOFT</option>
-                <option>RCLP VIN</option>
-                <option>RCLP ALCOOL</option>
-            </select>
+           <select
+    id="cave_${article.id}"
+    onchange="
+        caveDefautRCLP=this.value;
+        localStorage.setItem(
+            'caveDefautRCLP',
+            this.value
+        );
+    "
+>
+    <option ${
+        caveDefautRCLP === 'RCLP SOFT'
+        ? 'selected'
+        : ''
+    }>RCLP SOFT</option>
+
+    <option ${
+        caveDefautRCLP === 'RCLP VIN'
+        ? 'selected'
+        : ''
+    }>RCLP VIN</option>
+
+    <option ${
+        caveDefautRCLP === 'RCLP ALCOOL'
+        ? 'selected'
+        : ''
+    }>RCLP ALCOOL</option>
+</select>
+
 
             <br><br>
 
@@ -495,10 +522,15 @@ function validerRemonteeResumeRCLP(){
             return;
         }
 
-        const cave =
-        document.getElementById(
-            "cave_" + article.id
-        ).value;
+      const selectCave =
+document.getElementById(
+    "cave_" + article.id
+);
+
+const cave =
+selectCave
+? selectCave.value
+: caveDefautRCLP;
 
         const articleStock =
         (stock[cave] || [])
