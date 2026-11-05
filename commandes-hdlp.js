@@ -13,7 +13,9 @@ let commandeHDLPCourante = {};
 let commandeHDLPArticles = {};
 
 let fournisseurCommandeHDLP = "";
-
+let destinationDefautHDLP =
+localStorage.getItem("destinationDefautHDLP")
+|| "HDLP BAR";
 function ouvrirCommandeHDLP(){
 
     document.getElementById("cards").innerHTML = `
@@ -447,9 +449,14 @@ ${article.colisage || 1}
 
             <br>
 
-      <select
+ <select
 id="destination_${article.code}"
 onchange="
+destinationDefautHDLP=this.value;
+localStorage.setItem(
+'destinationDefautHDLP',
+this.value
+);
 document.getElementById(
 'cartons_${article.code}'
 ).focus();
@@ -464,33 +471,54 @@ if(event.key==='Enter'){
 ">
 
 
-                <option>
-                HDLP SOFT
-                </option>
+             <option ${
+destinationDefautHDLP==="HDLP SOFT"
+? "selected" : ""
+}>
+HDLP SOFT
+</option>
 
-                <option>
-                HDLP BAR
-                </option>
+<option ${
+destinationDefautHDLP==="HDLP BAR"
+? "selected" : ""
+}>
+HDLP BAR
+</option>
 
-                <option>
-                HDLP MINI BAR
-                </option>
+<option ${
+destinationDefautHDLP==="HDLP MINI BAR"
+? "selected" : ""
+}>
+HDLP MINI BAR
+</option>
 
-                <option>
-                HDLP SEMINAIRE
-                </option>
+<option ${
+destinationDefautHDLP==="HDLP SEMINAIRE"
+? "selected" : ""
+}>
+HDLP SEMINAIRE
+</option>
 
-                <option>
-                RCLP SOFT
-                </option>
+<option ${
+destinationDefautHDLP==="RCLP SOFT"
+? "selected" : ""
+}>
+RCLP SOFT
+</option>
 
-                <option>
-                RCLP VIN
-                </option>
+<option ${
+destinationDefautHDLP==="RCLP VIN"
+? "selected" : ""
+}>
+RCLP VIN
+</option>
 
-                <option>
-                RCLP ALCOOL
-                </option>
+<option ${
+destinationDefautHDLP==="RCLP ALCOOL"
+? "selected" : ""
+}>
+RCLP ALCOOL
+</option>
 
             </select>
 
@@ -1685,7 +1713,12 @@ function validerArticleCommandeHDLP(
     document.getElementById(
         "destination_" + code
     )?.value || "";
+destinationDefautHDLP = destination;
 
+localStorage.setItem(
+    "destinationDefautHDLP",
+    destination
+);
     if(
         cartons <= 0 &&
         pieces <= 0
