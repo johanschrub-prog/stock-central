@@ -161,8 +161,11 @@ if(champ === "representant" && valeur){
 );
 
 alert(
-    "Trouvé = " +
-    (fournisseurExistant ? "OUI" : "NON")
+    JSON.stringify(
+        fournisseurExistant,
+        null,
+        2
+    )
 );
 
     if(fournisseurExistant){
