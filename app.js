@@ -103,7 +103,6 @@ function modifierFournisseur(id, champ, valeur){
 
     valeur = String(valeur).trim();
 
-    // Validation email
     if(champ === "email"){
         if(
             valeur !== "" &&
@@ -114,7 +113,6 @@ function modifierFournisseur(id, champ, valeur){
         }
     }
 
-    // Validation téléphone
     if(
         champ === "portable" ||
         champ === "bureau"
@@ -125,7 +123,6 @@ function modifierFournisseur(id, champ, valeur){
         );
     }
 
-    // Vérification doublon fournisseur
     if(champ === "nom"){
 
         const existe = fournisseurs.some(
@@ -141,29 +138,13 @@ function modifierFournisseur(id, champ, valeur){
         }
     }
 
-    // Enregistrer la valeur modifiée
     fournisseur[champ] = valeur;
 
-    // Si représentant existant
-if(champ === "representant" && valeur){
+    saveFournisseurs();
+    afficherFournisseurs();
 
-    const fournisseurExistant = fournisseurs.find(
-        f =>
-            String(f.id) !== String(id) &&
-            String(f.representant || "").trim().toUpperCase() ===
-            valeur.toUpperCase()
-    );
-
-    if(fournisseurExistant){
-
-        fournisseur.portable = "123456";
-        fournisseur.email = "test@test.fr";
-
-        alert("REPRESENTANT TROUVE");
-    }
 }
-saveFournisseurs();
-afficherFournisseurs();
+
 function toggleAnalyse(){
 
     analyseOuverte = !analyseOuverte;
