@@ -180,39 +180,9 @@ if(champ === "representant" && valeur){
     console.log("Avant sauvegarde :", fournisseur);
 saveFournisseurs();
 
-const test = JSON.parse(
-    localStorage.getItem("Fournisseurs")
-);
-
-alert(
-    JSON.stringify(
-        test.find(
-            f => String(f.id) === String(id)
-        ),
-        null,
-        2
-    )
-);
-
-alert(
-    JSON.stringify(
-        JSON.parse(localStorage.getItem("Fournisseurs"))
-            .find(f => String(f.id) === String(id)),
-        null,
-        2
-    )
-);
-console.log("Après sauvegarde :", fournisseurs);
-
-alert(
-    JSON.stringify(
-        fournisseurs.find(f => String(f.id) === String(id)),
-        null,
-        2
-    )
-);
-
-afficherFournisseurs();
+setTimeout(() => {
+    afficherFournisseurs();
+}, 100);
 
 }
 
