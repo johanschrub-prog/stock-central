@@ -145,6 +145,13 @@ function modifierFournisseur(id, champ, valeur){
 );
 
 fournisseur[champ] = valeur;
+    alert(
+    JSON.stringify(
+        fournisseur,
+        null,
+        2
+    )
+);
 if(champ === "representant" && valeur){
 
     const fournisseurExistant = fournisseurs.find(
