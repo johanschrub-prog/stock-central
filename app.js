@@ -156,34 +156,14 @@ if(champ === "representant" && valeur){
 
     if(fournisseurExistant){
 
-        alert(
-            "Portable = " + (fournisseurExistant.portable || "VIDE") +
-            "\nEmail = " + (fournisseurExistant.email || "VIDE")
-        );
+        fournisseur.portable = "123456";
+        fournisseur.email = "test@test.fr";
 
-        fournisseur.portable =
-            fournisseurExistant.portable || "";
-
-        fournisseur.email =
-            fournisseurExistant.email || "";
-
-        fournisseur.bureau =
-            fournisseurExistant.bureau || "";
+        alert("REPRESENTANT TROUVE");
     }
 }
-
-    alert(
-        "Coordonnées récupérées depuis un fournisseur existant"
-    );
-}
-
-  saveFournisseurs();
-
-// afficherFournisseurs();
-
-console.log("APRES SAVE", fournisseur);
-    afficherFournisseurs();
-}
+saveFournisseurs();
+afficherFournisseurs();
 function toggleAnalyse(){
 
     analyseOuverte = !analyseOuverte;
