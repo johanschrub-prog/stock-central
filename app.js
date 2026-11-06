@@ -239,6 +239,9 @@ function saveFournisseurs(){
         JSON.stringify(fournisseurs)
     );
 
+    alert(
+        localStorage.getItem("Fournisseurs")
+    );
 }
 
 function getMouvements(){
