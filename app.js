@@ -127,9 +127,11 @@ function modifierFournisseur(id, champ, valeur){
 
         const existe = fournisseurs.some(
             f =>
-            String(f.id) !== String(id) &&
-            String(f.nom || "").trim().toUpperCase() ===
-            valeur.toUpperCase()
+                String(f.id) !== String(id) &&
+                String(f.nom || "")
+                    .trim()
+                    .toUpperCase() ===
+                valeur.toUpperCase()
         );
 
         if(existe){
@@ -138,54 +140,40 @@ function modifierFournisseur(id, champ, valeur){
         }
     }
 
-  alert(
-    "CHAMP = " + champ +
-    "\nVALEUR = " + valeur
-);
+    fournisseur[champ] = valeur;
 
-fournisseur[champ] = valeur;
-    alert(
-    JSON.stringify(
-        fournisseur,
-        null,
-        2
-    )
-);
-if(champ === "representant" && valeur){
+    if(champ === "representant" && valeur){
 
-    const fournisseurExistant = fournisseurs.find(
-        f =>
-            String(f.id) !== String(id) &&
-            String(f.representant || "").trim().toUpperCase() ===
-            valeur.toUpperCase()
-    );
-
-    if(fournisseurExistant){
-
-        fournisseur.portable =
-            fournisseurExistant.portable || "";
-
-        fournisseur.email =
-            fournisseurExistant.email || "";
-
-        fournisseur.bureau =
-            fournisseurExistant.bureau || "";
-
-        alert(
-            "Après copie :\n\n" +
-            JSON.stringify(fournisseur, null, 2)
+        const fournisseurExistant = fournisseurs.find(
+            f =>
+                String(f.id) !== String(id) &&
+                String(f.representant || "")
+                    .trim()
+                    .toUpperCase() ===
+                valeur.toUpperCase() &&
+                (
+                    f.portable ||
+                    f.email ||
+                    f.bureau
+                )
         );
+
+        if(fournisseurExistant){
+
+            fournisseur.portable =
+                fournisseurExistant.portable || "";
+
+            fournisseur.email =
+                fournisseurExistant.email || "";
+
+            fournisseur.bureau =
+                fournisseurExistant.bureau || "";
+        }
     }
-}
-    console.log("Avant sauvegarde :", fournisseur);
-saveFournisseurs();
 
-setTimeout(() => {
+    saveFournisseurs();
     afficherFournisseurs();
-}, 100);
-
 }
-
 function toggleAnalyse(){
 
     analyseOuverte = !analyseOuverte;
@@ -207,19 +195,11 @@ function changerOngletRemontees(type){
 }
 function saveFournisseurs(){
 
-    alert(
-        "AVANT SAVE\n\n" +
-        JSON.stringify(
-            fournisseurs,
-            null,
-            2
-        )
-    );
-
     localStorage.setItem(
         "Fournisseurs",
         JSON.stringify(fournisseurs)
     );
+
 }
 
 function getMouvements(){
@@ -6226,19 +6206,12 @@ if(!stock[categorie]){
 
 }
 function renderFournisseurs(){
-    alert(
-    localStorage.getItem("Fournisseurs")
-);
-alert(
-    "Nombre fournisseurs : " +
-    fournisseurs.length
-);
+
     Object.values(stock)
     .flat()
     .forEach(article => {
 
-        const nom =
-        String(
+        const nom = String(
             article.fournisseur || ""
         ).trim();
 
@@ -6246,10 +6219,10 @@ alert(
             nom &&
             !fournisseurs.some(
                 f =>
-                String(f.nom).trim()
-                .toUpperCase()
-                ===
-                nom.toUpperCase()
+                    String(f.nom)
+                        .trim()
+                        .toUpperCase() ===
+                    nom.toUpperCase()
             )
         ){
 
@@ -6274,9 +6247,9 @@ alert(
         }
 
     });
-   
-saveFournisseurs();
-    
+
+    saveFournisseurs();
+
     document.getElementById("cards").innerHTML = `
 
     <div class="card">
@@ -6305,7 +6278,6 @@ saveFournisseurs();
     afficherFournisseurs();
 
 }
-
 function afficherFournisseurs(){
 
     const recherche =
