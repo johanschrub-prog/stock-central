@@ -1,4 +1,4 @@
-alert("DEBUT 3");
+alert("DEBUT");
 const STORAGE_KEY = "StockCentral";
 const STORAGE_MOUVEMENTS = "HistoriqueStock";
 let siteActif = "DASHBOARD";
