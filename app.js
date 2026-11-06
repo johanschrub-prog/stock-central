@@ -1,4 +1,4 @@
-alert("DEBUT JS");
+alert("DEBUT 1");
 const STORAGE_KEY = "StockCentral";
 const STORAGE_MOUVEMENTS = "HistoriqueStock";
 let siteActif = "DASHBOARD";
@@ -139,7 +139,12 @@ function modifierFournisseur(id, champ, valeur){
         }
     }
 
-    fournisseur[champ] = valeur;
+  alert(
+    "CHAMP = " + champ +
+    "\nVALEUR = " + valeur
+);
+
+fournisseur[champ] = valeur;
 
     saveFournisseurs();
     afficherFournisseurs();
