@@ -93,15 +93,10 @@ function migrerMouvements(){
     );
 
 }
-function modifierFournisseur(
-    id,
-    champ,
-    valeur
-){
+function modifierFournisseur(id, champ, valeur){
 
-    const fournisseur =
-    fournisseurs.find(
-        f => f.id === id
+    const fournisseur = fournisseurs.find(
+        f => String(f.id) === String(id)
     );
 
     if(!fournisseur) return;
@@ -110,7 +105,6 @@ function modifierFournisseur(
 
     // Validation email
     if(champ === "email"){
-
         if(
             valeur !== "" &&
             !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(valeur)
@@ -118,7 +112,6 @@ function modifierFournisseur(
             alert("Adresse email invalide");
             return;
         }
-
     }
 
     // Validation téléphone
@@ -126,76 +119,61 @@ function modifierFournisseur(
         champ === "portable" ||
         champ === "bureau"
     ){
-
         valeur = valeur.replace(
             /[^0-9+ ]/g,
             ""
         );
-
     }
-if(champ === "nom"){
 
-    const existe =
-    fournisseurs.some(
-        f =>
-        f.id !== id &&
-        String(f.nom)
-        .toUpperCase()
-        ===
-        valeur.toUpperCase()
-    );
+    // Vérification doublon fournisseur
+    if(champ === "nom"){
 
-    if(existe){
-
-        alert(
-            "Ce fournisseur existe déjà"
+        const existe = fournisseurs.some(
+            f =>
+            String(f.id) !== String(id) &&
+            String(f.nom || "").trim().toUpperCase() ===
+            valeur.toUpperCase()
         );
 
-        return;
+        if(existe){
+            alert("Ce fournisseur existe déjà");
+            return;
+        }
     }
 
-}
-    // Remplissage automatique depuis un représentant existant
-if (champ === "representant" && valeur !== "") {
+    // Enregistrer la valeur modifiée
+    fournisseur[champ] = valeur;
 
-    const fournisseurExistant = fournisseurs.find(
-        f =>
-            f.id !== id &&
-            String(f.representant || "").toUpperCase() === valeur.toUpperCase()
-    );
+    // Si représentant existant
+    if(champ === "representant" && valeur){
 
-    if (fournisseurExistant) {
-        fournisseur.portable = fournisseurExistant.portable || "";
-        fournisseur.email = fournisseurExistant.email || "";
-        fournisseur.bureau = fournisseurExistant.bureau || "";
-    }
-}
-  fournisseur[champ] = valeur;
-
-// Si on vient de modifier le représentant
-if (champ === "representant" && valeur) {
-
-    const autreFournisseur = fournisseurs.find(
-        f =>
-            f.id !== id &&
-            String(f.representant || "").trim().toUpperCase() ===
-            valeur.trim().toUpperCase()
-    );
-
-    if (autreFournisseur) {
-
-        fournisseur.portable = autreFournisseur.portable || "";
-        fournisseur.email = autreFournisseur.email || "";
-        fournisseur.bureau = autreFournisseur.bureau || "";
-
-        alert(
-            "Coordonnées récupérées depuis un fournisseur existant"
+        const fournisseurExistant = fournisseurs.find(
+            f =>
+                String(f.id) !== String(id) &&
+                String(f.representant || "").trim().toUpperCase() ===
+                valeur.toUpperCase()
         );
+
+        if(fournisseurExistant){
+
+            fournisseur.portable =
+                fournisseurExistant.portable || "";
+
+            fournisseur.email =
+                fournisseurExistant.email || "";
+
+            fournisseur.bureau =
+                fournisseurExistant.bureau || "";
+
+            alert(
+                "Coordonnées récupérées depuis un fournisseur existant"
+            );
+        }
     }
-}
 
-saveFournisseurs();
+    saveFournisseurs();
 
+    afficherFournisseurs();
 }
 function toggleAnalyse(){
 
