@@ -1,4 +1,4 @@
-alert("DEBUT 2");
+alert("DEBUT 1");
 const STORAGE_KEY = "StockCentral";
 const STORAGE_MOUVEMENTS = "HistoriqueStock";
 let siteActif = "DASHBOARD";
@@ -146,25 +146,11 @@ function modifierFournisseur(id, champ, valeur){
 
 fournisseur[champ] = valeur;
 
+saveFournisseurs();
+afficherFournisseurs();
 alert(
-    JSON.stringify(fournisseur)
+    localStorage.getItem("Fournisseurs")
 );
-
-alert(
-    "Après modification :\n\n" +
-    fournisseur.representant
-);
-
-localStorage.setItem(
-    "FournisseursTest",
-    JSON.stringify(fournisseurs)
-);
-
-alert(
-    localStorage.getItem("FournisseursTest")
-);
-
-
 }
 
 function toggleAnalyse(){
