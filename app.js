@@ -145,34 +145,43 @@ function modifierFournisseur(id, champ, valeur){
     fournisseur[champ] = valeur;
 
     // Si représentant existant
-    if(champ === "representant" && valeur){
+if(champ === "representant" && valeur){
 
-        const fournisseurExistant = fournisseurs.find(
-            f =>
-                String(f.id) !== String(id) &&
-                String(f.representant || "").trim().toUpperCase() ===
-                valeur.toUpperCase()
+    const fournisseurExistant = fournisseurs.find(
+        f =>
+            String(f.id) !== String(id) &&
+            String(f.representant || "").trim().toUpperCase() ===
+            valeur.toUpperCase()
+    );
+
+    if(fournisseurExistant){
+
+        alert(
+            "Portable = " + (fournisseurExistant.portable || "VIDE") +
+            "\nEmail = " + (fournisseurExistant.email || "VIDE")
         );
 
-        if(fournisseurExistant){
+        fournisseur.portable =
+            fournisseurExistant.portable || "";
 
-            fournisseur.portable =
-                fournisseurExistant.portable || "";
+        fournisseur.email =
+            fournisseurExistant.email || "";
 
-            fournisseur.email =
-                fournisseurExistant.email || "";
-
-            fournisseur.bureau =
-                fournisseurExistant.bureau || "";
-
-            alert(
-                "Coordonnées récupérées depuis un fournisseur existant"
-            );
-        }
+        fournisseur.bureau =
+            fournisseurExistant.bureau || "";
     }
+}
 
-    saveFournisseurs();
+    alert(
+        "Coordonnées récupérées depuis un fournisseur existant"
+    );
+}
 
+  saveFournisseurs();
+
+// afficherFournisseurs();
+
+console.log("APRES SAVE", fournisseur);
     afficherFournisseurs();
 }
 function toggleAnalyse(){
