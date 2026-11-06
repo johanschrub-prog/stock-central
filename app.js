@@ -155,6 +155,21 @@ if(champ === "nom"){
     }
 
 }
+    // Remplissage automatique depuis un représentant existant
+if (champ === "representant" && valeur !== "") {
+
+    const fournisseurExistant = fournisseurs.find(
+        f =>
+            f.id !== id &&
+            String(f.representant || "").toUpperCase() === valeur.toUpperCase()
+    );
+
+    if (fournisseurExistant) {
+        fournisseur.portable = fournisseurExistant.portable || "";
+        fournisseur.email = fournisseurExistant.email || "";
+        fournisseur.bureau = fournisseurExistant.bureau || "";
+    }
+}
     fournisseur[champ] = valeur;
 
     saveFournisseurs();
