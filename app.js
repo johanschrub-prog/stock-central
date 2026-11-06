@@ -150,7 +150,9 @@ if(champ === "representant" && valeur){
     alert("Recherche représentant : " + valeur);
 
 }
+    console.log("Avant sauvegarde :", fournisseur);
 saveFournisseurs();
+console.log("Après sauvegarde :", fournisseurs);
 
 alert(
     JSON.stringify(
@@ -6332,16 +6334,16 @@ this.value
 
         Nom du représentant
 
-        <input
-        value="${f.representant || ''}"
-onchange="
-modifierFournisseur(
-'${f.id}',
-'representant',
-this.value
-)"
-        <br><br>
-
+<input
+    value="${f.representant || ''}"
+    onchange="
+        modifierFournisseur(
+            '${f.id}',
+            'representant',
+            this.value
+        )
+    ">
+<br><br>
 Portable
 
 <br>
