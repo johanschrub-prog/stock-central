@@ -153,32 +153,28 @@ fournisseur[champ] = valeur;
 );
 if(champ === "representant" && valeur){
 
-   const fournisseurExistant = fournisseurs.find(
-    f =>
-        String(f.id) !== String(id) &&
-        String(f.representant || "").trim().toUpperCase() ===
-        valeur.trim().toUpperCase()
-);
-
-alert(
-    JSON.stringify(
-        fournisseurExistant,
-        null,
-        2
-    )
-);
+    const fournisseurExistant = fournisseurs.find(
+        f =>
+            String(f.id) !== String(id) &&
+            String(f.representant || "").trim().toUpperCase() ===
+            valeur.toUpperCase()
+    );
 
     if(fournisseurExistant){
 
         fournisseur.portable =
             fournisseurExistant.portable || "";
 
-        fournisseur.bureau =
-            fournisseurExistant.bureau || "";
-
         fournisseur.email =
             fournisseurExistant.email || "";
 
+        fournisseur.bureau =
+            fournisseurExistant.bureau || "";
+
+        alert(
+            "Après copie :\n\n" +
+            JSON.stringify(fournisseur, null, 2)
+        );
     }
 }
     console.log("Avant sauvegarde :", fournisseur);
