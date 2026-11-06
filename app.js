@@ -147,8 +147,26 @@ function modifierFournisseur(id, champ, valeur){
 fournisseur[champ] = valeur;
 if(champ === "representant" && valeur){
 
-    alert("Recherche représentant : " + valeur);
+    const fournisseurExistant = fournisseurs.find(
+        f =>
+            String(f.id) !== String(id) &&
+            String(f.representant || "")
+                .trim()
+                .toUpperCase() === valeur.toUpperCase()
+    );
 
+    if(fournisseurExistant){
+
+        fournisseur.portable =
+            fournisseurExistant.portable || "";
+
+        fournisseur.bureau =
+            fournisseurExistant.bureau || "";
+
+        fournisseur.email =
+            fournisseurExistant.email || "";
+
+    }
 }
     console.log("Avant sauvegarde :", fournisseur);
 saveFournisseurs();
