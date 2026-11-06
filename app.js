@@ -6324,7 +6324,13 @@ function afficherFournisseurs(){
         ){
             return;
         }
+if(f.representant === "DUPONT"){   // mettez le nom testé
 
+    alert(
+        JSON.stringify(f,null,2)
+    );
+
+}
         html += `
 
         <div class="card">
