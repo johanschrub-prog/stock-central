@@ -207,13 +207,18 @@ function changerOngletRemontees(type){
 }
 function saveFournisseurs(){
 
+    alert(
+        "AVANT SAVE\n\n" +
+        JSON.stringify(
+            fournisseurs,
+            null,
+            2
+        )
+    );
+
     localStorage.setItem(
         "Fournisseurs",
         JSON.stringify(fournisseurs)
-    );
-
-    alert(
-        localStorage.getItem("Fournisseurs")
     );
 }
 
