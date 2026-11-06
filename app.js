@@ -153,13 +153,17 @@ fournisseur[champ] = valeur;
 );
 if(champ === "representant" && valeur){
 
-    const fournisseurExistant = fournisseurs.find(
-        f =>
-            String(f.id) !== String(id) &&
-            String(f.representant || "")
-                .trim()
-                .toUpperCase() === valeur.toUpperCase()
-    );
+   const fournisseurExistant = fournisseurs.find(
+    f =>
+        String(f.id) !== String(id) &&
+        String(f.representant || "").trim().toUpperCase() ===
+        valeur.trim().toUpperCase()
+);
+
+alert(
+    "Trouvé = " +
+    (fournisseurExistant ? "OUI" : "NON")
+);
 
     if(fournisseurExistant){
 
