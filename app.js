@@ -1,4 +1,4 @@
-alert("DEBUT 1");
+alert("DEBUT");
 const STORAGE_KEY = "StockCentral";
 const STORAGE_MOUVEMENTS = "HistoriqueStock";
 let siteActif = "DASHBOARD";
@@ -145,12 +145,34 @@ function modifierFournisseur(id, champ, valeur){
 );
 
 fournisseur[champ] = valeur;
+if(champ === "representant" && valeur){
 
+    const fournisseurExistant = fournisseurs.find(
+        f =>
+            String(f.id) !== String(id) &&
+            String(f.representant || "").trim().toUpperCase() ===
+            valeur.toUpperCase()
+    );
+
+    if(fournisseurExistant){
+
+        fournisseur.portable =
+            fournisseurExistant.portable || "";
+
+        fournisseur.email =
+            fournisseurExistant.email || "";
+
+        fournisseur.bureau =
+            fournisseurExistant.bureau || "";
+
+        alert(
+            "Coordonnées récupérées depuis un représentant existant"
+        );
+    }
+}
 saveFournisseurs();
 afficherFournisseurs();
-alert(
-    localStorage.getItem("Fournisseurs")
-);
+
 }
 
 function toggleAnalyse(){
