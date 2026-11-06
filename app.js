@@ -6196,6 +6196,9 @@ if(!stock[categorie]){
 
 }
 function renderFournisseurs(){
+    alert(
+    localStorage.getItem("Fournisseurs")
+);
 alert(
     "Nombre fournisseurs : " +
     fournisseurs.length
