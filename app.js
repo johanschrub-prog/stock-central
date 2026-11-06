@@ -150,6 +150,11 @@ alert(
     JSON.stringify(fournisseur)
 );
 
+alert(
+    "Après modification :\n\n" +
+    fournisseur.representant
+);
+
 saveFournisseurs();
 
 }
@@ -6185,7 +6190,10 @@ if(!stock[categorie]){
 
 }
 function renderFournisseurs(){
-
+alert(
+    "Nombre fournisseurs : " +
+    fournisseurs.length
+);
     Object.values(stock)
     .flat()
     .forEach(article => {
@@ -6227,7 +6235,7 @@ function renderFournisseurs(){
         }
 
     });
-    
+   
 saveFournisseurs();
     
     document.getElementById("cards").innerHTML = `
