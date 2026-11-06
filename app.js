@@ -171,6 +171,15 @@ if(champ === "representant" && valeur){
     }
 }
 saveFournisseurs();
+
+alert(
+    JSON.stringify(
+        fournisseurs.find(f => String(f.id) === String(id)),
+        null,
+        2
+    )
+);
+
 afficherFournisseurs();
 
 }
@@ -202,6 +211,7 @@ function saveFournisseurs(){
     );
 
 }
+
 function getMouvements(){
     return JSON.parse(
         localStorage.getItem(STORAGE_MOUVEMENTS)
@@ -6341,13 +6351,14 @@ this.value
 
         <input
         value="${f.representant || ''}"
- onchange="
+<input
+value="${f.representant || ''}"
+oninput="
 modifierFournisseur(
 '${f.id}',
 'representant',
 this.value
 )">
-
         <br><br>
 
 Portable
