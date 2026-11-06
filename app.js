@@ -170,9 +170,31 @@ if (champ === "representant" && valeur !== "") {
         fournisseur.bureau = fournisseurExistant.bureau || "";
     }
 }
-    fournisseur[champ] = valeur;
+  fournisseur[champ] = valeur;
 
-    saveFournisseurs();
+// Si on vient de modifier le représentant
+if (champ === "representant" && valeur) {
+
+    const autreFournisseur = fournisseurs.find(
+        f =>
+            f.id !== id &&
+            String(f.representant || "").trim().toUpperCase() ===
+            valeur.trim().toUpperCase()
+    );
+
+    if (autreFournisseur) {
+
+        fournisseur.portable = autreFournisseur.portable || "";
+        fournisseur.email = autreFournisseur.email || "";
+        fournisseur.bureau = autreFournisseur.bureau || "";
+
+        alert(
+            "Coordonnées récupérées depuis un fournisseur existant"
+        );
+    }
+}
+
+saveFournisseurs();
 
 }
 function toggleAnalyse(){
