@@ -677,16 +677,6 @@ if(!coche.checked){
         });
 
     });
-alert(
-    "Taille remontees = " +
-    JSON.stringify(remontees).length
-);
-
-if(remontees.length > 200){
-
-    remontees.splice(200);
-
-}
 
 localStorage.setItem(
     "remonteesEffectuees",
