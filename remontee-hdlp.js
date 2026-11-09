@@ -348,24 +348,29 @@ function renderResumeHDLP(){
     let totalArticles = 0;
     let totalQuantites = 0;
 
-    articles.forEach(article => {
-console.log(
-    article.article,
-    article.remontee,
-    article.redescente
-);
+ articles.forEach(article => {
 
-
-    console.error(
-        "Article corrompu :",
-        article
+    console.log(
+        article.article,
+        article.remontee,
+        article.redescente
     );
-}
-        const remontee =
-        Number(article.remontee || 0);
 
-        const redescente =
-        Number(article.redescente || 0);
+    if(
+        article.remontee === undefined ||
+        article.redescente === undefined
+    ){
+        console.error(
+            "Article corrompu :",
+            article
+        );
+    }
+
+    const remontee =
+    Number(article.remontee || 0);
+
+    const redescente =
+    Number(article.redescente || 0);
 
         if(
             remontee <= 0 &&
