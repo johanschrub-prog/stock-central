@@ -1290,73 +1290,7 @@ function remettreStocksAZero(){
     );
 
 }
-function voirMouvements(id){
 
-    const article =
-    (stock[categorieActive] || [])
-    .find(a => a.id === id);
-
-    if(!article) return;
-
-    if(
-        !article.mouvements ||
-        article.mouvements.length === 0
-    ){
-        alert(
-            "Aucun mouvement"
-        );
-        return;
-    }
-
-    let texte =
-    "📜 HISTORIQUE\n\n";
-
-    article.mouvements
-    .slice()
-    .reverse()
-    .forEach(m => {
-
-        texte +=
-
-        "📅 " +
-        (m.date || "") +
-
-        "\n" +
-
-        "Type : " +
-        (m.type || "") +
-
-        "\n" +
-
-        "Qté : " +
-        (m.quantite || 0) +
-
-        "\n" +
-
-        "Origine : " +
-        (m.origine || "") +
-
-        "\n";
-
-        if(m.fournisseur){
-
-            texte +=
-
-            "Fournisseur : " +
-
-            m.fournisseur +
-
-            "\n";
-
-        }
-
-        texte += "\n";
-
-    });
-
-    alert(texte);
-
-}
 function exportStock(){
 
     const blob =
@@ -3632,7 +3566,7 @@ render();
 type="text"
 id="filtreArticleRemontees"
 placeholder="🔎 Code ou article"
-oninput="render()"
+onchange="render()"
 style="
 width:100%;
 padding:10px;
@@ -3647,11 +3581,12 @@ padding:10px;
     )?.value || "";
 const rechercheArticle =
 (
-    document.getElementById(
+    localStorage.getItem(
         "filtreArticleRemontees"
-    )?.value || ""
+    ) || ""
 )
 .toLowerCase();
+
     const validations = {};
 
     remontees.forEach(r => {
@@ -4661,14 +4596,7 @@ onclick="modifierArticle('${a.id}')">
 
 </button>
 
-<button
-onclick="voirMouvements('${a.id}')">
 
-📜 Historique
-
-</button>
-
-<button
 onclick="transfererArticle('${a.id}')">
 
 🔄 Transférer
