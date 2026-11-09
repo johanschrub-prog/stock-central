@@ -355,11 +355,12 @@ console.log(
     article.redescente
 );
 
-alert(
-    article.article +
-    "\nRemontée=" + article.remontee +
-    "\nRedescente=" + article.redescente
-);
+
+    console.error(
+        "Article corrompu :",
+        article
+    );
+}
         const remontee =
         Number(article.remontee || 0);
 
@@ -514,8 +515,9 @@ function retirerArticleResumeHDLP(id){
     renderResumeHDLP();
 
 }
-function validerRemonteeResumeHDLP(){
 
+function validerRemonteeResumeHDLP(){
+alert("début validation");
     const date =
     document.getElementById(
         "dateRemonteeHDLP"
@@ -547,19 +549,24 @@ function validerRemonteeResumeHDLP(){
             ){
                 return;
             }
-alert(
-    article.article +
-    " | coche=" +
-    (coche ? coche.checked : "introuvable")
-);
-            const coche =
-            document.getElementById(
-                "check_" + article.id
-            );
 
-            if(!coche.checked){
-                return;
-            }
+         const coche =
+document.getElementById(
+    "check_" + article.id
+);
+
+if(!coche){
+    console.error(
+        "Checkbox introuvable pour",
+        article.article,
+        article.id
+    );
+    return;
+}
+
+if(!coche.checked){
+    return;
+}
 
             const cave =
             document.getElementById(
@@ -664,7 +671,10 @@ alert(
         });
 
     });
-
+alert(
+    "mouvements = " +
+    mouvements.length
+);
     saveRemonteesEffectuees(remontees);
 
     save();
