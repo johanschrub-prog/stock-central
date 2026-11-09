@@ -688,8 +688,12 @@ if(remontees.length > 200){
 
 }
 
-saveRemonteesEffectuees(remontees);
-
+localStorage.setItem(
+    "remonteesEffectuees",
+    JSON.stringify(
+        remontees.slice(0,100)
+    )
+);
     save();
 
     localStorage.setItem(
