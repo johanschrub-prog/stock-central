@@ -711,15 +711,7 @@ saveRemonteesEffectuees(remontees);
         JSON.stringify(historique)
     );
 
-    alert("SAUVEGARDE OK");
-
-}catch(e){
-try{
-    alert(
-        "ERREUR : " +
-        e.message
-    );
-}
+   
     alert(
         mouvements.length +
         " article(s) validé(s)"
