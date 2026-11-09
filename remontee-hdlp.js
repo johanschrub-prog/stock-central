@@ -522,7 +522,7 @@ function retirerArticleResumeHDLP(id){
 }
 
 function validerRemonteeResumeHDLP(){
-alert("début validation");
+
     const date =
     document.getElementById(
         "dateRemonteeHDLP"
@@ -535,10 +535,7 @@ alert("début validation");
 
     const remontees =
     getRemonteesEffectuees();
-alert(
-    "Avant ajout : " +
-    remontees.length
-);
+
 
     ["devant","champagne","alcool"]
     .forEach(onglet => {
@@ -684,10 +681,9 @@ alert(
     "mouvements = " +
     mouvements.length
 );
-   try{
-alert(
-    "Nombre de lignes = " +
-    remontees.length
+   alert(
+    "Taille remontees = " +
+    JSON.stringify(remontees).length
 );
     saveRemonteesEffectuees(remontees);
 
