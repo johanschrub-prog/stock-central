@@ -349,7 +349,17 @@ function renderResumeHDLP(){
     let totalQuantites = 0;
 
     articles.forEach(article => {
+console.log(
+    article.article,
+    article.remontee,
+    article.redescente
+);
 
+alert(
+    article.article +
+    "\nRemontée=" + article.remontee +
+    "\nRedescente=" + article.redescente
+);
         const remontee =
         Number(article.remontee || 0);
 
@@ -537,7 +547,11 @@ function validerRemonteeResumeHDLP(){
             ){
                 return;
             }
-
+alert(
+    article.article +
+    " | coche=" +
+    (coche ? coche.checked : "introuvable")
+);
             const coche =
             document.getElementById(
                 "check_" + article.id
