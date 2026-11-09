@@ -4445,18 +4445,17 @@ valeurRecherche === ""
 
 ||
 
-(
-    rechercheTexte !== "" &&
-    (a.article || "")
-    .toLowerCase()
-    .includes(rechercheTexte)
-)
+String(a.code || "")
+.includes(valeurRecherche.trim())
 
 ||
 
-(
-    rechercheCode !== "" &&
-    String(a.code || "") === rechercheCode
+(a.article || "")
+.toLowerCase()
+.includes(
+    valeurRecherche
+    .toLowerCase()
+    .trim()
 );
 
 const matchCave =
