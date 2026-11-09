@@ -681,7 +681,9 @@ alert(
     mouvements.length
 );
    try{
-
+alert(
+    JSON.stringify(remontees).length
+);
     saveRemonteesEffectuees(remontees);
 
     save();
