@@ -535,6 +535,10 @@ alert("début validation");
 
     const remontees =
     getRemonteesEffectuees();
+alert(
+    "Avant ajout : " +
+    remontees.length
+);
 
     ["devant","champagne","alcool"]
     .forEach(onglet => {
