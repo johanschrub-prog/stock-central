@@ -678,14 +678,17 @@ if(!coche.checked){
 
     });
 alert(
-    "mouvements = " +
-    mouvements.length
-);
-   alert(
     "Taille remontees = " +
     JSON.stringify(remontees).length
 );
-    saveRemonteesEffectuees(remontees);
+
+if(remontees.length > 200){
+
+    remontees.splice(200);
+
+}
+
+saveRemonteesEffectuees(remontees);
 
     save();
 
@@ -711,7 +714,7 @@ alert(
     alert("SAUVEGARDE OK");
 
 }catch(e){
-
+try{
     alert(
         "ERREUR : " +
         e.message
