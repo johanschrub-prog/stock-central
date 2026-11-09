@@ -6895,6 +6895,11 @@ function getRemonteesEffectuees(){
 
 function saveRemonteesEffectuees(data){
 
+    // Conserver uniquement les 200 dernières lignes
+    if(data.length > 200){
+        data = data.slice(0, 200);
+    }
+
     localStorage.setItem(
         "remonteesEffectuees",
         JSON.stringify(data)
