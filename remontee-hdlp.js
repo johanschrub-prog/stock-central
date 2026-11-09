@@ -680,6 +680,8 @@ alert(
     "mouvements = " +
     mouvements.length
 );
+   try{
+
     saveRemonteesEffectuees(remontees);
 
     save();
@@ -703,6 +705,15 @@ alert(
         JSON.stringify(historique)
     );
 
+    alert("SAUVEGARDE OK");
+
+}catch(e){
+
+    alert(
+        "ERREUR : " +
+        e.message
+    );
+}
     alert(
         mouvements.length +
         " article(s) validé(s)"
