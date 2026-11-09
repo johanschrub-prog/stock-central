@@ -158,6 +158,39 @@ function changerOngletRemontees(type){
     render();
 
 }
+function changerSite(site){
+
+    siteActif = site;
+
+    if(site === "APPLICATIONS"){
+        categorieActive = "APPLICATIONS";
+    }
+    else if(site === "HDLP"){
+        categorieActive = "TOUS_HDLP";
+    }
+    else if(site === "RCLP"){
+        categorieActive = "TOUS_RCLP";
+    }
+    else if(site === "VENTES"){
+        categorieActive = "VENTES";
+    }
+    else if(site === "ARTICLES"){
+        categorieActive = "ARTICLES";
+    }
+    else if(site === "FOURNISSEURS"){
+        categorieActive = "FOURNISSEURS";
+    }
+    else if(site === "REMONTEES_EFFECTUEES"){
+        categorieActive = "REMONTEES_EFFECTUEES";
+    }
+    else{
+        categorieActive = "DASHBOARD";
+    }
+
+    renderOnglets();
+    render();
+
+}
 function saveFournisseurs(){
 
     localStorage.setItem(
