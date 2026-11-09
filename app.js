@@ -3581,9 +3581,9 @@ padding:10px;
     )?.value || "";
 const rechercheArticle =
 (
-    localStorage.getItem(
+    document.getElementById(
         "filtreArticleRemontees"
-    ) || ""
+    )?.value || ""
 )
 .toLowerCase();
 
@@ -4596,7 +4596,7 @@ onclick="modifierArticle('${a.id}')">
 
 </button>
 
-
+<button
 onclick="transfererArticle('${a.id}')">
 
 🔄 Transférer
