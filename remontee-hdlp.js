@@ -682,7 +682,8 @@ alert(
 );
    try{
 alert(
-    JSON.stringify(remontees).length
+    "Nombre de lignes = " +
+    remontees.length
 );
     saveRemonteesEffectuees(remontees);
 
