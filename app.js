@@ -1,11 +1,3 @@
-// alert(
-//     stock["HDLP BAR"]?.length || 0
-// );
-
-// alert(
-//     localStorage.getItem("inventaireHDLP")
-//         .substring(0,300)
-// );
 const STORAGE_KEY = "StockCentral";
 let siteActif = "DASHBOARD";
 let stock =
@@ -58,6 +50,22 @@ function save(){
         STORAGE_KEY,
         JSON.stringify(stockOptimise)
     );
+}
+function purgerHistoriqueMobile() {
+    let stock = JSON.parse(localStorage.getItem("StockCentral")) || {};
+    
+    Object.keys(stock).forEach(cat => {
+        stock[cat].forEach(article => {
+            // On vide l'historique des mouvements pour alléger au maximum
+            article.mouvements = []; 
+        });
+    });
+    
+    localStorage.setItem("StockCentral", JSON.stringify(stock));
+    alert("✅ Nettoyage terminé ! Le stockage a été allégé.");
+    
+    // Si vous avez une fonction d'analyse existante, vous pouvez l'appeler ici
+    analyserStockageNavigateur(); 
 }
 function analyserStockageNavigateur() {
     let tailleTotaleApp = 0;
@@ -687,7 +695,7 @@ onclick="changerSite('DASHBOARD')">
 <button onclick="analyserStockage()">
 📦 Analyser stockage
 </button>
-
+<button onclick="purgerHistoriqueMobile()" style="background:red; color:white; padding:15px; font-weight:bold;">🧹 Nettoyer la mémoire</button>
 </div>
 
 <div style="width:100%;display:flex;gap:10px;">
