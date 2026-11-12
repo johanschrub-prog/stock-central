@@ -5869,6 +5869,212 @@ SUPPRIMER LE FOURNISSEUR
     ).innerHTML = html;
 
 }
+      
+function afficherFournisseurs(){
+
+    const recherche =
+    document.getElementById(
+        "rechercheFournisseur"
+    )?.value?.toLowerCase() || "";
+
+    let html = "";
+
+    fournisseurs.forEach(f => {
+
+        if(
+            recherche &&
+            !String(f.nom || "")
+                .toLowerCase()
+                .includes(recherche)
+            &&
+            !String(f.representant || "")
+                .toLowerCase()
+                .includes(recherche)
+        ){
+            return;
+        }
+if(f.representant === "DUPONT"){   // mettez le nom testé
+
+    alert(
+        JSON.stringify(f,null,2)
+    );
+
+}
+        html += `
+
+        <div class="card">
+
+        Nom fournisseur
+
+        <input
+        value="${f.nom || ''}"
+       onchange="
+modifierFournisseur(
+'${f.id}',
+'nom',
+this.value
+)">
+
+        <br><br>
+
+        Numéro client
+
+        <input
+        value="${f.numeroClient || ''}"
+  onchange="
+modifierFournisseur(
+'${f.id}',
+'numeroClient',
+this.value
+)">
+
+        <br><br>
+
+        Nom du représentant
+
+<input
+    value="${f.representant || ''}"
+    onchange="
+        modifierFournisseur(
+            '${f.id}',
+            'representant',
+            this.value
+        )
+    ">
+<br><br>
+Portable
+
+<br>
+
+<input
+type="tel"
+value="${f.portable || ''}"
+onchange="
+modifierFournisseur(
+'${f.id}',
+'portable',
+this.value
+)"
+style="width:100%;"
+>
+
+<br><br>
+
+<button
+onclick="location.href='tel:${f.portable || ''}'"
+style="
+width:48%;
+height:55px;
+background:#28a745;
+color:white;
+font-weight:bold;
+border:none;
+border-radius:8px;
+"
+>
+APPELER
+</button>
+
+<button
+onclick="location.href='sms:${f.portable || ''}'"
+style="
+width:48%;
+height:55px;
+background:#2196f3;
+color:white;
+font-weight:bold;
+border:none;
+border-radius:8px;
+float:right;
+"
+>
+SMS
+</button>
+
+
+
+        <br><br>
+
+        Téléphone bureau
+
+     <input
+type="tel"
+inputmode="numeric"
+value="${f.bureau || ''}"
+onchange="
+modifierFournisseur(
+'${f.id}',
+'bureau',
+this.value
+)">
+
+        <br><br>
+
+Adresse mail
+
+<br>
+
+<input
+type="email"
+value="${f.email || ''}"
+onchange="
+modifierFournisseur(
+'${f.id}',
+'email',
+this.value
+)"
+style="width:100%;"
+>
+
+<br><br>
+
+<button
+type="button"
+onclick="location.href='mailto:${f.email || ''}'"
+style="
+width:100%;
+height:55px;
+background:#ff9800;
+color:white;
+font-size:18px;
+font-weight:bold;
+border:none;
+border-radius:8px;
+"
+>
+ENVOYER MAIL
+</button>
+
+<br><br>
+
+<button
+type="button"
+style="
+width:100%;
+height:55px;
+background:#dc3545;
+color:white;
+font-size:18px;
+font-weight:bold;
+border:none;
+border-radius:8px;
+"
+onclick="supprimerFournisseur('${f.id}')"
+>
+SUPPRIMER LE FOURNISSEUR
+</button>
+
+</div>
+
+        `;
+
+    });
+
+    document.getElementById(
+        "listeFournisseurs"
+    ).innerHTML = html;
+
+}
            
 function renderStatsRemontees(site){
 
