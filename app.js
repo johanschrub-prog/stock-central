@@ -1,10 +1,11 @@
-alert(
-    stock["HDLP BAR"]?.length || 0
-);
-alert(
-    localStorage.getItem("inventaireHDLP")
-        .substring(0,300)
-);
+// alert(
+//     stock["HDLP BAR"]?.length || 0
+// );
+
+// alert(
+//     localStorage.getItem("inventaireHDLP")
+//         .substring(0,300)
+// );
 const STORAGE_KEY = "StockCentral";
 let siteActif = "DASHBOARD";
 let stock =
@@ -64,7 +65,18 @@ function save(){
     );
 
 }
+function testInventaire(){
 
+    alert(
+        stock["HDLP BAR"]?.length || 0
+    );
+
+    alert(
+        localStorage.getItem("inventaireHDLP")
+            ?.substring(0,300)
+            || "introuvable"
+    );
+}
 function modifierFournisseur(id, champ, valeur){
 
     const fournisseur = fournisseurs.find(
@@ -1371,6 +1383,9 @@ onclick="changerSite('DASHBOARD')">
 </div>
 
 <div style="width:100%;display:flex;gap:10px;">
+<button onclick="testInventaire()">
+TEST
+</button>
 <button onclick="inspecterInventaireHDLP()">
 TEST INVENTAIRE
 </button>
