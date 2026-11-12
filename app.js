@@ -85,41 +85,8 @@ localStorage.removeItem("inventaireHDLP");
     alert("Les 2,5 Mo de l'inventaire HDLP ont été libérés avec succès ! ✅");
     render(); // Met à jour l'affichage si besoin    
 }
-function analyserInventaireHDLP(){
 
-    const data = JSON.parse(
-        localStorage.getItem("inventaireHDLP")
-    );
 
-    let rapport = "";
-
-    Object.keys(data).forEach(cle => {
-
-        const taille =
-            JSON.stringify(data[cle]).length;
-
-        rapport +=
-            cle + " : " +
-            (taille / 1024).toFixed(2) +
-            " Ko\n";
-
-    });
-
-    alert(rapport);
-
-}
-function testInventaire(){
-
-    alert(
-        stock["HDLP BAR"]?.length || 0
-    );
-
-    alert(
-        localStorage.getItem("inventaireHDLP")
-            ?.substring(0,300)
-            || "introuvable"
-    );
-}
 function modifierFournisseur(id, champ, valeur){
 
     const fournisseur = fournisseurs.find(
@@ -1423,29 +1390,14 @@ onclick="changerSite('DASHBOARD')">
 
 </button>
 
+<button onclick="analyserStockage()">
+📦 Analyser stockage
+</button>
+
 </div>
 
 <div style="width:100%;display:flex;gap:10px;">
 
-<button onclick="voirPremierArticleInventaire()">
-Premier article inventaire
-</button>
-
-<button onclick="analyserInventaireHDLP()">
-🔍 Analyse inventaire
-</button>
-
-<button onclick="testInventaire()">
-TEST
-</button>
-
-<button onclick="inspecterInventaireHDLP()">
-TEST INVENTAIRE
-</button>
-
-<button onclick="analyserStockage()">
-📦 Analyser stockage
-</button>
 
 <button
 class="tab"
