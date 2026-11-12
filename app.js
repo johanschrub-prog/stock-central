@@ -81,6 +81,9 @@ function voirPremierArticleInventaire(){
             2
         )
     );
+localStorage.removeItem("inventaireHDLP");
+    alert("Les 2,5 Mo de l'inventaire HDLP ont été libérés avec succès ! ✅");
+    render(); // Met à jour l'affichage si besoin    
 }
 function analyserInventaireHDLP(){
 
@@ -5359,7 +5362,7 @@ function importerExcel(event){
 alert("AVANT SAVE");
       
 save();
-
+localStorage.removeItem("inventaireHDLP");
 alert("APRES SAVE");
         alert(
             "Vérification stock code 60 : " +
@@ -5381,6 +5384,7 @@ alert("APRES SAVE");
     reader.readAsArrayBuffer(file);
 
 }
+
 function renderArticles(){
 
     const fournisseurs = [
