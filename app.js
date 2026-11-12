@@ -65,27 +65,38 @@ function save(){
     );
 
 }
-function voirPremierArticleInventaire(){
+function analyserStockageNavigateur() {
+    let tailleTotaleApp = 0;
+    let tailleGlobalLocalStorage = 0;
+    let detailsParCle = "";
 
-    const data = JSON.parse(
-        localStorage.getItem("inventaireHDLP")
-    );
+    // Parcourt tout le localStorage pour calculer les tailles
+    for (let i = 0; i < localStorage.length; i++) {
+        const cle = localStorage.key(i);
+        const valeur = localStorage.getItem(cle) || "";
+        // Chaque caractère en JavaScript (UTF-16) pèse 2 octets
+        const tailleEnOctets = (cle.length + valeur.length) * 2;
+        
+        tailleGlobalLocalStorage += tailleEnOctets;
+        
+        // On isole les clés principales de votre appli pour le détail
+        if (["StockCentral", "Fournisseurs", "inventaireHDLP", "remonteeHDLP", "remonteeRCLP"].includes(cle)) {
+            tailleTotaleApp += tailleEnOctets;
+            detailsParCle += `• ${cle} : ${(tailleEnOctets / (1024 * 1024)).toFixed(2)} Mo\n`;
+        }
+    }
 
-    const premiereCategorie =
-        Object.keys(data)[0];
+    // La limite standard du localStorage est généralement de 5 Mo (5 * 1024 * 1024 octets)
+    const limiteEstimeeOctets = 5 * 1024 * 1024;
+    const pourcentageUtilise = ((tailleGlobalLocalStorage / limiteEstimeeOctets) * 100).toFixed(1);
 
-    alert(
-        JSON.stringify(
-            data[premiereCategorie][0],
-            null,
-            2
-        )
-    );
-localStorage.removeItem("inventaireHDLP");
-    alert("Les 2,5 Mo de l'inventaire HDLP ont été libérés avec succès ! ✅");
-    render(); // Met à jour l'affichage si besoin    
+    // Affichage du rapport complet
+    let rapport = `📊 RAPPORT DE STOCKAGE LOCAL\n\n`;
+    rapport += `Total global utilisé : ${(tailleGlobalLocalStorage / (1024 * 1024)).toFixed(2)} Mo / ~5 Mo (${pourcentageUtilise}%)\n\n`;
+    rapport += `Détail de vos clés principales :\n${detailsParCle}`;
+
+    alert(rapport);
 }
-
 
 function modifierFournisseur(id, champ, valeur){
 
@@ -1444,7 +1455,7 @@ onclick="changerSite('VENTES')">
 📈 VENTES BOUTIQUE
 
 </button>
-
+<button onclick="analyserStockageNavigateur()">💾 Voir l'espace disque</button>
 <div style="width:100%;display:flex;gap:10px;">
 
 <button
