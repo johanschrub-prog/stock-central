@@ -5670,33 +5670,45 @@ function renderFournisseurs(){
 }
 function analyserStockage() {
 
-    let total = 0;
-    let rapport = "📦 STOCKAGE LOCAL\n\n";
+    const donnees = [];
 
     Object.keys(localStorage).forEach(cle => {
 
-        const valeur = localStorage.getItem(cle) || "";
-        const taille = valeur.length;
+        const taille =
+            (localStorage.getItem(cle) || "").length;
 
-        total += taille;
+        donnees.push({
+            cle,
+            taille
+        });
+
+    });
+
+    donnees.sort(
+        (a, b) => b.taille - a.taille
+    );
+
+    let rapport = "📦 TOP STOCKAGE\n\n";
+    let total = 0;
+
+    donnees.forEach(item => {
+
+        total += item.taille;
 
         rapport +=
-            cle +
+            item.cle +
             " : " +
-            (taille / 1024).toFixed(2) +
+            (item.taille / 1024).toFixed(2) +
             " Ko\n";
 
     });
 
-    rapport += "\n-----------------\n";
     rapport +=
-        "TOTAL : " +
+        "\nTOTAL : " +
         (total / 1024).toFixed(2) +
         " Ko";
 
     alert(rapport);
-
-    console.log(rapport);
 }
 function nouveauFournisseur(){
     fournisseurs.push({
