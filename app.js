@@ -1,3 +1,10 @@
+alert(
+    stock["HDLP BAR"]?.length || 0
+);
+alert(
+    localStorage.getItem("inventaireHDLP")
+        .substring(0,300)
+);
 const STORAGE_KEY = "StockCentral";
 let siteActif = "DASHBOARD";
 let stock =
@@ -1290,7 +1297,28 @@ function remettreStocksAZero(){
     );
 
 }
+function inspecterInventaireHDLP(){
 
+    const data = localStorage.getItem("inventaireHDLP");
+
+    alert(
+        "Taille : " +
+        (data.length / 1024).toFixed(2) +
+        " Ko"
+    );
+
+    const json = JSON.parse(data);
+
+    alert(
+        "Type : " +
+        (Array.isArray(json) ? "tableau" : typeof json)
+    );
+
+    alert(
+        "Nombre d'éléments : " +
+        (json.length || Object.keys(json).length)
+    );
+}
 function exportStock(){
 
     const blob =
@@ -1343,7 +1371,9 @@ onclick="changerSite('DASHBOARD')">
 </div>
 
 <div style="width:100%;display:flex;gap:10px;">
-
+<button onclick="inspecterInventaireHDLP()">
+TEST INVENTAIRE
+</button>
 <button onclick="analyserStockage()">
 📦 Analyser stockage
 </button>
