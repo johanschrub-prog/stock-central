@@ -65,6 +65,23 @@ function save(){
     );
 
 }
+function voirPremierArticleInventaire(){
+
+    const data = JSON.parse(
+        localStorage.getItem("inventaireHDLP")
+    );
+
+    const premiereCategorie =
+        Object.keys(data)[0];
+
+    alert(
+        JSON.stringify(
+            data[premiereCategorie][0],
+            null,
+            2
+        )
+    );
+}
 function analyserInventaireHDLP(){
 
     const data = JSON.parse(
@@ -1406,6 +1423,10 @@ onclick="changerSite('DASHBOARD')">
 </div>
 
 <div style="width:100%;display:flex;gap:10px;">
+
+<button onclick="voirPremierArticleInventaire()">
+Premier article inventaire
+</button>
 
 <button onclick="analyserInventaireHDLP()">
 🔍 Analyse inventaire
