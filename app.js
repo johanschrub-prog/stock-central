@@ -44,27 +44,20 @@ RCLP:[
 };
 
 function save(){
-
-    const stockSansMouvements = {};
+    const stockOptimise = {};
 
     Object.keys(stock).forEach(categorie => {
-
-        stockSansMouvements[categorie] =
-        stock[categorie].map(article => ({
-
+        stockOptimise[categorie] = stock[categorie].map(article => ({
             ...article,
-
-            mouvements: []
-
+            // On garde uniquement les 3 mouvements les plus récents pour alléger
+            mouvements: (article.mouvements || []).slice(-3) 
         }));
-
     });
 
     localStorage.setItem(
         STORAGE_KEY,
-        JSON.stringify(stockSansMouvements)
+        JSON.stringify(stockOptimise)
     );
-
 }
 function analyserStockageNavigateur() {
     let tailleTotaleApp = 0;
