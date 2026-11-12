@@ -34,7 +34,20 @@ RCLP:[
 ]
 
 };
+function voirPoidsDetails() {
+    let details = "";
+    let totalGlobal = 0;
 
+    for (let i = 0; i < localStorage.length; i++) {
+        const cle = localStorage.key(i);
+        const valeur = localStorage.getItem(cle) || "";
+        const tailleKo = ((cle.length + valeur.length) * 2) / 1024;
+        totalGlobal += tailleKo;
+        details += `• ${cle} : ${tailleKo.toFixed(1)} Ko\n`;
+    }
+
+    alert(`📊 Total : ${(totalGlobal / 1024).toFixed(2)} Mo\n\nDétail :\n${details}`);
+}
 function save(){
     const stockOptimise = {};
 
@@ -51,22 +64,7 @@ function save(){
         JSON.stringify(stockOptimise)
     );
 }
-function purgerHistoriqueMobile() {
-    let stock = JSON.parse(localStorage.getItem("StockCentral")) || {};
-    
-    Object.keys(stock).forEach(cat => {
-        stock[cat].forEach(article => {
-            // On vide l'historique des mouvements pour alléger au maximum
-            article.mouvements = []; 
-        });
-    });
-    
-    localStorage.setItem("StockCentral", JSON.stringify(stock));
-    alert("✅ Nettoyage terminé ! Le stockage a été allégé.");
-    
-    // Si vous avez une fonction d'analyse existante, vous pouvez l'appeler ici
-    analyserStockageNavigateur(); 
-}
+
 function analyserStockageNavigateur() {
     let tailleTotaleApp = 0;
     let tailleGlobalLocalStorage = 0;
@@ -695,7 +693,7 @@ onclick="changerSite('DASHBOARD')">
 <button onclick="analyserStockage()">
 📦 Analyser stockage
 </button>
-<button onclick="purgerHistoriqueMobile()" style="background:red; color:white; padding:15px; font-weight:bold;">🧹 Nettoyer la mémoire</button>
+<button onclick="voirPoidsDetails()" style="background:orange; color:white; padding:15px; font-weight:bold;">🔍 Voir ce qui prend de la place</button>
 </div>
 
 <div style="width:100%;display:flex;gap:10px;">
