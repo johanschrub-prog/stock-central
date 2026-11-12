@@ -65,6 +65,29 @@ function save(){
     );
 
 }
+function analyserInventaireHDLP(){
+
+    const data = JSON.parse(
+        localStorage.getItem("inventaireHDLP")
+    );
+
+    let rapport = "";
+
+    Object.keys(data).forEach(cle => {
+
+        const taille =
+            JSON.stringify(data[cle]).length;
+
+        rapport +=
+            cle + " : " +
+            (taille / 1024).toFixed(2) +
+            " Ko\n";
+
+    });
+
+    alert(rapport);
+
+}
 function testInventaire(){
 
     alert(
@@ -1383,12 +1406,19 @@ onclick="changerSite('DASHBOARD')">
 </div>
 
 <div style="width:100%;display:flex;gap:10px;">
+
+<button onclick="analyserInventaireHDLP()">
+🔍 Analyse inventaire
+</button>
+
 <button onclick="testInventaire()">
 TEST
 </button>
+
 <button onclick="inspecterInventaireHDLP()">
 TEST INVENTAIRE
 </button>
+
 <button onclick="analyserStockage()">
 📦 Analyser stockage
 </button>
