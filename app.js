@@ -34,6 +34,21 @@ RCLP:[
 ]
 
 };
+function purgerToutesLesCaves() {
+    let compteur = 0;
+    
+    // On parcourt le localStorage à l'envers pour supprimer en toute sécurité
+    for (let i = localStorage.length - 1; i >= 0; i--) {
+        const cle = localStorage.key(i);
+        // Si la clé commence par "cave_" ou "remontee", on la supprime
+        if (cle && (cle.startsWith("cave_") || cle.startsWith("remontee"))) {
+            localStorage.removeItem(cle);
+            compteur++;
+        }
+    }
+    
+    alert(`✅ Nettoyage réussi ! ${compteur} vieilles clés inutiles ont été supprimées.`);
+}
 function voirPoidsDetails() {
     let details = "";
     let totalGlobal = 0;
@@ -744,7 +759,9 @@ onclick="changerSite('VENTES')">
 📈 VENTES BOUTIQUE
 
 </button>
+<button onclick="purgerToutesLesCaves()" style="background:#dc3545; color:white; padding:15px; font-weight:bold; width:100%; margin:10px 0;">🗑️ Nettoyer les clés de caves obsolètes</button>
 <button onclick="analyserStockageNavigateur()">💾 Voir l'espace disque</button>
+
 <div style="width:100%;display:flex;gap:10px;">
 
 <button
