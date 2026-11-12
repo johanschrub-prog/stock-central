@@ -63,23 +63,79 @@ function voirPoidsDetails() {
 
     alert(`📊 Total : ${(totalGlobal / 1024).toFixed(2)} Mo\n\nDétail :\n${details}`);
 }
-function save(){
-    const stockOptimise = {};
+function save() {
+    const dataAEnregistrer = {
+        catalogue: catalogueArticles, // Un objet { code: { infosArticle } }
+        stocks: stockParCave        // Un objet { nomCategorie: { codeArticle: quantite } }
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(dataAEnregistrer));
+}
+function obtenirArticleEtStock(categorie, codeArticle) {
+    const infosArticle = catalogueArticles[codeArticle] || {};
+    const quantite = stockParCave[categorie]?.[codeArticle] || 0;
+    
+    return {
+        ...infosArticle,
+        stock: quantite,
+        categorie: categorie
+    };
+}
+function migrerVersCatalogueUnique() {
+    // 1. On récupère l'ancien StockCentral lourd
+    let ancienStock = JSON.parse(localStorage.getItem("StockCentral"));
+    
+    if (!ancienStock) {
+        alert("❌ Aucun ancien StockCentral trouvé !");
+        return;
+    }
 
-    Object.keys(stock).forEach(categorie => {
-        stockOptimise[categorie] = stock[categorie].map(article => ({
-            ...article,
-            // On garde uniquement les 3 mouvements les plus récents pour alléger
-            mouvements: (article.mouvements || []).slice(-3) 
-        }));
+    let catalogueUnique = {};
+    let stocksParCategorie = {};
+
+    // Si l'ancien format était un objet avec des catégories contenant des tableaux d'articles
+    let categories = Object.keys(ancienStock);
+
+    categories.forEach(cat => {
+        stocksParCategorie[cat] = {};
+        
+        if (Array.isArray(ancienStock[cat])) {
+            ancienStock[cat].forEach(article => {
+                // On utilise un identifiant unique ou le code article comme clé
+                let codeArt = article.code || article.id || ("ART_" + Math.random().toString(36).substr(2, 9));
+                
+                // 2. On remplit le catalogue unique (les infos de l'article écrites UNE SEULE FOIS)
+                if (!catalogueUnique[codeArt]) {
+                    catalogueUnique[codeArt] = {
+                        code: article.code || "",
+                        article: article.article || "Sans nom",
+                        prix: Number(article.prix || 0),
+                        fournisseur: article.fournisseur || "",
+                        codeFournisseur: article.codeFournisseur || "",
+                        colisage: Number(article.colisage || 1)
+                    };
+                }
+                
+                // 3. On enregistre uniquement la quantité pour cette catégorie précise
+                let qte = Number(article.stock !== undefined ? article.stock : (article.quantite || 0));
+                if (qte !== 0) { // On n'enregistre que si le stock n'est pas à 0 pour alléger encore plus !
+                    stocksParCategorie[cat][codeArt] = qte;
+                }
+            });
+        }
     });
 
-    localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify(stockOptimise)
-    );
-}
+    // 4. On crée le nouveau format ultra-léger
+    let nouveauStockOptimise = {
+        catalogue: catalogueUnique,
+        stocks: stocksParCategorie
+    };
 
+    // 5. On sauvegarde dans le localStorage
+    localStorage.setItem("StockCentral", JSON.stringify(nouveauStockOptimise));
+    
+    // On nettoie aussi les éventuels restes de l'ancien format si besoin
+    alert("✅ Migration réussie ! Votre StockCentral est maintenant sous forme de Catalogue Unique. Vérifiez le poids dans votre stockage.");
+}
 function analyserStockageNavigateur() {
     let tailleTotaleApp = 0;
     let tailleGlobalLocalStorage = 0;
@@ -761,7 +817,7 @@ onclick="changerSite('VENTES')">
 </button>
 <button onclick="purgerToutesLesCaves()" style="background:#dc3545; color:white; padding:15px; font-weight:bold; width:100%; margin:10px 0;">🗑️ Nettoyer les clés de caves obsolètes</button>
 <button onclick="analyserStockageNavigateur()">💾 Voir l'espace disque</button>
-
+<button onclick="migrerVersCatalogueUnique()" style="background:#4CAF50; color:white; padding:15px; font-weight:bold; width:100%; margin:10px 0;">🚀 Migrer vers le Catalogue Unique</button>
 <div style="width:100%;display:flex;gap:10px;">
 
 <button
