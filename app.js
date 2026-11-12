@@ -1344,6 +1344,10 @@ onclick="changerSite('DASHBOARD')">
 
 <div style="width:100%;display:flex;gap:10px;">
 
+<button onclick="analyserStockage()">
+📦 Analyser stockage
+</button>
+
 <button
 class="tab"
 style="${
@@ -5663,6 +5667,36 @@ function renderFournisseurs(){
 
     afficherFournisseurs();
 
+}
+function analyserStockage() {
+
+    let total = 0;
+    let rapport = "📦 STOCKAGE LOCAL\n\n";
+
+    Object.keys(localStorage).forEach(cle => {
+
+        const valeur = localStorage.getItem(cle) || "";
+        const taille = valeur.length;
+
+        total += taille;
+
+        rapport +=
+            cle +
+            " : " +
+            (taille / 1024).toFixed(2) +
+            " Ko\n";
+
+    });
+
+    rapport += "\n-----------------\n";
+    rapport +=
+        "TOTAL : " +
+        (total / 1024).toFixed(2) +
+        " Ko";
+
+    alert(rapport);
+
+    console.log(rapport);
 }
 function nouveauFournisseur(){
     fournisseurs.push({
