@@ -617,66 +617,59 @@ function exportStock() {
 
 function renderOnglets() {
     document.getElementById("ongletsPrincipaux").innerHTML = `
-        <div style="width:100%;display:flex;gap:10px;">
-            <button class="tab" style="${siteActif==='DASHBOARD' ? 'background:#28a745;color:white;' : ''}" onclick="changerSite('DASHBOARD')">
+    <div style="max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; box-sizing: border-box;">
+        
+        <!-- Ligne 1 : Tableau de bord & Espace disque -->
+        <div style="display: flex; gap: 10px; width: 100%;">
+            <button class="tab" style="flex: 1; height: 65px; font-size: 16px; font-weight: bold; background: ${siteActif==='DASHBOARD' ? '#198754' : '#ffffff'}; color: ${siteActif==='DASHBOARD' ? 'white' : '#333'}; border: 1px solid #ced4da; border-radius: 10px; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.04); display: flex; align-items: center; justify-content: center; gap: 8px;" onclick="changerSite('DASHBOARD')">
                 📊 TABLEAU DE BORD
             </button>
-            <button onclick="voirPoidsDetails()" style="background:orange; color:white; padding:15px; font-weight:bold;">🔍 Voir ce qui prend de la place</button>
+            <button onclick="voirPoidsDetails()" style="width: 140px; height: 65px; background: #fd7e14; color: white; border: none; border-radius: 10px; font-weight: bold; font-size: 13px; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.04); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;" title="Voir le stockage">
+                <span>🔍 Espace</span>
+                <span style="font-size: 11px; opacity: 0.9;">Mémoire</span>
+            </button>
         </div>
 
-        <div style="width:100%;display:flex;gap:10px;">
-            <button class="tab" style="${siteActif==='HDLP' ? 'background:#1976d2;color:white;' : ''}" onclick="changerSite('HDLP')">
+        <!-- Ligne 2 : Stock HDLP & Stock RCLP -->
+        <div style="display: flex; gap: 10px; width: 100%;">
+            <button class="tab" style="flex: 1; height: 65px; font-size: 16px; font-weight: bold; background: ${siteActif==='HDLP' ? '#1976d2' : '#ffffff'}; color: ${siteActif==='HDLP' ? 'white' : '#333'}; border: 1px solid #ced4da; border-radius: 10px; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.04); display: flex; align-items: center; justify-content: center; gap: 8px;" onclick="changerSite('HDLP')">
                 🏨 STOCK HDLP
             </button>
-            <button class="tab" style="${siteActif==='RCLP' ? 'background:#ff9800;color:white;' : ''}" onclick="changerSite('RCLP')">
+            <button class="tab" style="flex: 1; height: 65px; font-size: 16px; font-weight: bold; background: ${siteActif==='RCLP' ? '#ff9800' : '#ffffff'}; color: ${siteActif==='RCLP' ? 'white' : '#333'}; border: 1px solid #ced4da; border-radius: 10px; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.04); display: flex; align-items: center; justify-content: center; gap: 8px;" onclick="changerSite('RCLP')">
                 🍴 STOCK RCLP
             </button>
         </div>
 
-        <div style="width:100%;">
-            <button class="tab" style="width:100%;${siteActif==='VENTES' ? 'background:#e91e63;color:white;' : ''}" onclick="changerSite('VENTES')">
-                📈 VENTES BOUTIQUE
-            </button>
-            <button onclick="analyserStockageNavigateur()" style="width:100%; margin:10px 0; padding:10px;">💾 Voir l'espace disque</button>
-            
-            <div style="width:100%;display:flex;gap:10px;">
-                <button class="tab" style="${siteActif==='STAT_HDLP' ? 'background:#1976d2;color:white;' : ''}" onclick="changerSite('STAT_HDLP')">
-                    📊 REMONTÉES HDLP
-                </button>
-                <button class="tab" style="${siteActif==='STAT_RCLP' ? 'background:#ff9800;color:white;' : ''}" onclick="changerSite('STAT_RCLP')">
-                    📊 REMONTÉES RCLP
-                </button>
-            </div>
-        </div>
-
-        <div style="width:100%;display:flex;gap:10px;">
-            <button class="tab" style="${siteActif==='APPLICATIONS' ? 'background:#673ab7;color:white;' : ''}" onclick="changerSite('APPLICATIONS')">
+        <!-- Ligne 3 : Applications & Remontées effectuées -->
+        <div style="display: flex; gap: 10px; width: 100%;">
+            <button class="tab" style="flex: 1; height: 65px; font-size: 16px; font-weight: bold; background: ${siteActif==='APPLICATIONS' ? '#673ab7' : '#ffffff'}; color: ${siteActif==='APPLICATIONS' ? 'white' : '#333'}; border: 1px solid #ced4da; border-radius: 10px; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.04); display: flex; align-items: center; justify-content: center; gap: 8px;" onclick="changerSite('APPLICATIONS')">
                 📱 APPLICATIONS
             </button>
-            <button class="tab" style="${siteActif==='REMONTEES_EFFECTUEES' ? 'background:#4caf50;color:white;' : ''}" onclick="changerSite('REMONTEES_EFFECTUEES')">
+            <button class="tab" style="flex: 1; height: 65px; font-size: 15px; font-weight: bold; background: ${siteActif==='REMONTEES_EFFECTUEES' ? '#20c997' : '#ffffff'}; color: ${siteActif==='REMONTEES_EFFECTUEES' ? 'white' : '#333'}; border: 1px solid #ced4da; border-radius: 10px; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.04); display: flex; align-items: center; justify-content: center; gap: 6px;" onclick="changerSite('REMONTEES_EFFECTUEES')">
                 🍾 REMONTÉES EFFECTUÉES
             </button>
         </div>
 
-        <div style="width:100%;display:flex;gap:10px;">
-            <button class="tab" style="${siteActif==='ARTICLES' ? 'background:#795548;color:white;' : ''}" onclick="changerSite('ARTICLES')">
+        <!-- Ligne 4 : Articles & Fournisseurs -->
+        <div style="display: flex; gap: 10px; width: 100%;">
+            <button class="tab" style="flex: 1; height: 65px; font-size: 16px; font-weight: bold; background: ${siteActif==='ARTICLES' ? '#795548' : '#ffffff'}; color: ${siteActif==='ARTICLES' ? 'white' : '#333'}; border: 1px solid #ced4da; border-radius: 10px; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.04); display: flex; align-items: center; justify-content: center; gap: 8px;" onclick="changerSite('ARTICLES')">
                 📦 ARTICLES
             </button>
-            <button class="tab" style="${siteActif==='FOURNISSEURS' ? 'background:#009688;color:white;' : ''}" onclick="changerSite('FOURNISSEURS')">
+            <button class="tab" style="flex: 1; height: 65px; font-size: 16px; font-weight: bold; background: ${siteActif==='FOURNISSEURS' ? '#009688' : '#ffffff'}; color: ${siteActif==='FOURNISSEURS' ? 'white' : '#333'}; border: 1px solid #ced4da; border-radius: 10px; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.04); display: flex; align-items: center; justify-content: center; gap: 8px;" onclick="changerSite('FOURNISSEURS')">
                 🚚 FOURNISSEURS
             </button>
         </div>
+
+    </div>
     `;
 
     let html = "";
-
     if (siteActif === "HDLP" || siteActif === "RCLP") {
         categories[siteActif].forEach(c => {
             const couleur = siteActif === "RCLP" ? "#ff9800" : "#1976d2";
-            const style = categorieActive === c ? `background:${couleur};color:white;` : "";
-
+            const estActif = categorieActive === c;
             html += `
-                <button class="tab" style="${style}font-size:22px;padding:20px;min-height:80px;font-weight:bold;margin:5px;width:100%;" onclick="changerCategorie('${c}')">
+                <button class="tab" style="font-size: 18px; padding: 18px; min-height: 65px; font-weight: bold; margin: 6px 0; width: 100%; border-radius: 10px; border: 1px solid #ced4da; cursor: pointer; background: ${estActif ? couleur : '#ffffff'}; color: ${estActif ? 'white' : '#333'}; box-shadow: 0 2px 6px rgba(0,0,0,0.04);" onclick="changerCategorie('${c}')">
                     ${c}
                 </button>
             `;
