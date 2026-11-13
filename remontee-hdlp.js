@@ -22,9 +22,9 @@ function renderRemonteeHDLP(){
             <h2>📤 Remontées HDLP</h2>
             <br>
 
-            <!-- Barre d'onglets moderne et compacte -->
+            <!-- Barre d'onglets dynamique -->
             <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px;">
-                <button onclick="changerOngletHDLP('resume')" style="flex: 1; min-width: 100px; height: 45px; font-size: 14px; font-weight: bold; background: ${hdlpTab === 'resume' ? '#0d6efd' : '#f8f9fa'}; color: ${hdlpTab === 'resume' ? 'white' : '#333'}; border: 1px solid #ced4da; border-radius: 6px; cursor: pointer;">
+                <button onclick="changerOngletHDLP('resume')" style="flex: 1; min-width: 100px; height: 45px; font-size: 14px; font-weight: bold; background: ${hdlpTab === 'resume' ? '#1976d2' : '#f8f9fa'}; color: ${hdlpTab === 'resume' ? 'white' : '#333'}; border: 1px solid #ced4da; border-radius: 6px; cursor: pointer;">
                     📋 RÉSUMÉ
                 </button>
                 <button onclick="changerOngletHDLP('devant')" style="flex: 1; min-width: 110px; height: 45px; font-size: 14px; font-weight: bold; background: ${hdlpTab === 'devant' ? '#1976d2' : '#f8f9fa'}; color: ${hdlpTab === 'devant' ? 'white' : '#333'}; border: 1px solid #ced4da; border-radius: 6px; cursor: pointer;">
@@ -38,7 +38,7 @@ function renderRemonteeHDLP(){
                 </button>
             </div>
 
-            <!-- Bouton d'ajout d'article moderne et compact -->
+            <!-- Bouton d'ajout d'article -->
             <div style="margin-top: 10px; margin-bottom: 15px;">
                 <button
                 onclick="ouvrirAjoutArticleHDLP()"
@@ -120,7 +120,8 @@ function renderRemonteeHDLP(){
             </div>
         </div>
     `;
-renderContenuHDLP();
+
+    renderContenuHDLP();
 }
 function ouvrirAjoutArticleHDLP(){
     document.getElementById("popupAjoutHDLP").style.display = "block";
