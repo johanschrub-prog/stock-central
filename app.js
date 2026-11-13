@@ -1514,9 +1514,8 @@ function render() {
         return;
     }
 
-    if (categorieActive === "REMONTEES_EFFECTUEES") {
+   if (categorieActive === "REMONTEES_EFFECTUEES") {
         let remontees = getRemonteesEffectuees();
-
         if (ongletRemontees === "HDLP") {
             remontees = remontees.filter(r => r.type === "HDLP" || r.type === "REDESCENTE HDLP");
         }
@@ -1528,28 +1527,39 @@ function render() {
         }
 
         let htmlRemontees = `
-        <div class="card">
-            <h2>🍾 Remontées effectuées</h2>
-            <div style="display:flex; gap:10px; margin-bottom:15px;">
-                <button class="tab" style="${ongletRemontees === 'HDLP' ? 'background:#1976d2;color:white;' : ''}" onclick="ongletRemontees='HDLP';render();">🏨 HDLP</button>
-                <button class="tab" style="${ongletRemontees === 'RCLP' ? 'background:#ff9800;color:white;' : ''}" onclick="ongletRemontees='RCLP';render();">🍴 RCLP</button>
-                <button class="tab" style="${ongletRemontees === 'BOUTIQUE' ? 'background:#e91e63;color:white;' : ''}" onclick="ongletRemontees='BOUTIQUE';render();">🛍️ Boutique</button>
+        <div class="card" style="border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); padding: 20px; background: #fff; box-sizing: border-box;">
+            <h2 style="margin-top: 0; color: #333; font-size: 20px;">🍾 Remontées effectuées</h2>
+            <br>
+
+            <!-- Barre d'onglets dynamique moderne -->
+            <div style="display: flex; gap: 8px; margin-bottom: 15px;">
+                <button class="tab" style="flex: 1; height: 45px; font-size: 14px; font-weight: bold; border-radius: 6px; cursor: pointer; border: 1px solid #ced4da; background: ${ongletRemontees === 'HDLP' ? '#1976d2' : '#f8f9fa'}; color: ${ongletRemontees === 'HDLP' ? 'white' : '#333'};" onclick="ongletRemontees='HDLP';render();">🏨 HDLP</button>
+                <button class="tab" style="flex: 1; height: 45px; font-size: 14px; font-weight: bold; border-radius: 6px; cursor: pointer; border: 1px solid #ced4da; background: ${ongletRemontees === 'RCLP' ? '#ff9800' : '#f8f9fa'}; color: ${ongletRemontees === 'RCLP' ? 'white' : '#333'};" onclick="ongletRemontees='RCLP';render();">🍴 RCLP</button>
+                <button class="tab" style="flex: 1; height: 45px; font-size: 14px; font-weight: bold; border-radius: 6px; cursor: pointer; border: 1px solid #ced4da; background: ${ongletRemontees === 'BOUTIQUE' ? '#e91e63' : '#f8f9fa'}; color: ${ongletRemontees === 'BOUTIQUE' ? 'white' : '#333'};" onclick="ongletRemontees='BOUTIQUE';render();">🛍️ Boutique</button>
             </div>
-            <input type="date" id="filtreDateRemontees" onchange="render()" style="width:100%; padding:10px;"><br><br>
-            <input type="text" id="filtreArticleRemontees" placeholder="🔎 Code ou article" onchange="render()" style="width:100%; padding:10px;">
+
+            <!-- Filtres de recherche et de date -->
+            <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px;">
+                <div>
+                    <label style="font-size: 12px; font-weight: bold; color: #495057; display: block; margin-bottom: 4px;">📅 Date de recherche</label>
+                    <input type="date" id="filtreDateRemontees" onchange="render()" style="width:100%; padding: 9px; font-size: 15px; border: 1px solid #ced4da; border-radius: 6px; box-sizing: border-box; background: white;">
+                </div>
+                <div>
+                    <label style="font-size: 12px; font-weight: bold; color: #495057; display: block; margin-bottom: 4px;">🔎 Code ou article</label>
+                    <input type="text" id="filtreArticleRemontees" placeholder="Rechercher par code ou article..." oninput="render()" style="width:100%; padding: 9px; font-size: 15px; border: 1px solid #ced4da; border-radius: 6px; box-sizing: border-box;">
+                </div>
+            </div>
         </div>
         `;
 
         const dateRecherche = document.getElementById("filtreDateRemontees")?.value || "";
         const rechercheArticle = (document.getElementById("filtreArticleRemontees")?.value || "").toLowerCase();
-
         const validations = {};
 
         remontees.forEach(r => {
             const id = r.validationId || "sansValidation";
             if (dateRecherche && String(r.date || "").substring(0, 10) !== dateRecherche) return;
             if (rechercheArticle && !String(r.code || "").toLowerCase().includes(rechercheArticle) && !String(r.designation || "").toLowerCase().includes(rechercheArticle)) return;
-
             if (!validations[id]) {
                 validations[id] = { date: r.date, dateHeure: r.dateHeure, lignes: [] };
             }
@@ -1559,41 +1569,71 @@ function render() {
         Object.entries(validations).reverse().forEach(([id, validation]) => {
             const heure = validation.dateHeure ? new Date(validation.dateHeure).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }) : "--:--";
             const total = validation.lignes.reduce((s, r) => s + Number(r.quantite || 0), 0);
+            const estOuvert = validationOuverte === id;
 
             htmlRemontees += `
-            <div class="card">
-                <button style="width:100%; text-align:left; padding:15px; font-size:18px; font-weight:bold;" onclick="validationOuverte = validationOuverte === '${id}' ? null : '${id}'; render();">
-                    📦 Validation ${new Date(validation.date).toLocaleDateString()} - ${heure}
-                    <br><br>
-                    ${validation.lignes.length} article(s) - ${total} quantité(s)
+            <div class="card" style="border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); padding: 15px; margin-bottom: 15px; background: #fff; box-sizing: border-box;">
+                <button style="width:100%; text-align:left; padding: 12px 15px; font-size: 15px; font-weight: bold; background: ${estOuvert ? '#e7f1ff' : '#f8f9fa'}; color: #333; border: 1px solid #ced4da; border-radius: 8px; cursor: pointer; display: flex; justify-content: space-between; align-items: center;" onclick="validationOuverte = validationOuverte === '${id}' ? null : '${id}'; render();">
+                    <div>
+                        📦 Validation du ${new Date(validation.date).toLocaleDateString()} à ${heure}
+                        <div style="font-size: 13px; color: #666; font-weight: normal; margin-top: 4px;">
+                            ${validation.lignes.length} article(s) - ${total} quantité(s)
+                        </div>
+                    </div>
+                    <span style="font-size: 16px;">${estOuvert ? '🔽' : '▶️'}</span>
                 </button>
             `;
 
-            if (validationOuverte === id) {
+            if (estOuvert) {
                 htmlRemontees += `
-                <div style="margin-top:10px;">
-                    <button style="background:#dc3545; color:white;" onclick="event.stopPropagation(); supprimerValidation('${id}');">🗑️ Supprimer la validation</button>
+                <div style="margin-top: 15px;">
+                    <button style="width: 100%; background: #dc3545; color: white; border: none; padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer; margin-bottom: 15px;" onclick="event.stopPropagation(); supprimerValidation('${id}');">
+                        🗑️ Supprimer toute la validation
+                    </button>
                 </div>
                 `;
+
                 validation.lignes.forEach(ligne => {
                     htmlRemontees += `
-                    <div style="border-top:1px solid #ddd; padding:10px; margin-top:5px;">
-                        <b>${ligne.designation}</b><br>
-                        Code : ${ligne.code}<br><br>
-                        <select id="cave_${ligne.id}" style="width:100%;">
-                            <option value="HDLP SOFT" ${ligne.cave === "HDLP SOFT" ? "selected" : ""}>HDLP SOFT</option>
-                            <option value="HDLP BAR" ${ligne.cave === "HDLP BAR" ? "selected" : ""}>HDLP BAR</option>
-                            <option value="HDLP MINI BAR" ${ligne.cave === "HDLP MINI BAR" ? "selected" : ""}>HDLP MINI BAR</option>
-                            <option value="HDLP SEMINAIRE" ${ligne.cave === "HDLP SEMINAIRE" ? "selected" : ""}>HDLP SEMINAIRE</option>
-                            <option value="RCLP SOFT" ${ligne.cave === "RCLP SOFT" ? "selected" : ""}>RCLP SOFT</option>
-                            <option value="RCLP VIN" ${ligne.cave === "RCLP VIN" ? "selected" : ""}>RCLP VIN</option>
-                            <option value="RCLP ALCOOL" ${ligne.cave === "RCLP ALCOOL" ? "selected" : ""}>RCLP ALCOOL</option>
-                        </select>
+                    <div style="border: 1px solid #e9ecef; border-radius: 8px; padding: 12px; margin-top: 10px; background: #fcfcfc;">
+                        <h4 style="margin: 0 0 4px 0; font-size: 15px; color: #333;">${ligne.designation}</h4>
+                        <span style="background: #f1f3f5; padding: 2px 6px; border-radius: 4px; font-size: 12px; color: #555; font-weight: 500;">
+                            Code : ${ligne.code}
+                        </span>
                         <br><br>
-                        Type : ${ligne.type}<br><br>
-                        Quantité : <input type="number" id="quantite_${ligne.id}" value="${ligne.quantite}" style="width:100%;"><br><br>
-                        <button onclick="modifierRemontee('${ligne.id}')">💾 Enregistrer</button>
-                        <button style="background:#dc3545; color:white; margin-left:5px;" onclick="supprimerRemontee('${ligne.id}')">🗑️ Supprimer</button>
+
+                        <div style="display: flex; flex-direction: column; gap: 10px;">
+                            <div>
+                                <label style="font-size: 12px; font-weight: bold; color: #495057; display: block; margin-bottom: 4px;">Cave de destination</label>
+                                <select id="cave_${ligne.id}" style="width: 100%; padding: 8px; border: 1px solid #ced4da; border-radius: 6px; background: white; font-size: 14px;">
+                                    <option value="HDLP SOFT" ${ligne.cave === "HDLP SOFT" ? "selected" : ""}>HDLP SOFT</option>
+                                    <option value="HDLP BAR" ${ligne.cave === "HDLP BAR" ? "selected" : ""}>HDLP BAR</option>
+                                    <option value="HDLP MINI BAR" ${ligne.cave === "HDLP MINI BAR" ? "selected" : ""}>HDLP MINI BAR</option>
+                                    <option value="HDLP SEMINAIRE" ${ligne.cave === "HDLP SEMINAIRE" ? "selected" : ""}>HDLP SEMINAIRE</option>
+                                    <option value="RCLP SOFT" ${ligne.cave === "RCLP SOFT" ? "selected" : ""}>RCLP SOFT</option>
+                                    <option value="RCLP VIN" ${ligne.cave === "RCLP VIN" ? "selected" : ""}>RCLP VIN</option>
+                                    <option value="RCLP ALCOOL" ${ligne.cave === "RCLP ALCOOL" ? "selected" : ""}>RCLP ALCOOL</option>
+                                </select>
+                            </div>
+
+                            <div style="font-size: 13px; color: #555;">
+                                Type : <b>${ligne.type}</b>
+                            </div>
+
+                            <div>
+                                <label style="font-size: 12px; font-weight: bold; color: #495057; display: block; margin-bottom: 4px;">Quantité</label>
+                                <input type="number" id="quantite_${ligne.id}" value="${ligne.quantite}" style="width: 100%; padding: 8px; border: 1px solid #ced4da; border-radius: 6px; font-size: 15px; box-sizing: border-box; text-align: center;">
+                            </div>
+
+                            <div style="display: flex; gap: 8px; margin-top: 5px;">
+                                <button onclick="modifierRemontee('${ligne.id}')" style="flex: 1; background: #0d6efd; color: white; border: none; padding: 9px; font-weight: bold; border-radius: 6px; cursor: pointer;">
+                                    💾 Enregistrer
+                                </button>
+                                <button style="flex: 1; background: #dc3545; color: white; border: none; padding: 9px; font-weight: bold; border-radius: 6px; cursor: pointer;" onclick="supprimerRemontee('${ligne.id}')">
+                                    🗑️ Supprimer
+                                </button>
+                            </div>
+                        </div>
                     </div>
                     `;
                 });
