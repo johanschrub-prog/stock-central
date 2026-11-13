@@ -2215,66 +2215,98 @@ function importerExcel(event){
 }
 function renderArticles(){
     document.getElementById("cards").innerHTML = `
-    <div class="card">
-        <h2>📦 Gestion des articles</h2>
-        <input id="rechercheArticleMaster" placeholder="Code ou article" oninput="afficherArticlesMaster()">
-        <br><br>
-        <button onclick="nouvelArticle()">➕ Nouvel article</button>
-        <br><br>
+    <div class="card" style="border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); padding: 20px; background: #fff; box-sizing: border-box;">
+        <h2 style="margin-top: 0; color: #333; font-size: 20px;">📦 Gestion des articles</h2>
+        <br>
+
+        <!-- Barre de recherche moderne -->
+        <div style="margin-bottom: 15px;">
+            <input
+            id="rechercheArticleMaster"
+            placeholder="🔍 Rechercher par code ou article..."
+            oninput="afficherArticlesMaster()"
+            style="width: 100%; padding: 10px; font-size: 16px; border: 1px solid #ced4da; border-radius: 6px; box-sizing: border-box;">
+        </div>
+
+        <!-- Bouton Nouvel article -->
+        <div style="margin-bottom: 20px;">
+            <button
+            onclick="nouvelArticle()"
+            style="width: 100%; height: 45px; background: #198754; color: white; border: none; font-weight: bold; font-size: 15px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                ➕ Nouvel article
+            </button>
+        </div>
+
         <div id="listeArticlesMaster"></div>
     </div>
     `;
-
     afficherArticlesMaster();
 }
 
 function afficherArticlesMaster(){
     const recherche = document.getElementById("rechercheArticleMaster")?.value?.toLowerCase() || "";
     let html = "";
-
-    // On parcourt directement le catalogue unique (les 900 articles uniques)
+    
     Object.keys(catalogueArticles).forEach(code => {
         const article = catalogueArticles[code];
-
         if(
             recherche &&
-            !String(code).includes(recherche) &&
+            !String(code).toLowerCase().includes(recherche) &&
             !String(article.article).toLowerCase().includes(recherche)
         ){
             return;
         }
 
         html += `
-        <div class="card">
-            <b>${article.article}</b>
-            <br><br>
-            Code
-            <input value="${article.code}" onchange="modifierArticleMaster('${code}', 'code', this.value)">
-            <br><br>
-            Article
-            <input value="${article.article}" onchange="modifierArticleMaster('${code}', 'article', this.value)">
-            <br><br>
-            Fournisseur
-            <input list="listeFournisseursMaster" value="${article.fournisseur || ''}" onchange="modifierArticleMaster('${code}', 'fournisseur', this.value)">
-            <br><br>
-            Code fournisseur
-            <input value="${article.codeFournisseur || ''}" onchange="modifierArticleMaster('${code}', 'codeFournisseur', this.value)">
-            <br><br>
-            Catégorie
-            <input list="listeCategoriesMaster" value="${article.categorie || ''}" onchange="modifierArticleMaster('${code}', 'categorie', this.value)">
-            <br><br>
-            Prix
-            <input type="number" step="0.01" value="${article.prix || 0}" onchange="modifierArticleMaster('${code}', 'prix', this.value)">
-            <br><br>
-            Colisage
-            <input type="number" value="${article.colisage || 1}" onchange="modifierArticleMaster('${code}', 'colisage', this.value)">
+        <div class="card" style="border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); padding: 16px; margin-bottom: 15px; background: #fff; box-sizing: border-box;">
+            <!-- Titre / Nom de l'article -->
+            <div style="margin-bottom: 12px;">
+                <label style="font-size: 12px; font-weight: bold; color: #495057; display: block; margin-bottom: 4px;">🏷️ Désignation article</label>
+                <input value="${article.article || ''}" onchange="modifierArticleMaster('${code}', 'article', this.value)" style="width: 100%; padding: 9px; font-size: 16px; border: 1px solid #ced4da; border-radius: 6px; box-sizing: border-box; font-weight: bold; color: #333;">
+            </div>
+
+            <!-- Grille Code & Code Fournisseur -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
+                <div>
+                    <label style="font-size: 12px; font-weight: bold; color: #495057; display: block; margin-bottom: 4px;">🔑 Code unique</label>
+                    <input value="${article.code || ''}" onchange="modifierArticleMaster('${code}', 'code', this.value)" style="width: 100%; padding: 8px; font-size: 15px; border: 1px solid #ced4da; border-radius: 6px; box-sizing: border-box;">
+                </div>
+                <div>
+                    <label style="font-size: 12px; font-weight: bold; color: #495057; display: block; margin-bottom: 4px;">🔖 Réf. fournisseur</label>
+                    <input value="${article.codeFournisseur || ''}" onchange="modifierArticleMaster('${code}', 'codeFournisseur', this.value)" style="width: 100%; padding: 8px; font-size: 15px; border: 1px solid #ced4da; border-radius: 6px; box-sizing: border-box;">
+                </div>
+            </div>
+
+            <!-- Grille Fournisseur & Catégorie -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
+                <div>
+                    <label style="font-size: 12px; font-weight: bold; color: #495057; display: block; margin-bottom: 4px;">🏢 Fournisseur</label>
+                    <input list="listeFournisseursMaster" value="${article.fournisseur || ''}" onchange="modifierArticleMaster('${code}', 'fournisseur', this.value)" style="width: 100%; padding: 8px; font-size: 15px; border: 1px solid #ced4da; border-radius: 6px; box-sizing: border-box;">
+                </div>
+                <div>
+                    <label style="font-size: 12px; font-weight: bold; color: #495057; display: block; margin-bottom: 4px;">📂 Catégorie</label>
+                    <input list="listeCategoriesMaster" value="${article.categorie || ''}" onchange="modifierArticleMaster('${code}', 'categorie', this.value)" style="width: 100%; padding: 8px; font-size: 15px; border: 1px solid #ced4da; border-radius: 6px; box-sizing: border-box;">
+                </div>
+            </div>
+
+            <!-- Grille Prix & Colisage -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 5px;">
+                <div>
+                    <label style="font-size: 12px; font-weight: bold; color: #495057; display: block; margin-bottom: 4px;">💶 Prix pièce (€)</label>
+                    <input type="number" step="0.01" value="${article.prix || 0}" onchange="modifierArticleMaster('${code}', 'prix', this.value)" style="width: 100%; padding: 8px; font-size: 15px; border: 1px solid #ced4da; border-radius: 6px; box-sizing: border-box; text-align: center;">
+                </div>
+                <div>
+                    <label style="font-size: 12px; font-weight: bold; color: #495057; display: block; margin-bottom: 4px;">📦 Colisage</label>
+                    <input type="number" value="${article.colisage || 1}" onchange="modifierArticleMaster('${code}', 'colisage', this.value)" style="width: 100%; padding: 8px; font-size: 15px; border: 1px solid #ced4da; border-radius: 6px; box-sizing: border-box; text-align: center;">
+                </div>
+            </div>
         </div>
         `;
     });
 
     const fournisseursList = [...new Set(Object.values(catalogueArticles).map(a => a.fournisseur).filter(f => f))].sort();
     const categoriesList = [...new Set(Object.values(catalogueArticles).map(a => a.categorie).filter(c => c))].sort();
-
+    
     html += `
     <datalist id="listeFournisseursMaster">
         ${fournisseursList.map(f => `<option value="${f}">`).join("")}
@@ -2283,10 +2315,9 @@ function afficherArticlesMaster(){
         ${categoriesList.map(c => `<option value="${c}">`).join("")}
     </datalist>
     `;
-
+    
     document.getElementById("listeArticlesMaster").innerHTML = html;
 }
-
 function modifierArticleMaster(codeActuel, champ, valeur){
     let article = catalogueArticles[codeActuel];
     if(!article) return;
