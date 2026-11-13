@@ -2332,9 +2332,12 @@ function analyserStockage() {
 }
 
 function nouveauFournisseur(){
+    const nom = prompt("Nom du nouveau fournisseur :");
+    if(!nom || nom.trim() === "") return;
+
     fournisseurs.push({
         id: Date.now().toString(),
-        nom: "",
+        nom: nom.trim(),
         numeroClient: "",
         representant: "",
         portable: "",
@@ -2345,7 +2348,6 @@ function nouveauFournisseur(){
     saveFournisseurs();
     afficherFournisseurs();
 }
-
 function supprimerFournisseur(id){
     if(!confirm("Supprimer ce fournisseur ?")) return;
     fournisseurs = fournisseurs.filter(f => String(f.id) !== String(id));
