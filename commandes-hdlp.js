@@ -57,7 +57,7 @@ function ouvrirCommandeHDLP(){
 }
 function nouvelleCommandeHDLP(){
     document.getElementById("cards").innerHTML = `
-    <div class="card" style="border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); padding: 20px; background: #fff;">
+    <div class="card" style="border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); padding: 20px; background: #fff; box-sizing: border-box;">
         <div style="margin-bottom: 15px;">
             <button onclick="ouvrirCommandeHDLP()" style="padding: 6px 14px; font-weight: bold; border-radius: 6px; cursor: pointer; border: 1px solid #ccc; background: #f8f9fa;">
                 ⬅ Retour
@@ -86,7 +86,7 @@ function nouvelleCommandeHDLP(){
         </div>
 
         <!-- Recherche rapide code / article -->
-        <div style="display: grid; grid-template-columns: 1fr auto; gap: 10px; margin-bottom: 15px;">
+        <div style="display: grid; grid-template-columns: 1fr auto; gap: 10px; margin-bottom: 15px; width: 100%; box-sizing: border-box;">
             <div>
                 <label style="font-size: 13px; font-weight: bold; color: #495057; display: block; margin-bottom: 5px;">📦 Code article</label>
                 <input
@@ -106,7 +106,7 @@ function nouvelleCommandeHDLP(){
             </div>
         </div>
 
-        <div style="margin-bottom: 20px;">
+        <div style="margin-bottom: 20px; width: 100%; box-sizing: border-box;">
             <input
             id="rechercheCommandeHDLP"
             placeholder="🔍 Rechercher par article, code ou code fournisseur"
@@ -115,7 +115,7 @@ function nouvelleCommandeHDLP(){
         </div>
 
         <!-- Récapitulatif fixe de commande -->
-        <div style="background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 10px; padding: 15px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+        <div style="background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 10px; padding: 15px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box;">
             <div>
                 <span style="font-size: 14px; color: #666; display: block;">Total estimé</span>
                 <span id="totalCommandeHDLP" style="font-size: 20px; font-weight: bold; color: #198754;">0.00 €</span>
@@ -127,12 +127,11 @@ function nouvelleCommandeHDLP(){
             </button>
         </div>
 
-        <div id="contenuCommandeHDLP"></div>
+        <div id="contenuCommandeHDLP" style="width: 100%; box-sizing: border-box;"></div>
     </div>
     `;
     chargerArticlesCommandeHDLP();
 }
-
 function rechercherCodeCommandeHDLP(){
     const code =
     document.getElementById(
