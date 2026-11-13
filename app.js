@@ -687,27 +687,41 @@ function renderOnglets() {
 }
 function ouvrirApplications(){
     document.getElementById("cards").innerHTML = `
-    <div class="card">
+    <div class="card" style="text-align: center;">
         <h2>📱 Applications</h2>
-        <button style="width:100%;height:70px;" onclick="ouvrirRemonteeHDLP()">
-        📤 Remontées HDLP
-        </button>
-        <br><br>
-        <button style="width:100%;height:70px;" onclick="ouvrirRemonteeRCLP()">
-        📤 Remontées RCLP
-        </button>
-        <br><br>
-        <button style="width:100%;height:70px;" onclick="ouvrirSaisieVentesBoutique()">
-        🛍️ Ventes Boutique
-        </button>
-        <br><br>
-        <button style="width:100%;height:70px;" onclick="ouvrirCommandeHDLP()">
-        🚚 Commandes HDLP
-        </button>
-        <br><br>
-        <button style="width:100%;height:70px;" onclick="ouvrirCommandeRCLP()">
-        🚚 Commandes RCLP
-        </button>
+        <br>
+
+        <!-- Conteneur global de la grille de menu -->
+        <div style="display: flex; flex-direction: column; gap: 15px; max-width: 600px; margin: 0 auto;">
+
+            <!-- Ligne 1 : Remontées HDLP & Remontées RCLP (Côte à côte) -->
+            <div style="display: flex; gap: 4%; width: 100%;">
+                <button onclick="ouvrirRemonteeHDLP()" style="width: 48%; height: 70px; font-size: 16px; font-weight: bold; background: #1976d2; color: white; border: none; border-radius: 8px; cursor: pointer;">
+                    📤 Remontées HDLP
+                </button>
+                <button onclick="ouvrirRemonteeRCLP()" style="width: 48%; height: 70px; font-size: 16px; font-weight: bold; background: #1976d2; color: white; border: none; border-radius: 8px; cursor: pointer;">
+                    📤 Remontées RCLP
+                </button>
+            </div>
+
+            <!-- Ligne 2 : Ventes Boutique (Seule, prend toute la largeur) -->
+            <div style="width: 100%;">
+                <button onclick="ouvrirSaisieVentesBoutique()" style="width: 100%; height: 70px; font-size: 16px; font-weight: bold; background: #ff9800; color: white; border: none; border-radius: 8px; cursor: pointer;">
+                    🛍️ Ventes boutique
+                </button>
+            </div>
+
+            <!-- Ligne 3 : Commande HDLP & Commandes RCLP (Côte à côte) -->
+            <div style="display: flex; gap: 4%; width: 100%;">
+                <button onclick="ouvrirCommandeHDLP()" style="width: 48%; height: 70px; font-size: 16px; font-weight: bold; background: #28a745; color: white; border: none; border-radius: 8px; cursor: pointer;">
+                    📦 Commandes HDLP
+                </button>
+                <button onclick="ouvrirCommandeRCLP()" style="width: 48%; height: 70px; font-size: 16px; font-weight: bold; background: #28a745; color: white; border: none; border-radius: 8px; cursor: pointer;">
+                    📦 Commandes RCLP
+                </button>
+            </div>
+
+        </div>
     </div>
     `;
 }
