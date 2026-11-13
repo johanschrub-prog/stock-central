@@ -1785,7 +1785,7 @@ function render() {
         `;
     }
 
-    liste
+liste
         .filter(a => {
             const matchRecherche = valeurRecherche === "" || String(a.code || "").includes(valeurRecherche.trim()) || (a.article || "").toLowerCase().includes(valeurRecherche.toLowerCase().trim());
             const matchCave = !filtreCave || a.cave === filtreCave;
@@ -1795,44 +1795,79 @@ function render() {
         })
         .forEach(a => {
             const valeur = (Number(a.stock) || 0) * (Number(a.prix) || 0);
-
+            const estRCLP = String(a.cave || categorieActive).includes("RCLP");
+            
             html += `
-            <div class="card">
-                <b>${a.article}</b><br>
-                Code : ${a.code}<br>
-                Catégorie : <b>${a.categorie || "-"}</b>
-                ${categorieActive === "TOUS_HDLP" || categorieActive === "TOUS_RCLP" ? `<br>Cave : <b>${a.cave}</b>` : ""}
-                <br><br>
-                Stock :
-                <input type="number" value="${a.stock || 0}" onchange="
-                    if(!stockParCave['${a.cave || categorieActive}']) stockParCave['${a.cave || categorieActive}'] = {};
-                    const qte = Number(this.value);
-                    if(qte === 0) {
-                        delete stockParCave['${a.cave || categorieActive}']['${a.code}'];
-                    } else {
-                        stockParCave['${a.cave || categorieActive}']['${a.code}'] = qte;
-                    }
-                    save();
-                    render();
-                ">
-                <br><br>
-                Prix :
-                <input type="number" step="0.01" value="${a.prix || 0}" onchange="
-                    const nouveauPrix = Number(this.value);
-                    if(catalogueArticles['${a.code}']) {
-                        catalogueArticles['${a.code}'].prix = nouveauPrix;
-                    }
-                    save();
-                    render();
-                ">
-                <br>
-                <div class="valeur" style="color:${Number(a.stock) < 0 ? '#dc3545' : '#1976d2'}; font-weight:bold;">
-                    Valeur : ${valeur.toFixed(2)} €
+            <div class="card" style="border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); padding: 16px; margin-bottom: 15px; background: #fff; box-sizing: border-box;">
+                <!-- En-tête : Nom & Code -->
+                <div style="margin-bottom: 10px;">
+                    <h3 style="margin: 0 0 6px 0; font-size: 17px; color: #333;">${a.article}</h3>
+                    <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                        <span style="background: #f1f3f5; padding: 3px 8px; border-radius: 5px; font-size: 12px; color: #495057; font-weight: 600;">
+                            Code : ${a.code}
+                        </span>
+                        <span style="background: #e2f0d9; padding: 3px 8px; border-radius: 5px; font-size: 12px; color: #2b542c; font-weight: 600;">
+                            Cat. : ${a.categorie || "-"}
+                        </span>
+                        ${categorieActive === "TOUS_HDLP" || categorieActive === "TOUS_RCLP" ? `
+                        <span style="background: #e7f1ff; padding: 3px 8px; border-radius: 5px; font-size: 12px; color: #0d6efd; font-weight: 600;">
+                            Cave : ${a.cave}
+                        </span>` : ""}
+                    </div>
                 </div>
-                <br>
-                <button onclick="modifierArticle('${a.code}')">✏️ Modifier</button>
-                <button onclick="transfererArticle('${a.code}', '${a.cave || categorieActive}')">🔄 Transférer</button>
-                ${String(a.cave || categorieActive).includes("RCLP") ? `<button onclick="transfertCoupe('${a.code}', '${a.cave || categorieActive}')">🥂 Coupe</button>` : ""}
+
+                <hr style="border: none; border-top: 1px solid #eee; margin: 12px 0;">
+
+                <!-- Grille de saisie Stock & Prix -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
+                    <div>
+                        <label style="font-size: 12px; font-weight: bold; color: #495057; display: block; margin-bottom: 4px;">📦 Stock</label>
+                        <input type="number" value="${a.stock || 0}" style="width: 100%; padding: 8px; font-size: 16px; border: 1px solid #ced4da; border-radius: 6px; box-sizing: border-box; text-align: center;" onchange="
+                            if(!stockParCave['${a.cave || categorieActive}']) stockParCave['${a.cave || categorieActive}'] = {};
+                            const qte = Number(this.value);
+                            if(qte === 0) {
+                                delete stockParCave['${a.cave || categorieActive}']['${a.code}'];
+                            } else {
+                                stockParCave['${a.cave || categorieActive}']['${a.code}'] = qte;
+                            }
+                            save();
+                            render();
+                        ">
+                    </div>
+                    <div>
+                        <label style="font-size: 12px; font-weight: bold; color: #495057; display: block; margin-bottom: 4px;">💶 Prix (€)</label>
+                        <input type="number" step="0.01" value="${a.prix || 0}" style="width: 100%; padding: 8px; font-size: 16px; border: 1px solid #ced4da; border-radius: 6px; box-sizing: border-box; text-align: center;" onchange="
+                            const nouveauPrix = Number(this.value);
+                            if(catalogueArticles['${a.code}']) {
+                                catalogueArticles['${a.code}'].prix = nouveauPrix;
+                            }
+                            save();
+                            render();
+                        ">
+                    </div>
+                </div>
+
+                <!-- Bandeau Valeur totale -->
+                <div style="background: #f8f9fa; padding: 8px 12px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 14px;">
+                    <span style="color: #666;">Valeur totale :</span>
+                    <span style="color: ${Number(a.stock) < 0 ? '#dc3545' : '#1976d2'}; font-weight: bold; font-size: 15px;">
+                        ${valeur.toFixed(2)} €
+                    </span>
+                </div>
+
+                <!-- Boutons d'action -->
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                    <button onclick="modifierArticle('${a.code}')" style="flex: 1; min-width: 90px; background: #6c757d; color: white; border: none; padding: 9px; font-weight: bold; border-radius: 6px; cursor: pointer;">
+                        ✏️ Modifier
+                    </button>
+                    <button onclick="transfererArticle('${a.code}', '${a.cave || categorieActive}')" style="flex: 1; min-width: 90px; background: #0d6efd; color: white; border: none; padding: 9px; font-weight: bold; border-radius: 6px; cursor: pointer;">
+                        🔄 Transférer
+                    </button>
+                    ${estRCLP ? `
+                    <button onclick="transfertCoupe('${a.code}', '${a.cave || categorieActive}')" style="background: #ffc107; color: #000; border: none; padding: 9px 12px; font-weight: bold; border-radius: 6px; cursor: pointer;">
+                        🥂 Coupe
+                    </button>` : ""}
+                </div>
             </div>
             `;
         });
