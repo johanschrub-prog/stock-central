@@ -2322,7 +2322,6 @@ function renderFournisseurs(){
     // Extraction des fournisseurs depuis le catalogue unique
     Object.values(catalogueArticles).forEach(article => {
         const nom = String(article.fournisseur || "").trim();
-
         if(
             nom &&
             !fournisseurs.some(
@@ -2340,20 +2339,34 @@ function renderFournisseurs(){
             });
         }
     });
-
     saveFournisseurs();
 
     document.getElementById("cards").innerHTML = `
-    <div class="card">
-        <h2>🚚 Gestion des fournisseurs</h2>
-        <input id="rechercheFournisseur" placeholder="Nom fournisseur ou représentant" oninput="afficherFournisseurs()">
-        <br><br>
-        <button onclick="nouveauFournisseur()">➕ Nouveau fournisseur</button>
-        <br><br>
+    <div class="card" style="border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); padding: 20px; background: #fff; box-sizing: border-box;">
+        <h2 style="margin-top: 0; color: #333; font-size: 20px;">🚚 Gestion des fournisseurs</h2>
+        <br>
+
+        <!-- Barre de recherche moderne -->
+        <div style="margin-bottom: 15px;">
+            <input
+            id="rechercheFournisseur"
+            placeholder="🔍 Nom fournisseur ou représentant"
+            oninput="afficherFournisseurs()"
+            style="width: 100%; padding: 10px; font-size: 16px; border: 1px solid #ced4da; border-radius: 6px; box-sizing: border-box;">
+        </div>
+
+        <!-- Bouton Nouveau fournisseur moderne -->
+        <div style="margin-bottom: 20px;">
+            <button
+            onclick="nouveauFournisseur()"
+            style="width: 100%; height: 45px; background: #198754; color: white; border: none; font-weight: bold; font-size: 15px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                ➕ Nouveau fournisseur
+            </button>
+        </div>
+
         <div id="listeFournisseurs"></div>
     </div>
     `;
-
     afficherFournisseurs();
 }
 
@@ -2407,7 +2420,7 @@ function supprimerFournisseur(id){
 function afficherFournisseurs(){
     const recherche = document.getElementById("rechercheFournisseur")?.value?.toLowerCase() || "";
     let html = "";
-
+    
     fournisseurs.forEach(f => {
         if(
             recherche &&
@@ -2418,33 +2431,64 @@ function afficherFournisseurs(){
         }
 
         html += `
-        <div class="card">
-            Nom fournisseur
-            <input value="${f.nom || ''}" onchange="modifierFournisseur('${f.id}', 'nom', this.value)">
-            <br><br>
-            Numéro client
-            <input value="${f.numeroClient || ''}" onchange="modifierFournisseur('${f.id}', 'numeroClient', this.value)">
-            <br><br>
-            Nom du représentant
-            <input value="${f.representant || ''}" onchange="modifierFournisseur('${f.id}', 'representant', this.value)">
-            <br><br>
-            Portable
-            <br>
-            <input type="tel" value="${f.portable || ''}" onchange="modifierFournisseur('${f.id}', 'portable', this.value)" style="width:100%;">
-            <br><br>
-            <button onclick="location.href='tel:${f.portable || ''}'" style="width:48%; height:55px; background:#28a745; color:white; font-weight:bold; border:none; border-radius:8px;">APPELER</button>
-            <button onclick="location.href='sms:${f.portable || ''}'" style="width:48%; height:55px; background:#2196f3; color:white; font-weight:bold; border:none; border-radius:8px; float:right;">SMS</button>
-            <br><br>
-            Téléphone bureau
-            <input type="tel" inputmode="numeric" value="${f.bureau || ''}" onchange="modifierFournisseur('${f.id}', 'bureau', this.value)">
-            <br><br>
-            Adresse mail
-            <br>
-            <input type="email" value="${f.email || ''}" onchange="modifierFournisseur('${f.id}', 'email', this.value)" style="width:100%;">
-            <br><br>
-            <button type="button" onclick="location.href='mailto:${f.email || ''}'" style="width:100%; height:55px; background:#ff9800; color:white; font-size:18px; font-weight:bold; border:none; border-radius:8px;">ENVOYER MAIL</button>
-            <br><br>
-            <button type="button" style="width:100%; height:55px; background:#dc3545; color:white; font-size:18px; font-weight:bold; border:none; border-radius:8px;" onclick="supprimerFournisseur('${f.id}')">SUPPRIMER LE FOURNISSEUR</button>
+        <div class="card" style="border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); padding: 16px; margin-bottom: 15px; background: #fff; box-sizing: border-box;">
+            <!-- En-tête : Nom du fournisseur -->
+            <div style="margin-bottom: 12px;">
+                <label style="font-size: 12px; font-weight: bold; color: #495057; display: block; margin-bottom: 4px;">🏢 Nom fournisseur</label>
+                <input value="${f.nom || ''}" onchange="modifierFournisseur('${f.id}', 'nom', this.value)" style="width: 100%; padding: 9px; font-size: 16px; border: 1px solid #ced4da; border-radius: 6px; box-sizing: border-box; font-weight: bold; color: #333;">
+            </div>
+
+            <!-- Grille Numéro client & Représentant -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
+                <div>
+                    <label style="font-size: 12px; font-weight: bold; color: #495057; display: block; margin-bottom: 4px;">🔖 N° client</label>
+                    <input value="${f.numeroClient || ''}" onchange="modifierFournisseur('${f.id}', 'numeroClient', this.value)" style="width: 100%; padding: 8px; font-size: 15px; border: 1px solid #ced4da; border-radius: 6px; box-sizing: border-box;">
+                </div>
+                <div>
+                    <label style="font-size: 12px; font-weight: bold; color: #495057; display: block; margin-bottom: 4px;">👤 Représentant</label>
+                    <input value="${f.representant || ''}" onchange="modifierFournisseur('${f.id}', 'representant', this.value)" style="width: 100%; padding: 8px; font-size: 15px; border: 1px solid #ced4da; border-radius: 6px; box-sizing: border-box;">
+                </div>
+            </div>
+
+            <hr style="border: none; border-top: 1px solid #eee; margin: 12px 0;">
+
+            <!-- Section Téléphone Portable & Actions (Appel / SMS) -->
+            <div style="margin-bottom: 12px;">
+                <label style="font-size: 12px; font-weight: bold; color: #495057; display: block; margin-bottom: 4px;">📱 Portable</label>
+                <input type="tel" value="${f.portable || ''}" onchange="modifierFournisseur('${f.id}', 'portable', this.value)" style="width: 100%; padding: 8px; font-size: 15px; border: 1px solid #ced4da; border-radius: 6px; box-sizing: border-box; margin-bottom: 8px;">
+                
+                <div style="display: flex; gap: 8px;">
+                    <button onclick="location.href='tel:${f.portable || ''}'" style="flex: 1; height: 45px; background: #28a745; color: white; font-weight: bold; border: none; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                        📞 Appeler
+                    </button>
+                    <button onclick="location.href='sms:${f.portable || ''}'" style="flex: 1; height: 45px; background: #0d6efd; color: white; font-weight: bold; border: none; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                        💬 SMS
+                    </button>
+                </div>
+            </div>
+
+            <!-- Téléphone Bureau -->
+            <div style="margin-bottom: 12px;">
+                <label style="font-size: 12px; font-weight: bold; color: #495057; display: block; margin-bottom: 4px;">☎️ Téléphone bureau</label>
+                <input type="tel" inputmode="numeric" value="${f.bureau || ''}" onchange="modifierFournisseur('${f.id}', 'bureau', this.value)" style="width: 100%; padding: 8px; font-size: 15px; border: 1px solid #ced4da; border-radius: 6px; box-sizing: border-box;">
+            </div>
+
+            <!-- Section E-mail & Action (Mail) -->
+            <div style="margin-bottom: 15px;">
+                <label style="font-size: 12px; font-weight: bold; color: #495057; display: block; margin-bottom: 4px;">✉️ Adresse e-mail</label>
+                <input type="email" value="${f.email || ''}" onchange="modifierFournisseur('${f.id}', 'email', this.value)" style="width: 100%; padding: 8px; font-size: 15px; border: 1px solid #ced4da; border-radius: 6px; box-sizing: border-box; margin-bottom: 8px;">
+                
+                <button type="button" onclick="location.href='mailto:${f.email || ''}'" style="width: 100%; height: 45px; background: #ff9800; color: white; font-weight: bold; border: none; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                    📧 Envoyer un mail
+                </button>
+            </div>
+
+            <hr style="border: none; border-top: 1px solid #eee; margin: 12px 0;">
+
+            <!-- Bouton de suppression -->
+            <button type="button" style="width: 100%; height: 42px; background: #dc3545; color: white; font-weight: bold; border: none; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;" onclick="supprimerFournisseur('${f.id}')">
+                🗑️ Supprimer le fournisseur
+            </button>
         </div>
         `;
     });
