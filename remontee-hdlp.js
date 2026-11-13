@@ -583,5 +583,7 @@ function validerQuantiteHDLP(id){
 function surlignerArticleResume(id){
     const carte = document.getElementById("resume_" + id);
     if(!carte) return;
+    
+    // Bascule la classe de sélection pour accumuler les surbrillances
     carte.classList.toggle("article-selectionne");
 }
