@@ -252,8 +252,8 @@ function renderResumeHDLP(){
         totalArticles++;
         totalQuantites += remontee + redescente;
 
-        html += `
-        <div class="card card-resume" id="resume_${article.id}" style="border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); padding: 15px; margin-bottom: 15px; background: #fff; transition: background 0.2s;">
+       html += `
+        <div class="card card-resume" id="resume_${article.id}" onclick="surlignerArticleResume('${article.id}')" style="border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); padding: 15px; margin-bottom: 15px; background: #fff; transition: background 0.2s; cursor: pointer;">
             <!-- En-tête -->
             <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
                 <div>
