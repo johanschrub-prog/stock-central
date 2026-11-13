@@ -442,52 +442,70 @@ function renderContenuHDLP(){
         const stockRCLP = getStockRCLP(article.code);
 
         html += `
-        <div class="card">
-            <b>${article.article}</b>
-            <br>
-            Code : ${article.code}
-            <br><br>
-            <span style="color:#1976d2; font-weight:bold;">
-                📦 Stock HDLP : ${stockHDLP}
-            </span>
-            <br>
-            <span style="color:#ff9800; font-weight:bold;">
-                📦 Stock RCLP : ${stockRCLP}
-            </span>
-            <br><br>
-            ⬆️ Remontée
-            <br>
-            <input
-            type="number"
-            id="remontee_${article.id}"
-            value="${article.remontee || ''}"
-            placeholder="Remontée">
-            <br><br>
-            ⬇️ Redescente
-            <br>
-            <input
-            type="number"
-            id="redescente_${article.id}"
-            value="${article.redescente || ''}"
-            placeholder="Redescente"
-            onkeydown="
-            if(event.key==='Enter'){
-                validerQuantiteHDLP('${article.id}');
-            }
-            ">
-            <br><br>
-            <button onclick="validerQuantiteHDLP('${article.id}')">
-                ✅ OK
-            </button>
-            <button
-            style="
-                background:#dc3545;
-                color:white;
-                margin-left:5px;
-            "
-            onclick="supprimerArticleHDLP('${article.id}')">
-                🗑️
-            </button>
+        <div class="card" style="border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); padding: 15px; margin-bottom: 15px; background: #fff;">
+            <!-- En-tête Article -->
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+                <div>
+                    <h3 style="margin: 0 0 5px 0; font-size: 16px; color: #333;">${article.article}</h3>
+                    <span style="background: #f1f3f5; padding: 2px 8px; border-radius: 4px; font-size: 12px; color: #555; font-weight: 500;">
+                        Code : ${article.code}
+                    </span>
+                </div>
+            </div>
+
+            <!-- Badges de stock -->
+            <div style="display: flex; gap: 10px; margin-bottom: 12px;">
+                <span style="background: #e7f1ff; color: #0d6efd; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: bold;">
+                    📦 HDLP : ${stockHDLP}
+                </span>
+                <span style="background: #fff3cd; color: #856404; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: bold;">
+                    📦 RCLP : ${stockRCLP}
+                </span>
+            </div>
+
+            <hr style="border: none; border-top: 1px solid #eee; margin: 10px 0;">
+
+            <!-- Grille de saisie (Remontée / Redescente) -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
+                <div>
+                    <label style="font-size: 13px; font-weight: 600; color: #495057; display: block; margin-bottom: 4px;">⬆️ Remontée</label>
+                    <input
+                    type="number"
+                    id="remontee_${article.id}"
+                    value="${article.remontee || ''}"
+                    placeholder="0"
+                    style="width: 100%; padding: 8px; font-size: 16px; border: 1px solid #ced4da; border-radius: 6px; box-sizing: border-box; text-align: center;">
+                </div>
+                <div>
+                    <label style="font-size: 13px; font-weight: 600; color: #495057; display: block; margin-bottom: 4px;">⬇️ Redescente</label>
+                    <input
+                    type="number"
+                    id="redescente_${article.id}"
+                    value="${article.redescente || ''}"
+                    placeholder="0"
+                    style="width: 100%; padding: 8px; font-size: 16px; border: 1px solid #ced4da; border-radius: 6px; box-sizing: border-box; text-align: center;"
+                    onkeydown="
+                    if(event.key==='Enter'){
+                        validerQuantiteHDLP('${article.id}');
+                    }
+                    ">
+                </div>
+            </div>
+
+            <!-- Boutons d'action (OK + Corbeille) -->
+            <div style="display: flex; gap: 8px;">
+                <button 
+                onclick="validerQuantiteHDLP('${article.id}')"
+                style="flex: 1; background: #198754; color: white; border: none; padding: 10px; font-weight: bold; font-size: 14px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                    ✅ OK
+                </button>
+                <button
+                style="background: #dc3545; color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center;"
+                onclick="supprimerArticleHDLP('${article.id}')"
+                title="Supprimer">
+                    🗑️
+                </button>
+            </div>
         </div>
         `;
     });
