@@ -225,7 +225,12 @@ function changerOngletHDLP(tab){
     renderRemonteeHDLP();
 }
 function renderResumeHDLP(){
-    let html = "<h3>📋 Résumé des remontées</h3>";
+    let html = `
+    <div style="margin-bottom: 20px;">
+        <h3 style="margin: 0; font-size: 18px; color: #333;">📋 Résumé des remontées</h3>
+        <p style="margin: 5px 0 0 0; font-size: 13px; color: #666;">Vérifiez et validez les mouvements avant l'enregistrement final.</p>
+    </div>
+    `;
 
     const articles = [
         ...(hdlpData.devant || []),
@@ -248,52 +253,85 @@ function renderResumeHDLP(){
         totalQuantites += remontee + redescente;
 
         html += `
-        <div class="card card-resume" id="resume_${article.id}" onclick="surlignerArticleResume('${article.id}')">
-            <b>${article.article}</b>
-            <br>
-            Code : ${article.code}
-            <br><br>
-            ⬆️ Remontée : ${remontee}
-            <br>
-            ⬇️ Redescente : ${redescente}
-            <br><br>
-            <input type="checkbox" id="check_${article.id}" checked>
-            À traiter
-            <br><br>
-            Cave d'origine :
-            <select id="cave_${article.id}">
-                <option selected>HDLP BAR</option>
-                <option>HDLP SOFT</option>
-                <option>HDLP MINI BAR</option>
-                <option>HDLP SEMINAIRE</option>
-            </select>
-            <br><br>
-            <button style="background:#dc3545; color:white;" onclick="retirerArticleResumeHDLP('${article.id}')">
-                🗑️ Retirer
-            </button>
+        <div class="card card-resume" id="resume_${article.id}" style="border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); padding: 15px; margin-bottom: 15px; background: #fff; transition: background 0.2s;">
+            <!-- En-tête -->
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+                <div>
+                    <h4 style="margin: 0 0 4px 0; font-size: 16px; color: #333;">${article.article}</h4>
+                    <span style="background: #f1f3f5; padding: 2px 8px; border-radius: 4px; font-size: 12px; color: #555; font-weight: 500;">
+                        Code : ${article.code}
+                    </span>
+                </div>
+                <button 
+                style="background: #dc3545; color: white; border: none; padding: 6px 10px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: bold;" 
+                onclick="retirerArticleResumeHDLP('${article.id}')"
+                title="Retirer">
+                    🗑️ Retirer
+                </button>
+            </div>
+
+            <hr style="border: none; border-top: 1px solid #eee; margin: 10px 0;">
+
+            <!-- Détails des quantités -->
+            <div style="display: flex; gap: 15px; margin-bottom: 12px; font-size: 14px;">
+                <span style="background: #e7f1ff; color: #0d6efd; padding: 6px 10px; border-radius: 6px; font-weight: bold;">
+                    ⬆️ Remontée : ${remontee}
+                </span>
+                <span style="background: #e2f0d9; color: #385723; padding: 6px 10px; border-radius: 6px; font-weight: bold;">
+                    ⬇️ Redescente : ${redescente}
+                </span>
+            </div>
+
+            <!-- Paramètres de validation (Checkbox + Cave d'origine) -->
+            <div style="display: grid; grid-template-columns: auto 1fr; gap: 15px; align-items: center; background: #f8f9fa; padding: 10px; border-radius: 8px;">
+                <label style="display: flex; align-items: center; gap: 8px; font-weight: bold; font-size: 14px; cursor: pointer;">
+                    <input type="checkbox" id="check_${article.id}" checked style="width: 18px; height: 18px; cursor: pointer;">
+                    Traiter
+                </label>
+                
+                <div>
+                    <label style="font-size: 11px; color: #666; display: block; margin-bottom: 2px; font-weight: 600;">Cave d'origine :</label>
+                    <select id="cave_${article.id}" style="width: 100%; padding: 6px; border: 1px solid #ced4da; border-radius: 6px; font-size: 14px; background: white;">
+                        <option selected>HDLP BAR</option>
+                        <option>HDLP SOFT</option>
+                        <option>HDLP MINI BAR</option>
+                        <option>HDLP SEMINAIRE</option>
+                    </select>
+                </div>
+            </div>
         </div>
         `;
     });
 
-    html += `
-    <div class="card">
-        <b>Total articles :</b> ${totalArticles}
-        <br>
-        <b>Total quantités :</b> ${totalQuantites}
-        <br><br>
-        Date de remontée
-        <br>
-        <input type="date" id="dateRemonteeHDLP" value="${new Date().toISOString().split('T')[0]}">
-        <br><br>
-        <button onclick="validerRemonteeResumeHDLP()">
-            ✅ Valider la remontée
-        </button>
-    </div>
-    `;
+    if(totalArticles === 0){
+        html += `
+        <div class="card" style="text-align: center; padding: 30px; color: #666;">
+            <p>Aucune quantité saisie pour le moment.</p>
+        </div>
+        `;
+    } else {
+        html += `
+        <div class="card" style="border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); padding: 20px; background: #f8f9fa; margin-top: 20px;">
+            <h4 style="margin: 0 0 10px 0; font-size: 16px; color: #333;">Récapitulatif global</h4>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 14px;">
+                <span>Total articles : <b>${totalArticles}</b></span>
+                <span>Total quantités : <b>${totalQuantites}</b></span>
+            </div>
+            
+            <div style="margin-bottom: 15px;">
+                <label style="font-size: 13px; font-weight: bold; color: #495057; display: block; margin-bottom: 5px;">📅 Date de remontée</label>
+                <input type="date" id="dateRemonteeHDLP" value="${new Date().toISOString().split('T')[0]}" style="width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 6px; font-size: 16px; box-sizing: border-box; background: white;">
+            </div>
+
+            <button onclick="validerRemonteeResumeHDLP()" style="width: 100%; background: #198754; color: white; border: none; padding: 12px; font-weight: bold; font-size: 16px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                ✅ Valider la remontée
+            </button>
+        </div>
+        `;
+    }
 
     document.getElementById("contenuHDLP").innerHTML = html;
 }
-
 function retirerArticleResumeHDLP(id){
     ["devant","champagne","alcool"].forEach(onglet => {
         const article = hdlpData[onglet].find(a => a.id === id);
