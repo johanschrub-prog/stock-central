@@ -57,103 +57,77 @@ function ouvrirCommandeHDLP(){
 }
 function nouvelleCommandeHDLP(){
     document.getElementById("cards").innerHTML = `
-    <div class="card">
-        <button
-        onclick="ouvrirCommandeHDLP()">
-            ⬅ Retour
-        </button>
-        <h2>
-        ➕ Nouvelle commande HDLP
-        </h2>
-        Fournisseur
-        <br>
-        <input
-        id="fournisseurCommandeHDLP"
-        list="listeFournisseurs"
-        placeholder="Choisir un fournisseur"
-        oninput="
-        chargerArticlesCommandeHDLP()
-        "
-        style="
-        width:100%;
-        padding:10px;
-        ">
-        <datalist
-        id="listeFournisseurs">
-        ${
-            fournisseurs
-            .map(f =>
-                `<option value="${f.nom}">`
-            )
-            .join("")
-        }
-        </datalist>
-        <br><br>
-        <b>Code article</b>
-        <br>
-        <input
-        id="codeCommandeHDLP"
-        type="text"
-        inputmode="numeric"
-        placeholder="Code article"
-        onkeydown="
-        if(event.key==='Enter'){
-            rechercherCodeCommandeHDLP();
-        }
-        "
-        style="
-        width:100%;
-        padding:10px;
-        font-size:18px;
-        ">
-        <button
-        onclick="rechercherCodeCommandeHDLP()"
-        style="
-        width:100%;
-        margin-top:5px;
-        background:#007bff;
-        color:white;
-        ">
-        ➡️ Aller à
-        </button>
-        <br><br>
-        <input
-        id="rechercheCommandeHDLP"
-        placeholder="
-        🔍 Article / Code / Code fournisseur
-        "
-        oninput="
-        chargerArticlesCommandeHDLP()
-        "
-        style="
-        width:100%;
-        padding:10px;
-        ">
-        <br><br>
-        <div class="card">
-            <b>
-            Total commande :
-            </b>
-            <span id="totalCommandeHDLP">
-            0.00 €
-            </span>
-            <br><br>
-            <button
-            onclick="
-            enregistrerCommandeHDLP()
-            "
-            style="
-            width:100%;
-            background:#28a745;
-            color:white;
-            font-weight:bold;
-            ">
-                ✅ Enregistrer commande
+    <div class="card" style="border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); padding: 20px; background: #fff;">
+        <div style="margin-bottom: 15px;">
+            <button onclick="ouvrirCommandeHDLP()" style="padding: 6px 14px; font-weight: bold; border-radius: 6px; cursor: pointer; border: 1px solid #ccc; background: #f8f9fa;">
+                ⬅ Retour
             </button>
         </div>
-        <div
-        id="contenuCommandeHDLP">
+        
+        <h2 style="margin-top: 0; color: #333; font-size: 20px;">➕ Nouvelle commande HDLP</h2>
+        <br>
+
+        <!-- Sélection du fournisseur -->
+        <div style="margin-bottom: 15px;">
+            <label style="font-size: 13px; font-weight: bold; color: #495057; display: block; margin-bottom: 5px;">🏢 Fournisseur</label>
+            <input
+            id="fournisseurCommandeHDLP"
+            list="listeFournisseurs"
+            placeholder="Choisir un fournisseur"
+            oninput="chargerArticlesCommandeHDLP()"
+            style="width: 100%; padding: 10px; font-size: 16px; border: 1px solid #ced4da; border-radius: 6px; box-sizing: border-box;">
+            <datalist id="listeFournisseurs">
+            ${
+                fournisseurs
+                .map(f => `<option value="${f.nom}">`)
+                .join("")
+            }
+            </datalist>
         </div>
+
+        <!-- Recherche rapide code / article -->
+        <div style="display: grid; grid-template-columns: 1fr auto; gap: 10px; margin-bottom: 15px;">
+            <div>
+                <label style="font-size: 13px; font-weight: bold; color: #495057; display: block; margin-bottom: 5px;">📦 Code article</label>
+                <input
+                id="codeCommandeHDLP"
+                type="text"
+                inputmode="numeric"
+                placeholder="Code direct"
+                onkeydown="if(event.key==='Enter'){ rechercherCodeCommandeHDLP(); }"
+                style="width: 100%; padding: 10px; font-size: 16px; border: 1px solid #ced4da; border-radius: 6px; box-sizing: border-box;">
+            </div>
+            <div style="display: flex; align-items: flex-end;">
+                <button
+                onclick="rechercherCodeCommandeHDLP()"
+                style="height: 44px; padding: 0 15px; background: #0d6efd; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">
+                ➡️ Aller
+                </button>
+            </div>
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <input
+            id="rechercheCommandeHDLP"
+            placeholder="🔍 Rechercher par article, code ou code fournisseur"
+            oninput="chargerArticlesCommandeHDLP()"
+            style="width: 100%; padding: 10px; font-size: 16px; border: 1px solid #ced4da; border-radius: 6px; box-sizing: border-box;">
+        </div>
+
+        <!-- Récapitulatif fixe de commande -->
+        <div style="background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 10px; padding: 15px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <span style="font-size: 14px; color: #666; display: block;">Total estimé</span>
+                <span id="totalCommandeHDLP" style="font-size: 20px; font-weight: bold; color: #198754;">0.00 €</span>
+            </div>
+            <button
+            onclick="enregistrerCommandeHDLP()"
+            style="background: #198754; color: white; border: none; padding: 12px 20px; font-weight: bold; font-size: 15px; border-radius: 8px; cursor: pointer;">
+                ✅ Enregistrer
+            </button>
+        </div>
+
+        <div id="contenuCommandeHDLP"></div>
     </div>
     `;
     chargerArticlesCommandeHDLP();
@@ -197,65 +171,58 @@ function rechercherCodeCommandeHDLP(){
 
 function listeCommandesHDLP(){
     let html = `
-    <div class="card">
-        <button
-        onclick="ouvrirCommandeHDLP()">
-            ⬅ Retour
-        </button>
-        <h2>
-        📋 Commandes en attente
-        </h2>
+    <div class="card" style="border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); padding: 20px; background: #fff;">
+        <div style="margin-bottom: 15px;">
+            <button onclick="ouvrirCommandeHDLP()" style="padding: 6px 14px; font-weight: bold; border-radius: 6px; cursor: pointer; border: 1px solid #ccc; background: #f8f9fa;">
+                ⬅ Retour
+            </button>
+        </div>
+        <h2 style="margin-top: 0; color: #333; font-size: 20px;">📋 Commandes en attente</h2>
+        <br>
     `;
-    const commandesEnAttente =
-    commandesHDLP.filter(
-        c =>
-        c.statut ===
-        "EN ATTENTE"
-    );
-    if(
-        commandesEnAttente.length === 0
-    ){
+    
+    const commandesEnAttente = commandesHDLP.filter(c => c.statut === "EN ATTENTE");
+    
+    if(commandesEnAttente.length === 0){
         html += `
-        Aucune commande en attente.
+        <div style="text-align: center; padding: 40px; color: #666; background: #f8f9fa; border-radius: 8px;">
+            <p style="margin: 0; font-size: 15px;">Aucune commande en attente.</p>
+        </div>
         `;
-    }else{
-        commandesEnAttente
-        .slice()
-        .reverse()
-        .forEach(cmd => {
-        html += `
-            <div class="card">
-                <b>
-                🚚 ${cmd.fournisseur}
-                </b>
-                <br><br>
-                📅 ${cmd.date}
-                <br>
-                💰 ${Number(
-                    cmd.montantTotal || 0
-                ).toFixed(2)} €
-                <br>
-                📦 ${cmd.articles.length}
-                article(s)
-                <br>
-                📌 ${cmd.statut}
-                <br><br>
+    } else {
+        commandesEnAttente.slice().reverse().forEach(cmd => {
+            html += `
+            <div style="border: 1px solid #e9ecef; border-radius: 10px; padding: 15px; margin-bottom: 15px; background: #fcfcfc; box-shadow: 0 2px 6px rgba(0,0,0,0.04);">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+                    <div>
+                        <h4 style="margin: 0 0 5px 0; font-size: 16px; color: #333;">🚚 ${cmd.fournisseur}</h4>
+                        <span style="font-size: 12px; color: #666;">📅 ${cmd.date}</span>
+                    </div>
+                    <span style="background: #fff3cd; color: #856404; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: bold;">
+                        📌 ${cmd.statut}
+                    </span>
+                </div>
+
+                <div style="display: flex; gap: 15px; margin-bottom: 15px; font-size: 14px;">
+                    <span style="background: #e7f1ff; color: #0d6efd; padding: 4px 8px; border-radius: 6px; font-weight: bold;">
+                        💰 ${Number(cmd.montantTotal || 0).toFixed(2)} €
+                    </span>
+                    <span style="background: #f1f3f5; color: #495057; padding: 4px 8px; border-radius: 6px; font-weight: bold;">
+                        📦 ${cmd.articles.length} article(s)
+                    </span>
+                </div>
+
                 <button
-                onclick="
-                ouvrirDetailCommandeHDLP(
-                '${cmd.id}'
-                )
-                ">
-                    👁️ Ouvrir
+                onclick="ouvrirDetailCommandeHDLP('${cmd.id}')"
+                style="width: 100%; background: #0d6efd; color: white; border: none; padding: 10px; font-weight: bold; border-radius: 6px; cursor: pointer;">
+                    👁️ Ouvrir la commande
                 </button>
             </div>
             `;
         });
     }
     html += `</div>`;
-    document.getElementById(
-        "cards"
-    ).innerHTML = html;
+    document.getElementById("cards").innerHTML = html;
 }
 
 function chargerArticlesCommandeHDLP(){
@@ -1280,202 +1247,137 @@ function validerArticleCommandeHDLP(
 }
 
 function listeCommandesReceptionneesHDLP(){
-    const champRecherche =
-    document.getElementById(
-        "rechercheReceptionHDLP"
-    );
-    if(champRecherche){
-        filtreRechercheReceptionHDLP =
-        champRecherche.value.toLowerCase();
-    }
-    const recherche =
-    filtreRechercheReceptionHDLP;
-    const champDateDebut =
-    document.getElementById(
-        "dateDebutReceptionHDLP"
-    );
-    if(champDateDebut){
-        filtreDateDebutReceptionHDLP =
-        champDateDebut.value;
-    }
-    const dateDebut =
-    filtreDateDebutReceptionHDLP;
-    const champDateFin =
-    document.getElementById(
-        "dateFinReceptionHDLP"
-    );
-    if(champDateFin){
-        filtreDateFinReceptionHDLP =
-        champDateFin.value;
-    }
-    const dateFin =
-    filtreDateFinReceptionHDLP;
-    const caseFacture =
-    document.getElementById(
-        "factureRecueFiltre"
-    );
-    if(caseFacture){
-        filtreFactureReceptionHDLP =
-        caseFacture.checked;
-    }
-    const factureSeulement =
-    filtreFactureReceptionHDLP;
+    const champRecherche = document.getElementById("rechercheReceptionHDLP");
+    if(champRecherche){ filtreRechercheReceptionHDLP = champRecherche.value.toLowerCase(); }
+    const recherche = filtreRechercheReceptionHDLP;
+
+    const champDateDebut = document.getElementById("dateDebutReceptionHDLP");
+    if(champDateDebut){ filtreDateDebutReceptionHDLP = champDateDebut.value; }
+    const dateDebut = filtreDateDebutReceptionHDLP;
+
+    const champDateFin = document.getElementById("dateFinReceptionHDLP");
+    if(champDateFin){ filtreDateFinReceptionHDLP = champDateFin.value; }
+    const dateFin = filtreDateFinReceptionHDLP;
+
+    const caseFacture = document.getElementById("factureRecueFiltre");
+    if(caseFacture){ filtreFactureReceptionHDLP = caseFacture.checked; }
+    const factureSeulement = filtreFactureReceptionHDLP;
+
     let html = `
-    <div class="card">
-        <button
-        onclick="ouvrirCommandeHDLP()">
-            ⬅ Retour
-        </button>
-        <h2>
-        ✅ Commandes réceptionnées
-        </h2>
-        🔍 Recherche
+    <div class="card" style="border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); padding: 20px; background: #fff;">
+        <div style="margin-bottom: 15px;">
+            <button onclick="ouvrirCommandeHDLP()" style="padding: 6px 14px; font-weight: bold; border-radius: 6px; cursor: pointer; border: 1px solid #ccc; background: #f8f9fa;">
+                ⬅ Retour
+            </button>
+        </div>
+        <h2 style="margin-top: 0; color: #333; font-size: 20px;">✅ Commandes réceptionnées</h2>
         <br>
-        <input
-        id="rechercheReceptionHDLP"
-        value="${recherche}"
-        placeholder="
-        Fournisseur ou article
-        "
-        onkeyup="
-        filtrerReceptionHDLP()
-        ">
-        <br><br>
-        📅 Du
-        <br>
-        <input
-        type="date"
-        id="dateDebutReceptionHDLP"
-        value="${dateDebut}"
-        onchange="
-        listeCommandesReceptionneesHDLP()
-        ">
-        <br><br>
-        📅 Au
-        <br>
-        <input
-        type="date"
-        id="dateFinReceptionHDLP"
-        value="${dateFin}"
-        onchange="
-        listeCommandesReceptionneesHDLP()
-        ">
-        <br><br>
-        <input
-        type="checkbox"
-        id="factureRecueFiltre"
-        ${
-            factureSeulement
-            ? "checked"
-            : ""
-        }
-        onchange="
-        listeCommandesReceptionneesHDLP()
-        ">
-        Facture reçue uniquement
-    </div>
+
+        <!-- Filtres de recherche et de dates -->
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; margin-bottom: 20px; display: flex; flex-direction: column; gap: 12px;">
+            <div>
+                <label style="font-size: 13px; font-weight: bold; color: #495057; display: block; margin-bottom: 4px;">🔍 Recherche</label>
+                <input
+                id="rechercheReceptionHDLP"
+                value="${recherche}"
+                placeholder="Fournisseur ou article..."
+                onkeyup="filtrerReceptionHDLP()"
+                style="width: 100%; padding: 9px; font-size: 15px; border: 1px solid #ced4da; border-radius: 6px; box-sizing: border-box;">
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div>
+                    <label style="font-size: 13px; font-weight: bold; color: #495057; display: block; margin-bottom: 4px;">📅 Du</label>
+                    <input
+                    type="date"
+                    id="dateDebutReceptionHDLP"
+                    value="${dateDebut}"
+                    onchange="listeCommandesReceptionneesHDLP()"
+                    style="width: 100%; padding: 8px; font-size: 14px; border: 1px solid #ced4da; border-radius: 6px; box-sizing: border-box; background: white;">
+                </div>
+                <div>
+                    <label style="font-size: 13px; font-weight: bold; color: #495057; display: block; margin-bottom: 4px;">📅 Au</label>
+                    <input
+                    type="date"
+                    id="dateFinReceptionHDLP"
+                    value="${dateFin}"
+                    onchange="listeCommandesReceptionneesHDLP()"
+                    style="width: 100%; padding: 8px; font-size: 14px; border: 1px solid #ced4da; border-radius: 6px; box-sizing: border-box; background: white;">
+                </div>
+            </div>
+
+            <div>
+                <label style="display: flex; align-items: center; gap: 8px; font-weight: 500; font-size: 14px; cursor: pointer;">
+                    <input
+                    type="checkbox"
+                    id="factureRecueFiltre"
+                    ${factureSeulement ? "checked" : ""}
+                    onchange="listeCommandesReceptionneesHDLP()"
+                    style="width: 16px; height: 16px; cursor: pointer;">
+                    Facture reçue uniquement
+                </label>
+            </div>
+        </div>
     `;
-    let commandesReceptionnees =
-    commandesHDLP.filter(
-        c =>
-        c.statut ===
-        "RECEPTIONNEE"
-    );
-    commandesReceptionnees =
-    commandesReceptionnees.filter(cmd => {
-        const matchRecherche =
-        recherche === ""
-        ||
-        cmd.fournisseur
-        ?.toLowerCase()
-        .includes(recherche)
-        ||
-        cmd.articles.some(a =>
-            a.article
-            ?.toLowerCase()
-            .includes(recherche)
-        );
-        const dateCommande =
-        cmd.dateReceptionISO || "";
-        const matchDateDebut =
-        dateDebut === ""
-        ||
-        dateCommande >= dateDebut;
-        const matchDateFin =
-        dateFin === ""
-        ||
-        dateCommande <= dateFin;
-        const matchFacture =
-        !factureSeulement
-        ||
-        cmd.factureRecue === true;
-        return (
-            matchRecherche
-            &&
-            matchDateDebut
-            &&
-            matchDateFin
-            &&
-            matchFacture
-        );
+
+    let commandesReceptionnees = commandesHDLP.filter(c => c.statut === "RECEPTIONNEE");
+    commandesReceptionnees = commandesReceptionnees.filter(cmd => {
+        const matchRecherche = recherche === "" || 
+            cmd.fournisseur?.toLowerCase().includes(recherche) || 
+            cmd.articles.some(a => a.article?.toLowerCase().includes(recherche));
+        
+        const dateCommande = cmd.dateReceptionISO || "";
+        const matchDateDebut = dateDebut === "" || dateCommande >= dateDebut;
+        const matchDateFin = dateFin === "" || dateCommande <= dateFin;
+        const matchFacture = !factureSeulement || cmd.factureRecue === true;
+
+        return matchRecherche && matchDateDebut && matchDateFin && matchFacture;
     });
-    if(
-        commandesReceptionnees.length === 0
-    ){
+
+    if(commandesReceptionnees.length === 0){
         html += `
-        <div class="card">
-        Aucune commande trouvée.
+        <div style="text-align: center; padding: 30px; color: #666; background: #f8f9fa; border-radius: 8px;">
+            <p style="margin: 0; font-size: 15px;">Aucune commande trouvée.</p>
         </div>
         `;
-    }else{
-        commandesReceptionnees
-        .slice()
-        .reverse()
-        .forEach(cmd => {
+    } else {
+        commandesReceptionnees.slice().reverse().forEach(cmd => {
             html += `
             <div
             class="card commandeReceptionHDLP"
             data-fournisseur="${cmd.fournisseur}"
-            data-articles="${cmd.articles
-            .map(a => a.article)
-            .join(' ')}">
-                <b>
-                🚚 ${cmd.fournisseur}
-                </b>
-                <br><br>
-                📅 ${
-                    cmd.dateReception
-                    || cmd.date
-                }
-                <br>
-                💰 ${Number(
-                    cmd.montantTotal || 0
-                ).toFixed(2)} €
-                <br>
-                📦 ${cmd.articles.length}
-                article(s)
-                <br>
-                🧾 ${
-                    cmd.factureRecue
-                    ? "Facture reçue ✅"
-                    : "Facture manquante ❌"
-                }
-                <br><br>
+            data-articles="${cmd.articles.map(a => a.article).join(' ')}"
+            style="border: 1px solid #e9ecef; border-radius: 10px; padding: 15px; margin-bottom: 15px; background: #fcfcfc; box-shadow: 0 2px 6px rgba(0,0,0,0.04);">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+                    <div>
+                        <h4 style="margin: 0 0 5px 0; font-size: 16px; color: #333;">🚚 ${cmd.fournisseur}</h4>
+                        <span style="font-size: 12px; color: #666;">📅 ${cmd.dateReception || cmd.date}</span>
+                    </div>
+                    <span style="background: ${cmd.factureRecue ? '#d1e7dd' : '#f8d7da'}; color: ${cmd.factureRecue ? '#0f5132' : '#842029'}; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: bold;">
+                        ${cmd.factureRecue ? "Facture reçue ✅" : "Facture manquante ❌"}
+                    </span>
+                </div>
+
+                <div style="display: flex; gap: 15px; margin-bottom: 15px; font-size: 14px;">
+                    <span style="background: #e7f1ff; color: #0d6efd; padding: 4px 8px; border-radius: 6px; font-weight: bold;">
+                        💰 ${Number(cmd.montantTotal || 0).toFixed(2)} €
+                    </span>
+                    <span style="background: #f1f3f5; color: #495057; padding: 4px 8px; border-radius: 6px; font-weight: bold;">
+                        📦 ${cmd.articles.length} article(s)
+                    </span>
+                </div>
+
                 <button
-                onclick="
-                ouvrirDetailCommandeHDLP(
-                '${cmd.id}'
-                )
-                ">
-                    👁️ Ouvrir
+                onclick="ouvrirDetailCommandeHDLP('${cmd.id}')"
+                style="width: 100%; background: #0d6efd; color: white; border: none; padding: 10px; font-weight: bold; border-radius: 6px; cursor: pointer;">
+                    👁️ Ouvrir la commande
                 </button>
             </div>
             `;
         });
     }
-    document.getElementById(
-        "cards"
-    ).innerHTML = html;
+    html += `</div>`;
+    document.getElementById("cards").innerHTML = html;
 }
 
 function mettreAJourFactureHDLP(id){
