@@ -226,177 +226,163 @@ function listeCommandesHDLP(){
 }
 
 function chargerArticlesCommandeHDLP(){
-    const fournisseur =
-    document.getElementById(
-        "fournisseurCommandeHDLP"
-    )?.value || "";
-    const recherche =
-    document.getElementById(
-        "rechercheCommandeHDLP"
-    )?.value
-    ?.toLowerCase() || "";
+    const fournisseur = document.getElementById("fournisseurCommandeHDLP")?.value || "";
+    const recherche = document.getElementById("rechercheCommandeHDLP")?.value?.toLowerCase() || "";
     let html = "";
 
-    // On parcourt directement le Catalogue Unique
     Object.keys(catalogueArticles).forEach(code => {
         const article = catalogueArticles[code];
         
-        if(
-            fournisseur !== "" &&
-            String(article.fournisseur || "") !== fournisseur
-        ){
+        if(fournisseur !== "" && String(article.fournisseur || "") !== fournisseur){
             return;
         }
 
         const match =
-        String(article.article || "")
-        .toLowerCase()
-        .includes(recherche) ||
-        String(code || "")
-        .toLowerCase()
-        .includes(recherche) ||
-        String(article.codeFournisseur || "")
-        .toLowerCase()
-        .includes(recherche);
+            String(article.article || "").toLowerCase().includes(recherche) ||
+            String(code || "").toLowerCase().includes(recherche) ||
+            String(article.codeFournisseur || "").toLowerCase().includes(recherche);
 
         if(recherche !== "" && !match){
             return;
         }
 
-        // On détermine la cave mémorisée pour cet article s'il y en a une, sinon la valeur par défaut
         const caveMemo = memoCaves[code] || destinationDefautHDLP;
+        const dejaAjoute = Boolean(commandeHDLPArticles[code]);
 
         html += `
         <div
         id="article_${code}"
         class="card"
         style="
-        ${
-        commandeHDLPArticles[code]
-        ?
-        'border:3px solid #28a745;'
-        :
-        ''
-        }
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            padding: 15px;
+            margin-bottom: 15px;
+            background: ${dejaAjoute ? '#f4fbf7' : '#fff'};
+            border: ${dejaAjoute ? '2px solid #198754' : '1px solid #e9ecef'};
+            transition: all 0.2s ease;
         ">
-            <b>
-            ${article.article}
-            </b>
-            <br>
-            Code :
-            ${code}
-            <br>
-            Code fournisseur :
-            ${article.codeFournisseur || "-"}
-            <br>
-            Fournisseur :
-            ${article.fournisseur || "-"}
-            <br>
-            Prix pièce :
-            ${Number(article.prix || 0).toFixed(2)} €
-            <br>
-            Colisage :
-            ${article.colisage || 1}
-            <br><br>
-            Stock destination
-            <br>
-            <select
-            id="destination_${code}"
-            onchange="
-            destinationDefautHDLP=this.value;
-            localStorage.setItem(
-            'destinationDefautHDLP',
-            this.value
-            );
-            document.getElementById(
-            'cartons_${code}'
-            ).focus();
-            "
-            onkeydown="
-            if(event.key==='Enter'){
-                event.preventDefault();
-                document.getElementById(
-                'cartons_${code}'
-                ).focus();
-            }
-            ">
-                <option ${caveMemo==="HDLP SOFT" ? "selected" : ""}>HDLP SOFT</option>
-                <option ${caveMemo==="HDLP BAR" ? "selected" : ""}>HDLP BAR</option>
-                <option ${caveMemo==="HDLP MINI BAR" ? "selected" : ""}>HDLP MINI BAR</option>
-                <option ${caveMemo==="HDLP SEMINAIRE" ? "selected" : ""}>HDLP SEMINAIRE</option>
-                <option ${caveMemo==="RCLP SOFT" ? "selected" : ""}>RCLP SOFT</option>
-                <option ${caveMemo==="RCLP VIN" ? "selected" : ""}>RCLP VIN</option>
-                <option ${caveMemo==="RCLP ALCOOL" ? "selected" : ""}>RCLP ALCOOL</option>
-            </select>
-            <br><br>
-            Cartons
-            <br>
-            <input
-            type="number"
-            id="cartons_${code}"
-            onkeydown="
-            if(event.key==='Enter'){
-                event.preventDefault();
-                document.getElementById(
-                'pieces_${code}'
-                ).focus();
-            }
-            "
-            value="${commandeHDLPCourante[code]?.cartons || 0}"
-            oninput="
-            calculCommandeHDLP(
-            '${code}',
-            ${article.colisage || 1},
-            ${article.prix || 0}
-            )
-            ">
-            <br><br>
-            Pièces
-            <br>
-            <input
-            type="number"
-            id="pieces_${code}"
-            onkeydown="
-            if(event.key==='Enter'){
-                event.preventDefault();
-                validerArticleCommandeHDLP(
-                '${code}',
-                '${article.article.replace(/'/g, "\\'")}',
-                ${article.colisage || 1},
-                ${article.prix || 0}
-                );
-            }
-            "
-            value="${commandeHDLPCourante[code]?.pieces || 0}"
-            oninput="
-            calculCommandeHDLP(
-            '${code}',
-            ${article.colisage || 1},
-            ${article.prix || 0}
-            )
-            ">
-            <br><br>
-            <div id="total_${code}">
-            0 pièce(s) - 0 €
+            <!-- En-tête : Article, Code & Fournisseur -->
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 10px;">
+                <div>
+                    <h3 style="margin: 0 0 6px 0; font-size: 16px; color: #333;">${article.article}</h3>
+                    <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                        <span style="background: #f1f3f5; padding: 3px 8px; border-radius: 5px; font-size: 12px; color: #495057; font-weight: 600;">
+                            Code : ${code}
+                        </span>
+                        <span style="background: #f1f3f5; padding: 3px 8px; border-radius: 5px; font-size: 12px; color: #495057;">
+                            Réf. fourn. : ${article.codeFournisseur || "-"}
+                        </span>
+                    </div>
+                </div>
+                <span style="background: #e7f1ff; color: #0d6efd; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: bold; white-space: nowrap;">
+                    🏢 ${article.fournisseur || "-"}
+                </span>
             </div>
-            <br><br>
+
+            <!-- Badges Prix & Colisage -->
+            <div style="display: flex; gap: 10px; margin-bottom: 12px;">
+                <span style="background: #e2f0d9; color: #2b542c; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: bold;">
+                    💶 Prix pièce : ${Number(article.prix || 0).toFixed(2)} €
+                </span>
+                <span style="background: #fff3cd; color: #856404; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: bold;">
+                    📦 Colisage : ${article.colisage || 1}
+                </span>
+            </div>
+
+            <hr style="border: none; border-top: 1px solid #eee; margin: 12px 0;">
+
+            <!-- Stock destination -->
+            <div style="margin-bottom: 12px;">
+                <label style="font-size: 13px; font-weight: 600; color: #495057; display: block; margin-bottom: 4px;">
+                    📍 Stock destination
+                </label>
+                <select
+                id="destination_${code}"
+                style="width: 100%; padding: 9px; font-size: 15px; border: 1px solid #ced4da; border-radius: 6px; background: #fff; box-sizing: border-box;"
+                onchange="
+                    destinationDefautHDLP=this.value;
+                    localStorage.setItem('destinationDefautHDLP', this.value);
+                    document.getElementById('cartons_${code}').focus();
+                "
+                onkeydown="
+                    if(event.key==='Enter'){
+                        event.preventDefault();
+                        document.getElementById('cartons_${code}').focus();
+                    }
+                ">
+                    <option ${caveMemo==="HDLP SOFT" ? "selected" : ""}>HDLP SOFT</option>
+                    <option ${caveMemo==="HDLP BAR" ? "selected" : ""}>HDLP BAR</option>
+                    <option ${caveMemo==="HDLP MINI BAR" ? "selected" : ""}>HDLP MINI BAR</option>
+                    <option ${caveMemo==="HDLP SEMINAIRE" ? "selected" : ""}>HDLP SEMINAIRE</option>
+                    <option ${caveMemo==="RCLP SOFT" ? "selected" : ""}>RCLP SOFT</option>
+                    <option ${caveMemo==="RCLP VIN" ? "selected" : ""}>RCLP VIN</option>
+                    <option ${caveMemo==="RCLP ALCOOL" ? "selected" : ""}>RCLP ALCOOL</option>
+                </select>
+            </div>
+
+            <!-- Grille de saisie Cartons / Pièces -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
+                <div>
+                    <label style="font-size: 13px; font-weight: 600; color: #495057; display: block; margin-bottom: 4px;">📦 Cartons</label>
+                    <input
+                    type="number"
+                    id="cartons_${code}"
+                    style="width: 100%; padding: 8px; font-size: 16px; border: 1px solid #ced4da; border-radius: 6px; box-sizing: border-box; text-align: center;"
+                    onkeydown="
+                        if(event.key==='Enter'){
+                            event.preventDefault();
+                            document.getElementById('pieces_${code}').focus();
+                        }
+                    "
+                    value="${commandeHDLPCourante[code]?.cartons || 0}"
+                    oninput="calculCommandeHDLP('${code}', ${article.colisage || 1}, ${article.prix || 0})">
+                </div>
+                <div>
+                    <label style="font-size: 13px; font-weight: 600; color: #495057; display: block; margin-bottom: 4px;">🍾 Pièces</label>
+                    <input
+                    type="number"
+                    id="pieces_${code}"
+                    style="width: 100%; padding: 8px; font-size: 16px; border: 1px solid #ced4da; border-radius: 6px; box-sizing: border-box; text-align: center;"
+                    onkeydown="
+                        if(event.key==='Enter'){
+                            event.preventDefault();
+                            validerArticleCommandeHDLP(
+                                '${code}',
+                                '${article.article.replace(/'/g, "\\'")}',
+                                ${article.colisage || 1},
+                                ${article.prix || 0}
+                            );
+                        }
+                    "
+                    value="${commandeHDLPCourante[code]?.pieces || 0}"
+                    oninput="calculCommandeHDLP('${code}', ${article.colisage || 1}, ${article.prix || 0})">
+                </div>
+            </div>
+
+            <!-- Sous-total ligne -->
+            <div id="total_${code}" style="background: #f8f9fa; padding: 8px 12px; border-radius: 6px; text-align: right; font-weight: bold; color: #333; font-size: 14px; margin-bottom: 12px;">
+                0 pièce(s) - 0.00 €
+            </div>
+
+            <!-- Bouton OK -->
             <button
             onclick="
-            validerArticleCommandeHDLP(
-            '${code}',
-            '${article.article.replace(/'/g, "\\'")}',
-            ${article.colisage || 1},
-            ${article.prix || 0}
-            )
-            ">
-            ✅ OK
+                validerArticleCommandeHDLP(
+                    '${code}',
+                    '${article.article.replace(/'/g, "\\'")}',
+                    ${article.colisage || 1},
+                    ${article.prix || 0}
+                )
+            "
+            style="width: 100%; background: #198754; color: white; border: none; padding: 11px; font-weight: bold; font-size: 15px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                ✅ OK
             </button>
         </div>
         `;
     });
-    document.getElementById(
-        "contenuCommandeHDLP"
-    ).innerHTML = html;
+
+    document.getElementById("contenuCommandeHDLP").innerHTML = html;
 }
 
 function calculCommandeHDLP(
