@@ -13,33 +13,47 @@ function ouvrirRemonteeHDLP(){
 function renderRemonteeHDLP(){
     document.getElementById("cards").innerHTML = `
         <div class="card">
-            <button onclick="changerSite('APPLICATIONS')">
-                ⬅ Retour
-            </button>
+            <div style="margin-bottom: 15px;">
+                <button onclick="changerSite('APPLICATIONS')" style="padding: 6px 14px; font-weight: bold; border-radius: 6px; cursor: pointer; border: 1px solid #ccc; background: #f8f9fa;">
+                    ⬅ Retour
+                </button>
+            </div>
+
             <h2>📤 Remontées HDLP</h2>
-            <button onclick="changerOngletHDLP('resume')">
-                📋 RÉSUMÉ
-            </button>
-            <button onclick="changerOngletHDLP('devant')">
-                DEVANT BAR
-            </button>
-            <button onclick="changerOngletHDLP('champagne')">
-                CHAMPAGNE
-            </button>
-            <button onclick="changerOngletHDLP('alcool')">
-                ALCOOL
-            </button>
-            <br><br>
-            
-            <div style="margin-top:15px;margin-bottom:15px;">
+            <br>
+
+            <!-- Barre d'onglets moderne et compacte -->
+            <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px;">
+                <button onclick="changerOngletHDLP('resume')" style="flex: 1; min-width: 100px; height: 45px; font-size: 14px; font-weight: bold; background: ${hdlpTab === 'resume' ? '#0d6efd' : '#f8f9fa'}; color: ${hdlpTab === 'resume' ? 'white' : '#333'}; border: 1px solid #ced4da; border-radius: 6px; cursor: pointer;">
+                    📋 RÉSUMÉ
+                </button>
+                <button onclick="changerOngletHDLP('devant')" style="flex: 1; min-width: 110px; height: 45px; font-size: 14px; font-weight: bold; background: ${hdlpTab === 'devant' ? '#1976d2' : '#f8f9fa'}; color: ${hdlpTab === 'devant' ? 'white' : '#333'}; border: 1px solid #ced4da; border-radius: 6px; cursor: pointer;">
+                    DEVANT BAR
+                </button>
+                <button onclick="changerOngletHDLP('champagne')" style="flex: 1; min-width: 110px; height: 45px; font-size: 14px; font-weight: bold; background: ${hdlpTab === 'champagne' ? '#1976d2' : '#f8f9fa'}; color: ${hdlpTab === 'champagne' ? 'white' : '#333'}; border: 1px solid #ced4da; border-radius: 6px; cursor: pointer;">
+                    CHAMPAGNE
+                </button>
+                <button onclick="changerOngletHDLP('alcool')" style="flex: 1; min-width: 100px; height: 45px; font-size: 14px; font-weight: bold; background: ${hdlpTab === 'alcool' ? '#1976d2' : '#f8f9fa'}; color: ${hdlpTab === 'alcool' ? 'white' : '#333'}; border: 1px solid #ced4da; border-radius: 6px; cursor: pointer;">
+                    ALCOOL
+                </button>
+            </div>
+
+            <!-- Bouton d'ajout d'article moderne et compact -->
+            <div style="margin-top: 10px; margin-bottom: 15px;">
                 <button
                 onclick="ouvrirAjoutArticleHDLP()"
                 style="
-                background:#198754;
-                color:white;
-                font-weight:bold;
+                width: 100%;
+                height: 45px;
+                background: #198754;
+                color: white;
+                font-weight: bold;
+                font-size: 14px;
+                border: none;
+                border-radius: 6px;
+                cursor: pointer;
                 ">
-                ➕ Article
+                ➕ Ajouter un article
                 </button>
             </div>
 
@@ -51,9 +65,11 @@ function renderRemonteeHDLP(){
             style="
                 width:100%;
                 padding:10px;
-                font-size:18px;
+                font-size:16px;
                 margin-bottom:10px;
                 box-sizing:border-box;
+                border: 1px solid #ccc;
+                border-radius: 6px;
             ">
 
             <div id="contenuHDLP"></div>
@@ -89,23 +105,23 @@ function renderRemonteeHDLP(){
                     style="
                     width:100%;
                     padding:10px;
-                    font-size:18px;
+                    font-size:16px;
                     box-sizing:border-box;
+                    border: 1px solid #ccc;
+                    border-radius: 6px;
                     ">
                     <br><br>
                     <div id="listeAjoutHDLP"></div>
                     <br>
-                    <button onclick="fermerAjoutArticleHDLP()">
+                    <button onclick="fermerAjoutArticleHDLP()" style="padding: 8px 16px; border-radius: 6px; background: #dc3545; color: white; border: none; cursor: pointer; font-weight: bold;">
                     ❌ Fermer
                     </button>
                 </div>
             </div>
         </div>
     `;
-
-    renderContenuHDLP();
+renderContenuHDLP();
 }
-
 function ouvrirAjoutArticleHDLP(){
     document.getElementById("popupAjoutHDLP").style.display = "block";
     afficherArticlesAjoutHDLP();
