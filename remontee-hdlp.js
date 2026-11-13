@@ -222,9 +222,8 @@ function getStockRCLP(code){
 
 function changerOngletHDLP(tab){
     hdlpTab = tab;
-    renderContenuHDLP();
+    renderRemonteeHDLP();
 }
-
 function renderResumeHDLP(){
     let html = "<h3>📋 Résumé des remontées</h3>";
 
