@@ -11,82 +11,62 @@ let filtreDateFinReceptionHDLP = "";
 let filtreFactureReceptionHDLP = false;
 let commandeHDLPCourante = {};
 let commandeHDLPArticles = {};
-
 let fournisseurCommandeHDLP = "";
 let destinationDefautHDLP =
 localStorage.getItem("destinationDefautHDLP")
 || "HDLP BAR";
+
 function ouvrirCommandeHDLP(){
-
     document.getElementById("cards").innerHTML = `
-
     <div class="card">
-
         <button
         onclick="changerSite('APPLICATIONS')">
             ⬅ Retour
         </button>
-
         <h2>📦 Commandes HDLP</h2>
-
         <button
         onclick="nouvelleCommandeHDLP()">
             ➕ Nouvelle commande
         </button>
-
         <button
         onclick="listeCommandesHDLP()">
             📋 Commandes enregistrées
         </button>
-<button
-onclick="listeCommandesReceptionneesHDLP()">
-    ✅ Réceptionnées
-</button>
+        <button
+        onclick="listeCommandesReceptionneesHDLP()">
+            ✅ Réceptionnées
+        </button>
         <hr>
-
         Sélectionnez une action.
-
     </div>
-
     `;
-
 }
+
 function nouvelleCommandeHDLP(){
-
     document.getElementById("cards").innerHTML = `
-
     <div class="card">
-
         <button
         onclick="ouvrirCommandeHDLP()">
             ⬅ Retour
         </button>
-
         <h2>
         ➕ Nouvelle commande HDLP
         </h2>
-
         Fournisseur
-
         <br>
-
         <input
         id="fournisseurCommandeHDLP"
         list="listeFournisseurs"
         placeholder="Choisir un fournisseur"
-
         oninput="
         chargerArticlesCommandeHDLP()
         "
-
         style="
         width:100%;
         padding:10px;
         ">
-
         <datalist
         id="listeFournisseurs">
-
         ${
             fournisseurs
             .map(f =>
@@ -94,212 +74,159 @@ function nouvelleCommandeHDLP(){
             )
             .join("")
         }
-
         </datalist>
-
         <br><br>
-<b>Code article</b>
-<br>
-
-<input
-id="codeCommandeHDLP"
-type="number"
-inputmode="numeric"
-placeholder="Code article"
-
-onkeydown="
-if(event.key==='Enter'){
-    rechercherCodeCommandeHDLP();
-}
-"
-
-style="
-width:100%;
-padding:10px;
-font-size:18px;
-">
-
-<button
-onclick="rechercherCodeCommandeHDLP()"
-style="
-width:100%;
-margin-top:5px;
-background:#007bff;
-color:white;
-">
-➡️ Aller à
-</button>
-
-<br><br>
-       <input
-id="rechercheCommandeHDLP"
-placeholder="
-🔍 Article / Code / Code fournisseur
-"
-
-oninput="
-chargerArticlesCommandeHDLP()
-"
-
-style="
-width:100%;
-padding:10px;
-">
-
-<br><br>
-
-<div class="card">
-
-    <b>
-    Total commande :
-    </b>
-
-    <span id="totalCommandeHDLP">
-    0.00 €
-    </span>
-
-    <br><br>
-
-    <button
-    onclick="
-    enregistrerCommandeHDLP()
-    "
-    style="
-    width:100%;
-    background:#28a745;
-    color:white;
-    font-weight:bold;
-    ">
-        ✅ Enregistrer commande
-    </button>
-
-</div>
-
-<div
-id="contenuCommandeHDLP">
-</div>
-
+        <b>Code article</b>
+        <br>
+        <input
+        id="codeCommandeHDLP"
+        type="text"
+        inputmode="numeric"
+        placeholder="Code article"
+        onkeydown="
+        if(event.key==='Enter'){
+            rechercherCodeCommandeHDLP();
+        }
+        "
+        style="
+        width:100%;
+        padding:10px;
+        font-size:18px;
+        ">
+        <button
+        onclick="rechercherCodeCommandeHDLP()"
+        style="
+        width:100%;
+        margin-top:5px;
+        background:#007bff;
+        color:white;
+        ">
+        ➡️ Aller à
+        </button>
+        <br><br>
+        <input
+        id="rechercheCommandeHDLP"
+        placeholder="
+        🔍 Article / Code / Code fournisseur
+        "
+        oninput="
+        chargerArticlesCommandeHDLP()
+        "
+        style="
+        width:100%;
+        padding:10px;
+        ">
+        <br><br>
+        <div class="card">
+            <b>
+            Total commande :
+            </b>
+            <span id="totalCommandeHDLP">
+            0.00 €
+            </span>
+            <br><br>
+            <button
+            onclick="
+            enregistrerCommandeHDLP()
+            "
+            style="
+            width:100%;
+            background:#28a745;
+            color:white;
+            font-weight:bold;
+            ">
+                ✅ Enregistrer commande
+            </button>
+        </div>
+        <div
+        id="contenuCommandeHDLP">
+        </div>
     </div>
-
     `;
-
+    chargerArticlesCommandeHDLP();
 }
-function rechercherCodeCommandeHDLP(){
 
+function rechercherCodeCommandeHDLP(){
     const code =
     document.getElementById(
         "codeCommandeHDLP"
     )?.value || "";
-
     if(code === ""){
         return;
     }
-
     const carte =
     document.getElementById(
         "article_" + code
     );
-
     if(!carte){
-
         alert(
             "Article introuvable"
         );
-
         return;
     }
-
     carte.scrollIntoView({
         behavior:"smooth",
         block:"center"
     });
-
     carte.style.background =
     "#fff3cd";
-
     setTimeout(() => {
-
         carte.style.background = "";
-
     }, 2000);
-
     const destination =
     document.getElementById(
         "destination_" + code
     );
-
     if(destination){
         destination.focus();
     }
 }
+
 function listeCommandesHDLP(){
-
     let html = `
-
     <div class="card">
-
         <button
         onclick="ouvrirCommandeHDLP()">
             ⬅ Retour
         </button>
-
         <h2>
         📋 Commandes en attente
         </h2>
-
     `;
-
     const commandesEnAttente =
-
     commandesHDLP.filter(
         c =>
         c.statut ===
         "EN ATTENTE"
     );
-
     if(
         commandesEnAttente.length === 0
     ){
-
         html += `
         Aucune commande en attente.
         `;
-
     }else{
-
         commandesEnAttente
         .slice()
         .reverse()
         .forEach(cmd => {
-
         html += `
-<div class="card">
-
+            <div class="card">
                 <b>
                 🚚 ${cmd.fournisseur}
                 </b>
-
                 <br><br>
-
                 📅 ${cmd.date}
-
                 <br>
-
                 💰 ${Number(
                     cmd.montantTotal || 0
                 ).toFixed(2)} €
-
                 <br>
-
                 📦 ${cmd.articles.length}
                 article(s)
-
                 <br>
-
                 📌 ${cmd.statut}
-
                 <br><br>
-
                 <button
                 onclick="
                 ouvrirDetailCommandeHDLP(
@@ -308,515 +235,321 @@ function listeCommandesHDLP(){
                 ">
                     👁️ Ouvrir
                 </button>
-
             </div>
-
             `;
-
         });
-
     }
-
     html += `</div>`;
-
     document.getElementById(
         "cards"
     ).innerHTML = html;
-
 }
+
 function chargerArticlesCommandeHDLP(){
-
     const fournisseur =
-
     document.getElementById(
         "fournisseurCommandeHDLP"
     )?.value || "";
-
     const recherche =
-
     document.getElementById(
         "rechercheCommandeHDLP"
     )?.value
     ?.toLowerCase() || "";
-
     let html = "";
 
-    const dejaVus =
-    new Set();
-
-    Object.values(stock)
-
-    .flat()
-
-    .forEach(article => {
-
-      if(
-    fournisseur !== ""
-    &&
-    String(
-        article.fournisseur || ""
-    ) !== fournisseur
-){
-    return;
-}
-
+    // On parcourt directement le Catalogue Unique
+    Object.keys(catalogueArticles).forEach(code => {
+        const article = catalogueArticles[code];
+        
         if(
-            dejaVus.has(
-                String(article.code)
-            )
+            fournisseur !== "" &&
+            String(article.fournisseur || "") !== fournisseur
         ){
             return;
         }
 
-        dejaVus.add(
-            String(article.code)
-        );
-
         const match =
-
         String(article.article || "")
         .toLowerCase()
-        .includes(recherche)
-
-        ||
-
-        String(article.code || "")
+        .includes(recherche) ||
+        String(code || "")
         .toLowerCase()
-        .includes(recherche)
-
-        ||
-
-        String(
-            article.codeFournisseur || ""
-        )
+        .includes(recherche) ||
+        String(article.codeFournisseur || "")
         .toLowerCase()
         .includes(recherche);
 
-        if(
-            recherche !== ""
-            &&
-            !match
-        ){
+        if(recherche !== "" && !match){
             return;
         }
 
-       html += `
-<div
-id="article_${article.code}"
-class="card"
-style="
-${
-commandeHDLPArticles[
-article.code
-]
-?
-'border:3px solid #28a745;'
-:
-''
-}
-">
+        // On détermine la cave mémorisée pour cet article s'il y en a une, sinon la valeur par défaut
+        const caveMemo = memoCaves[code] || destinationDefautHDLP;
 
+        html += `
+        <div
+        id="article_${code}"
+        class="card"
+        style="
+        ${
+        commandeHDLPArticles[code]
+        ?
+        'border:3px solid #28a745;'
+        :
+        ''
+        }
+        ">
             <b>
             ${article.article}
             </b>
-
             <br>
-
             Code :
-            ${article.code}
-
+            ${code}
             <br>
-
             Code fournisseur :
             ${article.codeFournisseur || "-"}
-<br>
-
-Fournisseur :
-${article.fournisseur || "-"}
             <br>
-
+            Fournisseur :
+            ${article.fournisseur || "-"}
+            <br>
             Prix pièce :
-            ${Number(
-                article.prix || 0
-            ).toFixed(2)} €
-<br>
-
-Colisage :
-${article.colisage || 1}
+            ${Number(article.prix || 0).toFixed(2)} €
+            <br>
+            Colisage :
+            ${article.colisage || 1}
             <br><br>
-
             Stock destination
-
             <br>
-
- <select
-id="destination_${article.code}"
-onchange="
-destinationDefautHDLP=this.value;
-localStorage.setItem(
-'destinationDefautHDLP',
-this.value
-);
-document.getElementById(
-'cartons_${article.code}'
-).focus();
-"
-onkeydown="
-if(event.key==='Enter'){
-    event.preventDefault();
-    document.getElementById(
-    'cartons_${article.code}'
-    ).focus();
-}
-">
-
-
-             <option ${
-destinationDefautHDLP==="HDLP SOFT"
-? "selected" : ""
-}>
-HDLP SOFT
-</option>
-
-<option ${
-destinationDefautHDLP==="HDLP BAR"
-? "selected" : ""
-}>
-HDLP BAR
-</option>
-
-<option ${
-destinationDefautHDLP==="HDLP MINI BAR"
-? "selected" : ""
-}>
-HDLP MINI BAR
-</option>
-
-<option ${
-destinationDefautHDLP==="HDLP SEMINAIRE"
-? "selected" : ""
-}>
-HDLP SEMINAIRE
-</option>
-
-<option ${
-destinationDefautHDLP==="RCLP SOFT"
-? "selected" : ""
-}>
-RCLP SOFT
-</option>
-
-<option ${
-destinationDefautHDLP==="RCLP VIN"
-? "selected" : ""
-}>
-RCLP VIN
-</option>
-
-<option ${
-destinationDefautHDLP==="RCLP ALCOOL"
-? "selected" : ""
-}>
-RCLP ALCOOL
-</option>
-
+            <select
+            id="destination_${code}"
+            onchange="
+            destinationDefautHDLP=this.value;
+            localStorage.setItem(
+            'destinationDefautHDLP',
+            this.value
+            );
+            document.getElementById(
+            'cartons_${code}'
+            ).focus();
+            "
+            onkeydown="
+            if(event.key==='Enter'){
+                event.preventDefault();
+                document.getElementById(
+                'cartons_${code}'
+                ).focus();
+            }
+            ">
+                <option ${caveMemo==="HDLP SOFT" ? "selected" : ""}>HDLP SOFT</option>
+                <option ${caveMemo==="HDLP BAR" ? "selected" : ""}>HDLP BAR</option>
+                <option ${caveMemo==="HDLP MINI BAR" ? "selected" : ""}>HDLP MINI BAR</option>
+                <option ${caveMemo==="HDLP SEMINAIRE" ? "selected" : ""}>HDLP SEMINAIRE</option>
+                <option ${caveMemo==="RCLP SOFT" ? "selected" : ""}>RCLP SOFT</option>
+                <option ${caveMemo==="RCLP VIN" ? "selected" : ""}>RCLP VIN</option>
+                <option ${caveMemo==="RCLP ALCOOL" ? "selected" : ""}>RCLP ALCOOL</option>
             </select>
-
             <br><br>
-
             Cartons
-
             <br>
-
-         <input
-type="number"
-id="cartons_${article.code}"
-
-onkeydown="
-if(event.key==='Enter'){
-    event.preventDefault();
-    document.getElementById(
-    'pieces_${article.code}'
-    ).focus();
-}
-"
-
-          value="${
-commandeHDLPCourante[
-article.code
-]?.cartons || 0
-}"
-
+            <input
+            type="number"
+            id="cartons_${code}"
+            onkeydown="
+            if(event.key==='Enter'){
+                event.preventDefault();
+                document.getElementById(
+                'pieces_${code}'
+                ).focus();
+            }
+            "
+            value="${commandeHDLPCourante[code]?.cartons || 0}"
             oninput="
             calculCommandeHDLP(
-            '${article.code}',
+            '${code}',
             ${article.colisage || 1},
             ${article.prix || 0}
             )
             ">
-
             <br><br>
-
             Pièces
-
             <br>
-
-         <input
-type="number"
-id="pieces_${article.code}"
-
-onkeydown="
-if(event.key==='Enter'){
-
-    event.preventDefault();
-
-    validerArticleCommandeHDLP(
-    '${article.code}',
-    '${article.article}',
-    ${article.colisage || 1},
-    ${article.prix || 0}
-    );
-
-}
-"
-
-          value="${
-commandeHDLPCourante[
-article.code
-]?.pieces || 0
-}"
-
+            <input
+            type="number"
+            id="pieces_${code}"
+            onkeydown="
+            if(event.key==='Enter'){
+                event.preventDefault();
+                validerArticleCommandeHDLP(
+                '${code}',
+                '${article.article.replace(/'/g, "\\'")}',
+                ${article.colisage || 1},
+                ${article.prix || 0}
+                );
+            }
+            "
+            value="${commandeHDLPCourante[code]?.pieces || 0}"
             oninput="
             calculCommandeHDLP(
-            '${article.code}',
+            '${code}',
             ${article.colisage || 1},
             ${article.prix || 0}
             )
             ">
-
             <br><br>
-
-        <div id="total_${article.code}">
-0 pièce(s) - 0 €
-</div>
-
-<br><br>
-
-<button
-onclick="
-validerArticleCommandeHDLP(
-'${article.code}',
-'${article.article}',
-${article.colisage || 1},
-${article.prix || 0}
-)
-">
-✅ OK
-</button>
-
+            <div id="total_${code}">
+            0 pièce(s) - 0 €
+            </div>
+            <br><br>
+            <button
+            onclick="
+            validerArticleCommandeHDLP(
+            '${code}',
+            '${article.article.replace(/'/g, "\\'")}',
+            ${article.colisage || 1},
+            ${article.prix || 0}
+            )
+            ">
+            ✅ OK
+            </button>
         </div>
-
         `;
-
     });
-
-
     document.getElementById(
         "contenuCommandeHDLP"
     ).innerHTML = html;
-
 }
+
 function calculCommandeHDLP(
     code,
     colisage,
     prix
 ){
-
     const cartons =
     Number(
         document.getElementById(
             "cartons_" + code
         )?.value || 0
     );
-
     const pieces =
     Number(
         document.getElementById(
             "pieces_" + code
         )?.value || 0
     );
-
     commandeHDLPCourante[code] = {
-
         cartons: cartons,
         pieces: pieces
-
     };
-
     const totalPieces =
     (cartons * colisage)
     + pieces;
-
     const montant =
     totalPieces * prix;
-
     const zone =
     document.getElementById(
         "total_" + code
     );
-
     if(zone){
-
         zone.innerHTML =
         totalPieces +
         " pièce(s) - " +
         montant.toFixed(2) +
         " €";
-
     }
-
 }
 
 function enregistrerCommandeHDLP(){
-
     const fournisseur =
-
     document.getElementById(
         "fournisseurCommandeHDLP"
     )?.value || "";
-
     if(fournisseur === ""){
-
         alert(
             "Choisissez un fournisseur"
         );
-
         return;
-
     }
-
     const articlesCommande =
-
     Object.values(
         commandeHDLPArticles
     );
-
     if(
         articlesCommande.length === 0
     ){
-
         alert(
             "Aucun article validé"
         );
-
         return;
-
     }
-
     const montantTotal =
-
     articlesCommande.reduce(
-
         (total,a)=>
-
         total +
         Number(
             a.montant || 0
         ),
-
         0
-
     );
-
     commandesHDLP.push({
-
         id:
         crypto.randomUUID(),
-
         fournisseur:
         fournisseur,
-
         date:
         new Date()
         .toLocaleString(),
-
         statut:
         "EN ATTENTE",
-
         montantTotal:
         montantTotal,
-
         articles:
         articlesCommande
-
     });
-
     localStorage.setItem(
-
         "commandesHDLP",
-
         JSON.stringify(
             commandesHDLP
         )
-
     );
-
     commandeHDLPArticles = {};
     commandeHDLPCourante = {};
-
     alert(
         "Commande enregistrée ✅"
     );
-
     listeCommandesHDLP();
-
 }
-function ouvrirDetailCommandeHDLP(id){
 
+function ouvrirDetailCommandeHDLP(id){
     const commande =
     commandesHDLP.find(
         c => c.id === id
     );
-
     if(!commande) return;
-
     let html = `
-
     <div class="card">
-
         <button
         onclick="listeCommandesHDLP()">
             ⬅ Retour
         </button>
-
         <h2>
         🚚 ${commande.fournisseur}
         </h2>
-
         📅 ${commande.date}
-
         ${commande.dateReception ?
         `<br>
         🚚 Réception :
         ${commande.dateReception}`
         : ""}
-
         ${commande.dateFacture ?
         `<br>
         🧾 Facture :
         ${commande.dateFacture}`
         : ""}
-
         <br>
-
         📌 ${commande.statut}
-
         ${commande.statut === "RECEPTIONNEE" ? `
-
         <br><br>
-
         <label>
-
         <input
         type="checkbox"
         id="factureRecue_${commande.id}"
@@ -826,89 +559,59 @@ function ouvrirDetailCommandeHDLP(id){
         '${commande.id}'
         )
         ">
-
         🧾 Facture reçue
-
         </label>
-
         ` : ""}
-
     </div>
     `;
-
     commande.articles.forEach(article => {
-
         html += `
-
         <div
         id="article_${article.code}"
         class="card">
-
             <b>
             ${article.article}
             </b>
-
             <br>
-
             Code :
             ${article.code}
-
             <br><br>
-
             Code fournisseur :
-
             <br>
-
             <input
             type="text"
             id="codeFournisseur_${commande.id}_${article.code}"
             value="${article.codeFournisseur || ""}">
-
             <br><br>
-
             Destination :
-
             <br>
-
             <select
             id="destination_${commande.id}_${article.code}">
-
                 <option ${article.destination==="HDLP SOFT" ? "selected" : ""}>
                 HDLP SOFT
                 </option>
-
                 <option ${article.destination==="HDLP BAR" ? "selected" : ""}>
                 HDLP BAR
                 </option>
-
                 <option ${article.destination==="HDLP MINI BAR" ? "selected" : ""}>
                 HDLP MINI BAR
                 </option>
-
                 <option ${article.destination==="HDLP SEMINAIRE" ? "selected" : ""}>
                 HDLP SEMINAIRE
                 </option>
-
                 <option ${article.destination==="RCLP SOFT" ? "selected" : ""}>
                 RCLP SOFT
                 </option>
-
                 <option ${article.destination==="RCLP VIN" ? "selected" : ""}>
                 RCLP VIN
                 </option>
-
                 <option ${article.destination==="RCLP ALCOOL" ? "selected" : ""}>
                 RCLP ALCOOL
                 </option>
-
             </select>
-
             <br><br>
-
             Cartons :
-
             <br>
-
             <input
             type="number"
             id="cartons_${commande.id}_${article.code}"
@@ -920,13 +623,9 @@ function ouvrirDetailCommandeHDLP(id){
             ${article.colisage}
             )
             ">
-
             <br><br>
-
             Pièces :
-
             <br>
-
             <input
             type="number"
             id="pieces_${commande.id}_${article.code}"
@@ -938,24 +637,16 @@ function ouvrirDetailCommandeHDLP(id){
             ${article.colisage}
             )
             ">
-
             <br><br>
-
             Total :
-
             <span
             id="totalDetail_${article.code}">
             ${article.totalPieces}
             </span>
-
             pièce(s)
-
             <br><br>
-
             Prix réception :
-
             <br>
-
             <input
             type="number"
             step="0.01"
@@ -967,13 +658,9 @@ function ouvrirDetailCommandeHDLP(id){
             '${article.code}'
             )
             ">
-
             <br><br>
-
             Montant réception :
-
             <br>
-
             <input
             type="number"
             step="0.01"
@@ -988,9 +675,7 @@ function ouvrirDetailCommandeHDLP(id){
             ${article.totalPieces}
             )
             ">
-
             <br><br>
-
             <button
             style="
             background:#dc3545;
@@ -1004,24 +689,18 @@ function ouvrirDetailCommandeHDLP(id){
             ">
             🗑️ Supprimer la ligne
             </button>
-
         </div>
         `;
     });
-
     html += `
-
     <div class="card">
-
         <b>
         Total commande :
         ${Number(
             commande.montantTotal || 0
         ).toFixed(2)} €
         </b>
-
         <br><br>
-
         <button
         style="
         background:#007bff;
@@ -1034,19 +713,14 @@ function ouvrirDetailCommandeHDLP(id){
         ">
             ➕ Ajouter un produit
         </button>
-
     </div>
     `;
-
     if(
         commande.statut ===
         "EN ATTENTE"
     ){
-
         html += `
-
         <div class="card">
-
             <button
             onclick="
             sauvegarderCommandeHDLP(
@@ -1055,9 +729,7 @@ function ouvrirDetailCommandeHDLP(id){
             ">
                 💾 Sauvegarder
             </button>
-
             <br><br>
-
             <button
             style="
             background:#28a745;
@@ -1070,9 +742,7 @@ function ouvrirDetailCommandeHDLP(id){
             ">
                 ✅ Réceptionner
             </button>
-
             <br><br>
-
             <button
             style="
             background:#dc3545;
@@ -1085,16 +755,11 @@ function ouvrirDetailCommandeHDLP(id){
             ">
                 🗑️ Supprimer la commande
             </button>
-
         </div>
         `;
-
     }else{
-
         html += `
-
         <div class="card">
-
             <button
             style="
             background:#ffc107;
@@ -1108,9 +773,7 @@ function ouvrirDetailCommandeHDLP(id){
             ">
                 💰 Mettre à jour avec la facture
             </button>
-
             <br><br>
-
             <button
             style="
             background:#dc3545;
@@ -1123,9 +786,7 @@ function ouvrirDetailCommandeHDLP(id){
             ">
                 ↩️ Annuler la réception
             </button>
-
             <br><br>
-
             <button
             onclick="
             sauvegarderCommandeHDLP(
@@ -1134,191 +795,119 @@ function ouvrirDetailCommandeHDLP(id){
             ">
                 💾 Sauvegarder les modifications
             </button>
-
         </div>
         `;
     }
-
     document.getElementById(
         "cards"
     ).innerHTML = html;
 }
-  function ajouterProduitCommandeHDLP(commandeId){
 
+function ajouterProduitCommandeHDLP(commandeId){
     const commande =
     commandesHDLP.find(
         c => c.id === commandeId
     );
-
     if(!commande) return;
-
     const recherche =
     prompt(
         "Code ou nom de l'article"
     );
-
     if(!recherche){
         return;
     }
-
-    const articleTrouve =
-    Object.values(stock)
-    .flat()
-    .find(a =>
-
-        String(a.article || "")
-        .toLowerCase()
-        .includes(recherche.toLowerCase())
-
-        ||
-
-        String(a.code || "")
-        .toLowerCase()
-        .includes(recherche.toLowerCase())
-
-        ||
-
-        String(a.codeFournisseur || "")
-        .toLowerCase()
-        .includes(recherche.toLowerCase())
+    
+    // Recherche ciblée dans le Catalogue Unique
+    const articleTrouveEntry = Object.entries(catalogueArticles).find(([code, a]) =>
+        String(a.article || "").toLowerCase().includes(recherche.toLowerCase()) ||
+        String(code).toLowerCase().includes(recherche.toLowerCase()) ||
+        String(a.codeFournisseur || "").toLowerCase().includes(recherche.toLowerCase())
     );
 
-    if(!articleTrouve){
-
+    if(!articleTrouveEntry){
         alert(
             "Article introuvable"
         );
-
         return;
     }
+
+    const codeTrouve = articleTrouveEntry[0];
+    const articleTrouve = articleTrouveEntry[1];
 
     const existe =
     commande.articles.find(
         a =>
-        String(a.code)
-        ===
-        String(articleTrouve.code)
+        String(a.code) === String(codeTrouve)
     );
-
     if(existe){
-
         alert(
             "Cet article est déjà présent"
         );
-
         return;
     }
 
     commande.articles.push({
-
-        code:
-        articleTrouve.code,
-
-        article:
-        articleTrouve.article,
-
-        codeFournisseur:
-        articleTrouve.codeFournisseur || "",
-
+        code: codeTrouve,
+        article: articleTrouve.article,
+        codeFournisseur: articleTrouve.codeFournisseur || "",
         cartons: 0,
-
         pieces: 0,
-
-        colisage:
-        Number(
-            articleTrouve.colisage || 1
-        ),
-
+        colisage: Number(articleTrouve.colisage || 1),
         totalPieces: 0,
-
-        prix:
-        Number(
-            articleTrouve.prix || 0
-        ),
-
+        prix: Number(articleTrouve.prix || 0),
         montant: 0,
-
-        destination:
-        Object.keys(stock)
-        .find(cat =>
-            stock[cat]
-            .some(a =>
-                String(a.code)
-                ===
-                String(articleTrouve.code)
-            )
-        ) || "HDLP SOFT"
+        destination: memoCaves[codeTrouve] || "HDLP SOFT"
     });
-
     localStorage.setItem(
         "commandesHDLP",
         JSON.stringify(
             commandesHDLP
         )
     );
-
     ouvrirDetailCommandeHDLP(
         commandeId
     );
-
     alert(
         "Article ajouté ✅"
     );
 }     
-function sauvegarderCommandeHDLP(id){
 
+function sauvegarderCommandeHDLP(id){
     const commande =
     commandesHDLP.find(
         c => c.id === id
     );
-
     if(!commande) return;
-
     commande.articles.forEach(article => {
-
         article.cartons =
         Number(
             document.getElementById(
                 `cartons_${id}_${article.code}`
             )?.value || 0
         );
-
         article.pieces =
         Number(
             document.getElementById(
                 `pieces_${id}_${article.code}`
             )?.value || 0
         );
-
         article.destination =
         document.getElementById(
             `destination_${id}_${article.code}`
         )?.value || "";
+        
+        // Mémorisation de la cave pour cet article
+        memoCaves[article.code] = article.destination;
 
         article.codeFournisseur =
         document.getElementById(
             `codeFournisseur_${id}_${article.code}`
         )?.value || "";
-        Object.keys(stock)
-.forEach(categorie => {
-
-    stock[categorie]
-    .forEach(a => {
-
-        if(
-            String(a.code)
-            ===
-            String(article.code)
-        ){
-
-            a.codeFournisseur =
-            article.codeFournisseur;
-
+        
+        // Mise à jour directe dans le Catalogue Unique
+        if(catalogueArticles[article.code]){
+            catalogueArticles[article.code].codeFournisseur = article.codeFournisseur;
         }
-
-    });
-
-});
 
         article.prix =
         Number(
@@ -1326,7 +915,6 @@ function sauvegarderCommandeHDLP(id){
                 `prixReception_${id}_${article.code}`
             )?.value || 0
         );
-
         article.totalPieces =
         (
             article.cartons *
@@ -1334,96 +922,75 @@ function sauvegarderCommandeHDLP(id){
         )
         +
         article.pieces;
-
         article.montant =
         article.totalPieces *
         article.prix;
-
     });
-
     commande.montantTotal =
-
     commande.articles.reduce(
-
         (total,a) =>
-
         total +
         Number(a.montant || 0),
-
         0
-
     );
-localStorage.setItem(
-    STORAGE_KEY,
-    JSON.stringify(stock)
-);
+
+    // Sauvegarde de l'architecture légère
+    save();
+
     localStorage.setItem(
         "commandesHDLP",
         JSON.stringify(
             commandesHDLP
         )
     );
-
     alert(
         "Commande mise à jour ✅"
     );
-
     ouvrirDetailCommandeHDLP(id);
-
 }
+
 function recalculerDetailCommande(
     id,
     code,
     colisage
 ){
-
     const cartons =
     Number(
         document.getElementById(
             `cartons_${id}_${code}`
         )?.value || 0
     );
-
     const pieces =
     Number(
         document.getElementById(
             `pieces_${id}_${code}`
         )?.value || 0
     );
-
     const totalPieces =
     (cartons * colisage)
     + pieces;
-
     const zone =
     document.getElementById(
         `totalDetail_${code}`
     );
-
     if(zone){
-
         zone.innerHTML =
         totalPieces;
-
     }
-
 }
-function receptionnerCommandeHDLP(id){
 
+function receptionnerCommandeHDLP(id){
     const commande =
     commandesHDLP.find(
         c => c.id === id
     );
-
     if(!commande) return;
-
     if(
         commande.statut ===
         "RECEPTIONNEE"
     ){
         return;
     }
-
     if(
         !confirm(
             "Confirmer la réception de la commande ?"
@@ -1432,226 +999,159 @@ function receptionnerCommandeHDLP(id){
         return;
     }
 
+    const historiqueGlobal = JSON.parse(localStorage.getItem("mouvements")) || [];
+
     commande.articles.forEach(article => {
-article.prix =
-Number(
-document.getElementById(
-`prixReception_${id}_${article.code}`
-)?.value
-
-|| article.prix
-
-|| 0
-);
+        article.prix =
+        Number(
+        document.getElementById(
+        `prixReception_${id}_${article.code}`
+        )?.value
+        || article.prix
+        || 0
+        );
         const montantReception =
-
         Number(
         document.getElementById(
         `montantReception_${id}_${article.code}`
         )?.value
-
         || article.montant
-
         || 0
         );
-
         const prixReception =
-
         article.totalPieces > 0
-
         ?
-
         montantReception /
         article.totalPieces
-
         :
-
         0;
-
         article.prix =
         prixReception;
+        
+        const destination = article.destination;
+        const code = String(article.code);
 
-        const destination =
-        article.destination;
+        // Mémorisation de la cave
+        memoCaves[code] = destination;
 
-        const articleStock =
+        // Ajout du stock dans la cave via stockParCave
+        if(!stockParCave[destination]) stockParCave[destination] = {};
+        const stockActuel = Number(stockParCave[destination][code] || 0);
+        stockParCave[destination][code] = stockActuel + Number(article.totalPieces || 0);
 
-        (stock[destination] || [])
-
-        .find(a =>
-
-            String(a.code)
-            ===
-            String(article.code)
-
-        );
-
-        if(articleStock){
-
-            articleStock.stock =
-
-            Number(
-                articleStock.stock || 0
-            )
-
-            +
-
-            Number(
-                article.totalPieces || 0
-            );
-
+        // Mise à jour du prix et code fournisseur dans le Catalogue Unique
+        if(catalogueArticles[code]){
+            catalogueArticles[code].prix = Number(prixReception.toFixed(2));
+            catalogueArticles[code].codeFournisseur = article.codeFournisseur || "";
         }
 
-        Object.keys(stock)
-        .forEach(categorie => {
-
-            stock[categorie]
-            .forEach(a => {
-
-                if(
-                    String(a.code)
-                    ===
-                    String(article.code)
-                ){
-
-                    a.prix =
-                    prixReception;
-
-                    a.codeFournisseur =
-                    article.codeFournisseur || "";
-
-                }
-
-            });
-
+        // Ajout dans l'historique global
+        historiqueGlobal.push({
+            date: new Date().toISOString(),
+            code: code,
+            article: article.article,
+            cave: destination,
+            type: "ENTREE",
+            quantite: Number(article.totalPieces || 0),
+            origine: "COMMANDE HDLP",
+            fournisseur: commande.fournisseur || ""
         });
-
     });
 
     commande.statut =
     "RECEPTIONNEE";
-commande.dateReception =
-new Date()
-.toLocaleString();
+    commande.dateReception =
+    new Date()
+    .toLocaleString();
+    commande.dateReceptionISO =
+    new Date()
+    .toISOString()
+    .split("T")[0];
+    commande.factureRecue =
+    false;
 
-commande.dateReceptionISO =
-new Date()
-.toISOString()
-.split("T")[0];
-
-commande.factureRecue =
-false;
-    localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify(stock)
-    );
-
+    save(); // Sauvegarde stockParCave, catalogueArticles et memoCaves
+    localStorage.setItem("mouvements", JSON.stringify(historiqueGlobal));
     localStorage.setItem(
         "commandesHDLP",
         JSON.stringify(
             commandesHDLP
         )
     );
-
     alert(
         "✅ Commande réceptionnée"
     );
-
     ouvrirDetailCommandeHDLP(id);
-
 }
+
 function majPrixReception(
     commandeId,
     code,
     totalPieces
 ){
-
     const montant =
-
     Number(
     document.getElementById(
         `montantReception_${commandeId}_${code}`
     )?.value || 0
     );
-
     if(totalPieces <= 0){
         return;
     }
-
     const nouveauPrix =
-
     montant / totalPieces;
-
     const champPrix =
     document.getElementById(
         `prixReception_${commandeId}_${code}`
     );
-
     if(champPrix){
-
         champPrix.value =
         nouveauPrix.toFixed(4);
-
     }
-
 }
+
 function majMontantReception(
     commandeId,
     code
 ){
-
     const commande =
     commandesHDLP.find(
         c => c.id === commandeId
     );
-
     if(!commande) return;
-
     const article =
     commande.articles.find(
         a => String(a.code) === String(code)
     );
-
     if(!article) return;
-
     const prix =
-
     Number(
     document.getElementById(
         `prixReception_${commandeId}_${code}`
     )?.value || 0
     );
-
     const montant =
-
     prix *
     Number(article.totalPieces || 0);
-
     const champMontant =
     document.getElementById(
         `montantReception_${commandeId}_${code}`
     );
-
     if(champMontant){
-
         champMontant.value =
         montant.toFixed(2);
-
     }
-
 }
+
 function supprimerLigneCommandeHDLP(
     commandeId,
     code
 ){
-
     const commande =
     commandesHDLP.find(
         c => c.id === commandeId
     );
-
     if(!commande) return;
-
     commande.articles =
     commande.articles.filter(
         a =>
@@ -1659,439 +1159,295 @@ function supprimerLigneCommandeHDLP(
         !==
         String(code)
     );
-
     commande.montantTotal =
-
     commande.articles.reduce(
-
         (total,a) =>
-
         total +
         Number(a.montant || 0),
-
         0
-
     );
-
     localStorage.setItem(
-
         "commandesHDLP",
-
         JSON.stringify(
             commandesHDLP
         )
-
     );
-
     ouvrirDetailCommandeHDLP(
         commandeId
     );
-
 }
+
 function validerArticleCommandeHDLP(
     code,
     articleNom,
     colisage,
     prix
 ){
-
     const cartons =
     Number(
         document.getElementById(
             "cartons_" + code
         )?.value || 0
     );
-
     const pieces =
     Number(
         document.getElementById(
             "pieces_" + code
         )?.value || 0
     );
-
     const destination =
     document.getElementById(
         "destination_" + code
     )?.value || "";
-destinationDefautHDLP = destination;
+    destinationDefautHDLP = destination;
+    localStorage.setItem(
+        "destinationDefautHDLP",
+        destination
+    );
+    
+    // Mémorisation de la cave
+    memoCaves[code] = destination;
 
-localStorage.setItem(
-    "destinationDefautHDLP",
-    destination
-);
     if(
         cartons <= 0 &&
         pieces <= 0
     ){
         let totalCommande =
-
-Object.values(
-    commandeHDLPArticles
-)
-
-.reduce(
-
-(total,a)=>
-
-total +
-Number(a.montant || 0),
-
-0
-
-);
-
-const zoneTotal =
-document.getElementById(
-    "totalCommandeHDLP"
-);
-
-if(zoneTotal){
-
-    zoneTotal.innerHTML =
-    totalCommande.toFixed(2)
-    + " €";
-
-}
+        Object.values(
+            commandeHDLPArticles
+        )
+        .reduce(
+        (total,a)=>
+        total +
+        Number(a.montant || 0),
+        0
+        );
+        const zoneTotal =
+        document.getElementById(
+            "totalCommandeHDLP"
+        );
+        if(zoneTotal){
+            zoneTotal.innerHTML =
+            totalCommande.toFixed(2)
+            + " €";
+        }
         alert(
             "Aucune quantité saisie"
         );
         return;
     }
-
     const totalPieces =
     (cartons * colisage)
     + pieces;
-
     const montant =
     totalPieces * prix;
-
     commandeHDLPArticles[code] = {
-
         code: code,
-
         article: articleNom,
-
         cartons: cartons,
-
         pieces: pieces,
-
         colisage: colisage,
-
         totalPieces: totalPieces,
-
         prix: prix,
-
         montant: montant,
-
         destination: destination
-
     };
-const champCode =
-document.getElementById(
-    "codeCommandeHDLP"
-);
-
-if(champCode){
-
-    champCode.focus();
-
-    champCode.select();
-
-}
-
+    const champCode =
+    document.getElementById(
+        "codeCommandeHDLP"
+    );
+    if(champCode){
+        champCode.focus();
+        champCode.select();
+    }
     alert(
         articleNom +
         " ajouté à la commande ✅"
     );
-
 }
+
 function listeCommandesReceptionneesHDLP(){
-
-  const champRecherche =
-document.getElementById(
-    "rechercheReceptionHDLP"
-);
-
-if(champRecherche){
-
-    filtreRechercheReceptionHDLP =
-    champRecherche.value.toLowerCase();
-
-}
-
-const recherche =
-filtreRechercheReceptionHDLP;
-
-   const champDateDebut =
-document.getElementById(
-    "dateDebutReceptionHDLP"
-);
-
-if(champDateDebut){
-
-    filtreDateDebutReceptionHDLP =
-    champDateDebut.value;
-
-}
-
-const dateDebut =
-filtreDateDebutReceptionHDLP;
-
-  const champDateFin =
-document.getElementById(
-    "dateFinReceptionHDLP"
-);
-
-if(champDateFin){
-
-    filtreDateFinReceptionHDLP =
-    champDateFin.value;
-
-}
-
-const dateFin =
-filtreDateFinReceptionHDLP;
-
-  const caseFacture =
-document.getElementById(
-    "factureRecueFiltre"
-);
-
-if(caseFacture){
-
-    filtreFactureReceptionHDLP =
-    caseFacture.checked;
-
-}
-
-const factureSeulement =
-filtreFactureReceptionHDLP;
-
+    const champRecherche =
+    document.getElementById(
+        "rechercheReceptionHDLP"
+    );
+    if(champRecherche){
+        filtreRechercheReceptionHDLP =
+        champRecherche.value.toLowerCase();
+    }
+    const recherche =
+    filtreRechercheReceptionHDLP;
+    const champDateDebut =
+    document.getElementById(
+        "dateDebutReceptionHDLP"
+    );
+    if(champDateDebut){
+        filtreDateDebutReceptionHDLP =
+        champDateDebut.value;
+    }
+    const dateDebut =
+    filtreDateDebutReceptionHDLP;
+    const champDateFin =
+    document.getElementById(
+        "dateFinReceptionHDLP"
+    );
+    if(champDateFin){
+        filtreDateFinReceptionHDLP =
+        champDateFin.value;
+    }
+    const dateFin =
+    filtreDateFinReceptionHDLP;
+    const caseFacture =
+    document.getElementById(
+        "factureRecueFiltre"
+    );
+    if(caseFacture){
+        filtreFactureReceptionHDLP =
+        caseFacture.checked;
+    }
+    const factureSeulement =
+    filtreFactureReceptionHDLP;
     let html = `
-
     <div class="card">
-
         <button
         onclick="ouvrirCommandeHDLP()">
             ⬅ Retour
         </button>
-
         <h2>
         ✅ Commandes réceptionnées
         </h2>
-
         🔍 Recherche
-
         <br>
-
-  <input
-id="rechercheReceptionHDLP"
-
-value="${recherche}"
-
-placeholder="
-Fournisseur ou article
-"
-
-onkeyup="
-filtrerReceptionHDLP()
-">
-
+        <input
+        id="rechercheReceptionHDLP"
+        value="${recherche}"
+        placeholder="
+        Fournisseur ou article
+        "
+        onkeyup="
+        filtrerReceptionHDLP()
+        ">
         <br><br>
-
         📅 Du
-
         <br>
-
         <input
         type="date"
-
         id="dateDebutReceptionHDLP"
-
         value="${dateDebut}"
-
         onchange="
         listeCommandesReceptionneesHDLP()
         ">
-
         <br><br>
-
         📅 Au
-
         <br>
-
         <input
         type="date"
-
         id="dateFinReceptionHDLP"
-
         value="${dateFin}"
-
         onchange="
         listeCommandesReceptionneesHDLP()
         ">
-
         <br><br>
-
         <input
         type="checkbox"
-
         id="factureRecueFiltre"
-
         ${
             factureSeulement
             ? "checked"
             : ""
         }
-
         onchange="
         listeCommandesReceptionneesHDLP()
         ">
-
         Facture reçue uniquement
-
     </div>
-
     `;
-
     let commandesReceptionnees =
-
     commandesHDLP.filter(
         c =>
         c.statut ===
         "RECEPTIONNEE"
     );
-
     commandesReceptionnees =
     commandesReceptionnees.filter(cmd => {
-
         const matchRecherche =
-
         recherche === ""
-
         ||
-
         cmd.fournisseur
         ?.toLowerCase()
         .includes(recherche)
-
         ||
-
         cmd.articles.some(a =>
-
             a.article
             ?.toLowerCase()
             .includes(recherche)
-
         );
-
         const dateCommande =
         cmd.dateReceptionISO || "";
-
         const matchDateDebut =
-
         dateDebut === ""
-
         ||
-
         dateCommande >= dateDebut;
-
         const matchDateFin =
-
         dateFin === ""
-
         ||
-
         dateCommande <= dateFin;
-
         const matchFacture =
-
         !factureSeulement
-
         ||
-
         cmd.factureRecue === true;
-
         return (
-
             matchRecherche
-
             &&
-
             matchDateDebut
-
             &&
-
             matchDateFin
-
             &&
-
             matchFacture
-
         );
-
     });
-
     if(
         commandesReceptionnees.length === 0
     ){
-
-    html += `
-<div class="card">
-Aucune commande trouvée.
-</div>
-`;
-
+        html += `
+        <div class="card">
+        Aucune commande trouvée.
+        </div>
+        `;
     }else{
-
         commandesReceptionnees
         .slice()
         .reverse()
         .forEach(cmd => {
-
             html += `
-
-           <div
-class="card commandeReceptionHDLP"
-
-data-fournisseur="${cmd.fournisseur}"
-
-data-articles="${cmd.articles
-.map(a => a.article)
-.join(' ')}">
-
+            <div
+            class="card commandeReceptionHDLP"
+            data-fournisseur="${cmd.fournisseur}"
+            data-articles="${cmd.articles
+            .map(a => a.article)
+            .join(' ')}">
                 <b>
                 🚚 ${cmd.fournisseur}
                 </b>
-
                 <br><br>
-
                 📅 ${
                     cmd.dateReception
                     || cmd.date
                 }
-
                 <br>
-
                 💰 ${Number(
                     cmd.montantTotal || 0
                 ).toFixed(2)} €
-
                 <br>
-
                 📦 ${cmd.articles.length}
                 article(s)
-
                 <br>
-
                 🧾 ${
                     cmd.factureRecue
                     ? "Facture reçue ✅"
                     : "Facture manquante ❌"
                 }
-
                 <br><br>
-
                 <button
                 onclick="
                 ouvrirDetailCommandeHDLP(
@@ -2100,104 +1456,63 @@ data-articles="${cmd.articles
                 ">
                     👁️ Ouvrir
                 </button>
-
             </div>
-
             `;
-
         });
-
     }
-
-document.getElementById(
-    "cards"
-).innerHTML = html;
-
+    document.getElementById(
+        "cards"
+    ).innerHTML = html;
 }
-function mettreAJourFactureHDLP(id){
 
+function mettreAJourFactureHDLP(id){
     const commande =
     commandesHDLP.find(
         c => c.id === id
     );
-
     if(!commande) return;
-
     commande.articles.forEach(article => {
-
         article.codeFournisseur =
         document.getElementById(
             `codeFournisseur_${id}_${article.code}`
         )?.value || "";
-
         const prixFacture =
         Number(
             document.getElementById(
                 `prixReception_${id}_${article.code}`
             )?.value || 0
         );
-
         const montantFacture =
         Number(
             document.getElementById(
                 `montantReception_${id}_${article.code}`
             )?.value || 0
         );
-
         article.prix =
         prixFacture;
-
         article.montant =
         montantFacture;
-
-        Object.keys(stock)
-        .forEach(categorie => {
-
-            stock[categorie]
-            .forEach(a => {
-
-                if(
-                    String(a.code)
-                    ===
-                    String(article.code)
-                ){
-
-                    a.prix =
-                    prixFacture;
-
-                    a.codeFournisseur =
-                    article.codeFournisseur;
-
-                }
-
-            });
-
-        });
-
+        
+        const code = String(article.code);
+        if(catalogueArticles[code]){
+            catalogueArticles[code].prix = Number(prixFacture.toFixed(2));
+            catalogueArticles[code].codeFournisseur = article.codeFournisseur;
+        }
     });
-
     commande.montantTotal =
-
     commande.articles.reduce(
-
         (total,a) =>
         total +
         Number(
             a.montant || 0
         ),
-
         0
-
     );
-
     commande.dateFacture =
     new Date()
     .toLocaleString();
 
-    localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify(stock)
-    );
+    save(); // Sauvegarde stockParCave et catalogueArticles
 
     localStorage.setItem(
         "commandesHDLP",
@@ -2205,16 +1520,13 @@ function mettreAJourFactureHDLP(id){
             commandesHDLP
         )
     );
-
     alert(
         "✅ Facture enregistrée"
     );
-
     ouvrirDetailCommandeHDLP(id);
-
 }
-function supprimerCommandeHDLP(id){
 
+function supprimerCommandeHDLP(id){
     if(
         !confirm(
             "Supprimer cette commande ?"
@@ -2222,35 +1534,28 @@ function supprimerCommandeHDLP(id){
     ){
         return;
     }
-
     commandesHDLP =
     commandesHDLP.filter(
         c => c.id !== id
     );
-
     localStorage.setItem(
         "commandesHDLP",
         JSON.stringify(
             commandesHDLP
         )
     );
-
     alert(
         "Commande supprimée ✅"
     );
-
     listeCommandesHDLP();
-
 }
-function supprimerCommandeReceptionneeHDLP(id){
 
+function supprimerCommandeReceptionneeHDLP(id){
     const commande =
     commandesHDLP.find(
         c => c.id === id
     );
-
     if(!commande) return;
-
     if(
         !confirm(
             "La réception va être annulée et les stocks seront retirés. Continuer ?"
@@ -2260,46 +1565,16 @@ function supprimerCommandeReceptionneeHDLP(id){
     }
 
     commande.articles.forEach(article => {
+        const destination = article.destination;
+        const code = String(article.code);
 
-        const destination =
-        article.destination;
-
-        const articleStock =
-
-        (stock[destination] || [])
-
-        .find(a =>
-
-            String(a.code)
-            ===
-            String(article.code)
-
-        );
-
-        if(articleStock){
-
-            articleStock.stock =
-
-            Number(
-                articleStock.stock || 0
-            )
-
-            -
-
-            Number(
-                article.totalPieces || 0
-            );
-
-            if(
-                articleStock.stock < 0
-            ){
-
-                articleStock.stock = 0;
-
+        if(stockParCave[destination] && stockParCave[destination][code] !== undefined){
+            stockParCave[destination][code] =
+            Number(stockParCave[destination][code] || 0) - Number(article.totalPieces || 0);
+            if(stockParCave[destination][code] <= 0){
+                delete stockParCave[destination][code];
             }
-
         }
-
     });
 
     commandesHDLP =
@@ -2307,10 +1582,7 @@ function supprimerCommandeReceptionneeHDLP(id){
         c => c.id !== id
     );
 
-    localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify(stock)
-    );
+    save(); // Sauvegarde stockParCave et catalogueArticles
 
     localStorage.setItem(
         "commandesHDLP",
@@ -2318,78 +1590,59 @@ function supprimerCommandeReceptionneeHDLP(id){
             commandesHDLP
         )
     );
-
     alert(
         "Réception annulée ✅"
     );
-
     listeCommandesReceptionneesHDLP();
-
 }
-function majFactureRecueHDLP(id){
 
+function majFactureRecueHDLP(id){
     const commande =
     commandesHDLP.find(
         c => c.id === id
     );
-
     if(!commande) return;
-
     const caseFacture =
     document.getElementById(
         `factureRecue_${id}`
     );
-
     commande.factureRecue =
     caseFacture?.checked || false;
-
     localStorage.setItem(
         "commandesHDLP",
         JSON.stringify(
             commandesHDLP
         )
     );
-
 }
+
 function filtrerReceptionHDLP(){
-
     const recherche =
-
     document.getElementById(
         "rechercheReceptionHDLP"
     )
     .value
     .toLowerCase();
-
     document
     .querySelectorAll(
         ".commandeReceptionHDLP"
     )
     .forEach(carte => {
-
         const fournisseur =
         (
             carte.dataset.fournisseur || ""
         ).toLowerCase();
-
         const articles =
         (
             carte.dataset.articles || ""
         ).toLowerCase();
-
         const visible =
-
         fournisseur.includes(recherche)
-
         ||
-
         articles.includes(recherche);
-
         carte.style.display =
         visible
         ? ""
         : "none";
-
     });
-
 }
