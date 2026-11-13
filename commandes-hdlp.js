@@ -18,30 +18,43 @@ localStorage.getItem("destinationDefautHDLP")
 
 function ouvrirCommandeHDLP(){
     document.getElementById("cards").innerHTML = `
-    <div class="card">
-        <button
-        onclick="changerSite('APPLICATIONS')">
-            ⬅ Retour
-        </button>
+    <div class="card" style="text-align: center;">
+        <div style="text-align: left; margin-bottom: 15px;">
+            <button onclick="changerSite('APPLICATIONS')" style="padding: 8px 15px; font-weight: bold; border-radius: 6px; cursor: pointer;">
+                ⬅ Retour
+            </button>
+        </div>
+
         <h2>📦 Commandes HDLP</h2>
-        <button
-        onclick="nouvelleCommandeHDLP()">
-            ➕ Nouvelle commande
-        </button>
-        <button
-        onclick="listeCommandesHDLP()">
-            📋 Commandes enregistrées
-        </button>
-        <button
-        onclick="listeCommandesReceptionneesHDLP()">
-            ✅ Réceptionnées
-        </button>
-        <hr>
-        Sélectionnez une action.
+        <br>
+
+        <!-- Conteneur global de la grille de menu -->
+        <div style="display: flex; flex-direction: column; gap: 15px; max-width: 600px; margin: 0 auto;">
+
+            <!-- Bouton 1 : Nouvelle commande (Pleline largeur ou mis en valeur) -->
+            <div style="width: 100%;">
+                <button onclick="nouvelleCommandeHDLP()" style="width: 100%; height: 70px; font-size: 16px; font-weight: bold; background: #28a745; color: white; border: none; border-radius: 8px; cursor: pointer;">
+                    ➕ Nouvelle commande
+                </button>
+            </div>
+
+            <!-- Ligne 2 : Commandes enregistrées & Réceptionnées (Côte à côte) -->
+            <div style="display: flex; gap: 4%; width: 100%;">
+                <button onclick="listeCommandesHDLP()" style="width: 48%; height: 70px; font-size: 16px; font-weight: bold; background: #1976d2; color: white; border: none; border-radius: 8px; cursor: pointer;">
+                    📋 Commandes enregistrées
+                </button>
+                <button onclick="listeCommandesReceptionneesHDLP()" style="width: 48%; height: 70px; font-size: 16px; font-weight: bold; background: #ff9800; color: white; border: none; border-radius: 8px; cursor: pointer;">
+                    ✅ Réceptionnées
+                </button>
+            </div>
+
+        </div>
+        
+        <hr style="margin-top: 25px;">
+        <p style="color: #666; font-size: 14px;">Sélectionnez une action.</p>
     </div>
     `;
 }
-
 function nouvelleCommandeHDLP(){
     document.getElementById("cards").innerHTML = `
     <div class="card">
