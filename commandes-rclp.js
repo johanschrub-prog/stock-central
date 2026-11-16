@@ -759,15 +759,21 @@ function listeCommandesReceptionneesRCLP(){
     const champRecherche = document.getElementById("rechercheReceptionRCLP");
     if(champRecherche){ filtreRechercheReceptionRCLP = champRecherche.value.toLowerCase(); }
     const recherche = filtreRechercheReceptionRCLP;
+    
     const champDateDebut = document.getElementById("dateDebutReceptionRCLP");
     if(champDateDebut){ filtreDateDebutReceptionRCLP = champDateDebut.value; }
     const dateDebut = filtreDateDebutReceptionRCLP;
+    
     const champDateFin = document.getElementById("dateFinReceptionRCLP");
     if(champDateFin){ filtreDateFinReceptionRCLP = champDateFin.value; }
     const dateFin = filtreDateFinReceptionRCLP;
-    const caseFacture = document.getElementById("factureRecueFiltreRCLP");
-    if(caseFacture){ filtreFactureReceptionRCLP = caseFacture.checked; }
-    const factureSeulement = filtreFactureReceptionRCLP;
+    
+    const caseFactureRecue = document.getElementById("factureRecueFiltreRCLP");
+    if(caseFactureRecue){ filtreFactureReceptionRCLP = caseFactureRecue.checked; }
+    const factureRecueSeulement = filtreFactureReceptionRCLP;
+
+    const caseFactureManquante = document.getElementById("factureManquanteFiltreRCLP");
+    const factureManquanteSeulement = caseFactureManquante ? caseFactureManquante.checked : false;
 
     let html = `
     <div class="card" style="border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); padding: 20px; background: #fff;">
@@ -808,15 +814,24 @@ function listeCommandesReceptionneesRCLP(){
                     style="width: 100%; padding: 8px; font-size: 14px; border: 1px solid #ced4da; border-radius: 6px; box-sizing: border-box; background: white;">
                 </div>
             </div>
-            <div>
+            <div style="display: flex; gap: 20px; flex-wrap: wrap;">
                 <label style="display: flex; align-items: center; gap: 8px; font-weight: 500; font-size: 14px; cursor: pointer;">
                     <input
                     type="checkbox"
                     id="factureRecueFiltreRCLP"
-                    ${factureSeulement ? "checked" : ""}
+                    ${factureRecueSeulement ? "checked" : ""}
                     onchange="listeCommandesReceptionneesRCLP()"
                     style="width: 16px; height: 16px; cursor: pointer;">
                     Facture reçue uniquement
+                </label>
+                <label style="display: flex; align-items: center; gap: 8px; font-weight: 500; font-size: 14px; cursor: pointer;">
+                    <input
+                    type="checkbox"
+                    id="factureManquanteFiltreRCLP"
+                    ${factureManquanteSeulement ? "checked" : ""}
+                    onchange="listeCommandesReceptionneesRCLP()"
+                    style="width: 16px; height: 16px; cursor: pointer;">
+                    Facture manquante uniquement
                 </label>
             </div>
         </div>
@@ -830,9 +845,17 @@ function listeCommandesReceptionneesRCLP(){
         const dateCommande = cmd.dateReceptionISO || "";
         const matchDateDebut = dateDebut === "" || dateCommande >= dateDebut;
         const matchDateFin = dateFin === "" || dateCommande <= dateFin;
-        const matchFacture = !factureSeulement || cmd.factureRecue === true;
+        
+        let matchFacture = true;
+        if (factureRecueSeulement) {
+            matchFacture = cmd.factureRecue === true;
+        } else if (factureManquanteSeulement) {
+            matchFacture = !cmd.factureRecue;
+        }
+
         return matchRecherche && matchDateDebut && matchDateFin && matchFacture;
     });
+
     if(commandesReceptionnees.length === 0){
         html += `
         <div style="text-align: center; padding: 30px; color: #666; background: #f8f9fa; border-radius: 8px;">
@@ -876,7 +899,6 @@ function listeCommandesReceptionneesRCLP(){
     html += `</div>`;
     document.getElementById("cards").innerHTML = html;
 }
-
 function mettreAJourFactureRCLP(id){
     const commande = commandesRCLP.find(c => c.id === id);
     if(!commande) return;
