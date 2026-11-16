@@ -8,12 +8,17 @@ let commandeHDLPCourante = {};
 let commandeHDLPArticles = {};
 let fournisseurCommandeHDLP = "";
 let destinationDefautHDLP = localStorage.getItem("destinationDefautHDLP") || "HDLP BAR";
-// Alias indispensable pour que le clic sur le menu principal fonctionne
+
+// Assure la compatibilité avec tous les types d'appels (depuis le menu principal ou un autre module)
 function commandeHDLP() {
     ouvrirCommandeHDLP();
 }
+
 function ouvrirCommandeHDLP(){
-    document.getElementById("cards").innerHTML = `
+    const cards = document.getElementById("cards");
+    if(!cards) return;
+    
+    cards.innerHTML = `
     <div class="card" style="text-align: center; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); padding: 20px; background: #fff;">
         <div style="text-align: left; margin-bottom: 15px;">
             <button onclick="changerSite('APPLICATIONS')" style="padding: 6px 14px; font-weight: bold; border-radius: 6px; cursor: pointer; border: 1px solid #ccc; background: #f8f9fa;">
@@ -46,7 +51,6 @@ function ouvrirCommandeHDLP(){
 
 function nouvelleCommandeHDLP(){
     const totalInitial = Object.values(commandeHDLPArticles).reduce((t, a) => t + Number(a.montant || 0), 0);
-
     document.getElementById("cards").innerHTML = `
     <div class="card" style="border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); padding: 20px; background: #fff; box-sizing: border-box;">
         <div style="margin-bottom: 15px;">
@@ -67,9 +71,7 @@ function nouvelleCommandeHDLP(){
             style="width: 100%; padding: 10px; font-size: 16px; border: 1px solid #ced4da; border-radius: 6px; box-sizing: border-box;">
             <datalist id="listeFournisseurs">
             ${
-                fournisseurs
-                .map(f => `<option value="${f.nom}">`)
-                .join("")
+                typeof fournisseurs !== 'undefined' ? fournisseurs.map(f => `<option value="${f.nom}">`).join("") : ""
             }
             </datalist>
         </div>
@@ -119,7 +121,6 @@ function nouvelleCommandeHDLP(){
 function rechercherCodeCommandeHDLP(){
     const code = document.getElementById("codeCommandeHDLP")?.value || "";
     if(code === "") return;
-
     const carte = document.getElementById("article_" + code);
     if(!carte){
         alert("Article introuvable");
@@ -197,6 +198,8 @@ function chargerArticlesCommandeHDLP(){
     const fournisseur = document.getElementById("fournisseurCommandeHDLP")?.value || "";
     const recherche = document.getElementById("rechercheCommandeHDLP")?.value?.toLowerCase() || "";
     let html = "";
+    if(typeof catalogueArticles === 'undefined') return;
+
     Object.keys(catalogueArticles).forEach(code => {
         const article = catalogueArticles[code];
         
@@ -210,7 +213,7 @@ function chargerArticlesCommandeHDLP(){
         if(recherche !== "" && !match){
             return;
         }
-        const caveMemo = memoCaves[code] || destinationDefautHDLP;
+        const caveMemo = (typeof memoCaves !== 'undefined' ? memoCaves[code] : null) || destinationDefautHDLP;
         const dejaAjoute = Boolean(commandeHDLPArticles[code]);
         const cartonsVal = commandeHDLPCourante[code]?.cartons || 0;
         const piecesVal = commandeHDLPCourante[code]?.pieces || 0;
@@ -218,7 +221,6 @@ function chargerArticlesCommandeHDLP(){
         const prix = article.prix || 0;
         const totalPcs = (cartonsVal * colisage) + piecesVal;
         const sousTotal = (totalPcs * prix).toFixed(2);
-
         html += `
         <div
         id="article_${code}"
@@ -339,17 +341,15 @@ function chargerArticlesCommandeHDLP(){
         </div>
         `;
     });
-    document.getElementById("contenuCommandeHDLP").innerHTML = html;
+    const conteneur = document.getElementById("contenuCommandeHDLP");
+    if(contenu) conteneur.innerHTML = html;
 }
 
 function calculCommandeHDLP(code, colisage, prix){
     const cartons = Number(document.getElementById("cartons_" + code)?.value || 0);
     const pieces = Number(document.getElementById("pieces_" + code)?.value || 0);
     
-    commandeHDLPCourante[code] = {
-        cartons: cartons,
-        pieces: pieces
-    };
+    commandeHDLPCourante[code] = { cartons: cartons, pieces: pieces };
     
     const totalPieces = (cartons * colisage) + pieces;
     const montant = totalPieces * prix;
@@ -367,7 +367,8 @@ function validerArticleCommandeHDLP(code, articleNom, colisage, prix){
     destinationDefautHDLP = destination;
     localStorage.setItem("destinationDefautHDLP", destination);
     
-    memoCaves[code] = destination;
+    if(typeof memoCaves !== 'undefined') memoCaves[code] = destination;
+    
     if(cartons <= 0 && pieces <= 0){
         delete commandeHDLPArticles[code];
         delete commandeHDLPCourante[code];
@@ -382,7 +383,7 @@ function validerArticleCommandeHDLP(code, articleNom, colisage, prix){
     commandeHDLPArticles[code] = {
         code: code,
         article: articleNom,
-        codeFournisseur: catalogueArticles[code]?.codeFournisseur || "",
+        codeFournisseur: (typeof catalogueArticles !== 'undefined' && catalogueArticles[code]?.codeFournisseur) || "",
         cartons: cartons,
         pieces: pieces,
         colisage: colisage,
@@ -391,19 +392,16 @@ function validerArticleCommandeHDLP(code, articleNom, colisage, prix){
         montant: montant,
         destination: destination
     };
-
     const totalCommande = Object.values(commandeHDLPArticles).reduce((total, a) => total + Number(a.montant || 0), 0);
     const zoneTotal = document.getElementById("totalCommandeHDLP");
     if(zoneTotal){
         zoneTotal.innerHTML = totalCommande.toFixed(2) + " €";
     }
-
     const carte = document.getElementById("article_" + code);
     if(carte){
         carte.style.background = "#f4fbf7";
         carte.style.border = "2px solid #198754";
     }
-
     const champCode = document.getElementById("codeCommandeHDLP");
     if(champCode){
         champCode.focus();
@@ -612,6 +610,7 @@ function ajouterProduitCommandeHDLP(commandeId){
     const recherche = prompt("Code ou nom de l'article");
     if(!recherche) return;
     
+    if(typeof catalogueArticles === 'undefined') return;
     const articleTrouveEntry = Object.entries(catalogueArticles).find(([code, a]) =>
         String(a.article || "").toLowerCase().includes(recherche.toLowerCase()) ||
         String(code).toLowerCase().includes(recherche.toLowerCase()) ||
@@ -638,7 +637,7 @@ function ajouterProduitCommandeHDLP(commandeId){
         totalPieces: 0,
         prix: Number(articleTrouve.prix || 0),
         montant: 0,
-        destination: memoCaves[codeTrouve] || "HDLP SOFT"
+        destination: (typeof memoCaves !== 'undefined' ? memoCaves[codeTrouve] : null) || "HDLP SOFT"
     });
     localStorage.setItem("commandesHDLP", JSON.stringify(commandesHDLP));
     ouvrirDetailCommandeHDLP(commandeId);
@@ -652,10 +651,10 @@ function sauvegarderCommandeHDLP(id){
         article.cartons = Number(document.getElementById(`cartons_${id}_${article.code}`)?.value || 0);
         article.pieces = Number(document.getElementById(`pieces_${id}_${article.code}`)?.value || 0);
         article.destination = document.getElementById(`destination_${id}_${article.code}`)?.value || "";
-        memoCaves[article.code] = article.destination;
+        if(typeof memoCaves !== 'undefined') memoCaves[article.code] = article.destination;
         article.codeFournisseur = document.getElementById(`codeFournisseur_${id}_${article.code}`)?.value || "";
         
-        if(catalogueArticles[article.code]){
+        if(typeof catalogueArticles !== 'undefined' && catalogueArticles[article.code]){
             catalogueArticles[article.code].codeFournisseur = article.codeFournisseur;
         }
         article.prix = Number(document.getElementById(`prixReception_${id}_${article.code}`)?.value || 0);
@@ -663,7 +662,7 @@ function sauvegarderCommandeHDLP(id){
         article.montant = article.totalPieces * article.prix;
     });
     commande.montantTotal = commande.articles.reduce((total, a) => total + Number(a.montant || 0), 0);
-    save();
+    if(typeof save === 'function') save();
     localStorage.setItem("commandesHDLP", JSON.stringify(commandesHDLP));
     alert("Commande mise à jour ✅");
     ouvrirDetailCommandeHDLP(id);
@@ -684,7 +683,6 @@ function receptionnerCommandeHDLP(id){
     if(!commande) return;
     if(commande.statut === "RECEPTIONNEE") return;
     if(!confirm("Confirmer la réception de la commande ?")) return;
-
     const historiqueGlobal = JSON.parse(localStorage.getItem("mouvements")) || [];
     commande.articles.forEach(article => {
         article.prix = Number(document.getElementById(`prixReception_${id}_${article.code}`)?.value || article.prix || 0);
@@ -694,13 +692,15 @@ function receptionnerCommandeHDLP(id){
         
         const destination = article.destination;
         const code = String(article.code);
-        memoCaves[code] = destination;
+        if(typeof memoCaves !== 'undefined') memoCaves[code] = destination;
         
-        if(!stockParCave[destination]) stockParCave[destination] = {};
-        const stockActuel = Number(stockParCave[destination][code] || 0);
-        stockParCave[destination][code] = stockActuel + Number(article.totalPieces || 0);
+        if(typeof stockParCave !== 'undefined') {
+            if(!stockParCave[destination]) stockParCave[destination] = {};
+            const stockActuel = Number(stockParCave[destination][code] || 0);
+            stockParCave[destination][code] = stockActuel + Number(article.totalPieces || 0);
+        }
         
-        if(catalogueArticles[code]){
+        if(typeof catalogueArticles !== 'undefined' && catalogueArticles[code]){
             catalogueArticles[code].prix = Number(prixReception.toFixed(2));
             catalogueArticles[code].codeFournisseur = article.codeFournisseur || "";
         }
@@ -720,7 +720,7 @@ function receptionnerCommandeHDLP(id){
     commande.dateReception = new Date().toLocaleString();
     commande.dateReceptionISO = new Date().toISOString().split("T")[0];
     commande.factureRecue = false;
-    save();
+    if(typeof save === 'function') save();
     localStorage.setItem("mouvements", JSON.stringify(historiqueGlobal));
     localStorage.setItem("commandesHDLP", JSON.stringify(commandesHDLP));
     alert("✅ Commande réceptionnée");
@@ -730,7 +730,6 @@ function receptionnerCommandeHDLP(id){
 function majPrixReceptionHDLP(commandeId, code, totalPieces){
     const montant = Number(document.getElementById(`montantReception_${commandeId}_${code}`)?.value || 0);
     if(totalPieces <= 0) return;
-
     const nouveauPrix = montant / totalPieces;
     const champPrix = document.getElementById(`prixReception_${commandeId}_${code}`);
     if(champPrix){
@@ -773,7 +772,6 @@ function listeCommandesReceptionneesHDLP(){
     const caseFacture = document.getElementById("factureRecueFiltre");
     if(caseFacture){ filtreFactureReceptionHDLP = caseFacture.checked; }
     const factureSeulement = filtreFactureReceptionHDLP;
-
     let html = `
     <div class="card" style="border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); padding: 20px; background: #fff;">
         <div style="margin-bottom: 15px;">
@@ -893,14 +891,14 @@ function mettreAJourFactureHDLP(id){
         article.montant = montantFacture;
         
         const code = String(article.code);
-        if(catalogueArticles[code]){
+        if(typeof catalogueArticles !== 'undefined' && catalogueArticles[code]){
             catalogueArticles[code].prix = Number(prixFacture.toFixed(2));
             catalogueArticles[code].codeFournisseur = article.codeFournisseur;
         }
     });
     commande.montantTotal = commande.articles.reduce((total, a) => total + Number(a.montant || 0), 0);
     commande.dateFacture = new Date().toLocaleString();
-    save();
+    if(typeof save === 'function') save();
     localStorage.setItem("commandesHDLP", JSON.stringify(commandesHDLP));
     alert("✅ Facture enregistrée");
     ouvrirDetailCommandeHDLP(id);
@@ -918,11 +916,10 @@ function supprimerCommandeReceptionneeHDLP(id){
     const commande = commandesHDLP.find(c => c.id === id);
     if(!commande) return;
     if(!confirm("La réception va être annulée et les stocks seront retirés. Continuer ?")) return;
-
     commande.articles.forEach(article => {
         const destination = article.destination;
         const code = String(article.code);
-        if(stockParCave[destination] && stockParCave[destination][code] !== undefined){
+        if(typeof stockParCave !== 'undefined' && stockParCave[destination] && stockParCave[destination][code] !== undefined){
             stockParCave[destination][code] = Number(stockParCave[destination][code] || 0) - Number(article.totalPieces || 0);
             if(stockParCave[destination][code] <= 0){
                 delete stockParCave[destination][code];
@@ -930,7 +927,7 @@ function supprimerCommandeReceptionneeHDLP(id){
         }
     });
     commandesHDLP = commandesHDLP.filter(c => c.id !== id);
-    save();
+    if(typeof save === 'function') save();
     localStorage.setItem("commandesHDLP", JSON.stringify(commandesHDLP));
     alert("Réception annulée ✅");
     listeCommandesReceptionneesHDLP();
@@ -945,7 +942,9 @@ function majFactureRecueHDLP(id){
 }
 
 function filtrerReceptionHDLP(){
-    const recherche = document.getElementById("rechercheReceptionHDLP").value.toLowerCase();
+    const inputRecherche = document.getElementById("rechercheReceptionHDLP");
+    if(!inputRecherche) return;
+    const recherche = inputRecherche.value.toLowerCase();
     document.querySelectorAll(".commandeReceptionHDLP").forEach(carte => {
         const fournisseur = (carte.dataset.fournisseur || "").toLowerCase();
         const articles = (carte.dataset.articles || "").toLowerCase();
@@ -953,4 +952,3 @@ function filtrerReceptionHDLP(){
         carte.style.display = visible ? "" : "none";
     });
 }
-```[cite: 3]
