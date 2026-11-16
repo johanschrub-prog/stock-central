@@ -782,15 +782,22 @@ function listeCommandesReceptionneesHDLP(){
     const champRecherche = document.getElementById("rechercheReceptionHDLP");
     if(champRecherche){ filtreRechercheReceptionHDLP = champRecherche.value.toLowerCase(); }
     const recherche = filtreRechercheReceptionHDLP;
+    
     const champDateDebut = document.getElementById("dateDebutReceptionHDLP");
     if(champDateDebut){ filtreDateDebutReceptionHDLP = champDateDebut.value; }
     const dateDebut = filtreDateDebutReceptionHDLP;
+    
     const champDateFin = document.getElementById("dateFinReceptionHDLP");
     if(champDateFin){ filtreDateFinReceptionHDLP = champDateFin.value; }
     const dateFin = filtreDateFinReceptionHDLP;
-    const caseFacture = document.getElementById("factureRecueFiltreHDLP");
-    if(caseFacture){ filtreFactureReceptionHDLP = caseFacture.checked; }
-    const factureSeulement = filtreFactureReceptionHDLP;
+    
+    const caseFactureRecue = document.getElementById("factureRecueFiltre");
+    if(caseFactureRecue){ filtreFactureReceptionHDLP = caseFactureRecue.checked; }
+    const factureRecueSeulement = filtreFactureReceptionHDLP;
+
+    const caseFactureManquante = document.getElementById("factureManquanteFiltre");
+    const factureManquanteSeulement = caseFactureManquante ? caseFactureManquante.checked : false;
+
     let html = `
     <div class="card" style="border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); padding: 20px; background: #fff;">
         <div style="margin-bottom: 15px;">
@@ -830,15 +837,24 @@ function listeCommandesReceptionneesHDLP(){
                     style="width: 100%; padding: 8px; font-size: 14px; border: 1px solid #ced4da; border-radius: 6px; box-sizing: border-box; background: white;">
                 </div>
             </div>
-            <div>
+            <div style="display: flex; gap: 20px; flex-wrap: wrap;">
                 <label style="display: flex; align-items: center; gap: 8px; font-weight: 500; font-size: 14px; cursor: pointer;">
                     <input
                     type="checkbox"
-                    id="factureRecueFiltreHDLP"
-                    ${factureSeulement ? "checked" : ""}
+                    id="factureRecueFiltre"
+                    ${factureRecueSeulement ? "checked" : ""}
                     onchange="listeCommandesReceptionneesHDLP()"
                     style="width: 16px; height: 16px; cursor: pointer;">
                     Facture reçue uniquement
+                </label>
+                <label style="display: flex; align-items: center; gap: 8px; font-weight: 500; font-size: 14px; cursor: pointer;">
+                    <input
+                    type="checkbox"
+                    id="factureManquanteFiltre"
+                    ${factureManquanteSeulement ? "checked" : ""}
+                    onchange="listeCommandesReceptionneesHDLP()"
+                    style="width: 16px; height: 16px; cursor: pointer;">
+                    Facture manquante uniquement
                 </label>
             </div>
         </div>
@@ -852,9 +868,17 @@ function listeCommandesReceptionneesHDLP(){
         const dateCommande = cmd.dateReceptionISO || "";
         const matchDateDebut = dateDebut === "" || dateCommande >= dateDebut;
         const matchDateFin = dateFin === "" || dateCommande <= dateFin;
-        const matchFacture = !factureSeulement || cmd.factureRecue === true;
+        
+        let matchFacture = true;
+        if (factureRecueSeulement) {
+            matchFacture = cmd.factureRecue === true;
+        } else if (factureManquanteSeulement) {
+            matchFacture = !cmd.factureRecue;
+        }
+
         return matchRecherche && matchDateDebut && matchDateFin && matchFacture;
     });
+
     if(commandesReceptionnees.length === 0){
         html += `
         <div style="text-align: center; padding: 30px; color: #666; background: #f8f9fa; border-radius: 8px;">
@@ -898,7 +922,6 @@ function listeCommandesReceptionneesHDLP(){
     html += `</div>`;
     document.getElementById("cards").innerHTML = html;
 }
-
 function mettreAJourFactureHDLP(id){
     const commande = commandesHDLP.find(c => c.id === id);
     if(!commande) return;
