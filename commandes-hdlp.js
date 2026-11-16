@@ -198,10 +198,34 @@ function chargerArticlesCommandeHDLP(){
     const fournisseur = document.getElementById("fournisseurCommandeHDLP")?.value || "";
     const recherche = document.getElementById("rechercheCommandeHDLP")?.value?.toLowerCase() || "";
     let html = "";
-    if(typeof catalogueArticles === 'undefined') return;
 
-    Object.keys(catalogueArticles).forEach(code => {
-        const article = catalogueArticles[code];
+    // SÉCURITÉ : Si catalogueArticles n'est pas défini, on essaie de le récupérer depuis l'inventaire en localStorage
+    let catArticles = typeof catalogueArticles !== 'undefined' ? catalogueArticles : {};
+    if(Object.keys(catArticles).length === 0){
+        try {
+            const inventaireStock = JSON.parse(localStorage.getItem("inventaireHDLP")) || {};
+            Object.keys(inventaireStock).forEach(onglet => {
+                inventaireStock[onglet].forEach(p => {
+                    catArticles[p.code] = {
+                        article: p.article,
+                        codeFournisseur: p.codeFournisseur || "",
+                        fournisseur: p.fournisseur || "",
+                        prix: p.prix || 0,
+                        colisage: p.colisage || 1
+                    };
+                });
+            });
+        } catch(e) {}
+    }
+
+    if(Object.keys(catArticles).length === 0){
+        const contenu = document.getElementById("contenuCommandeHDLP");
+        if(contenu) contenu.innerHTML = `<div style="text-align: center; padding: 20px; color: #666;">Aucun article disponible. Veuillez d'abord importer votre inventaire ou vos produits.</div>`;
+        return;
+    }
+
+    Object.keys(catArticles).forEach(code => {
+        const article = catArticles[code];
         
         if(fournisseur !== "" && String(article.fournisseur || "") !== fournisseur){
             return;
@@ -221,6 +245,7 @@ function chargerArticlesCommandeHDLP(){
         const prix = article.prix || 0;
         const totalPcs = (cartonsVal * colisage) + piecesVal;
         const sousTotal = (totalPcs * prix).toFixed(2);
+
         html += `
         <div
         id="article_${code}"
