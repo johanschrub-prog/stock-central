@@ -8,7 +8,10 @@ let commandeHDLPCourante = {};
 let commandeHDLPArticles = {};
 let fournisseurCommandeHDLP = "";
 let destinationDefautHDLP = localStorage.getItem("destinationDefautHDLP") || "HDLP BAR";
-
+// Alias indispensable pour que le clic sur le menu principal fonctionne
+function commandeHDLP() {
+    ouvrirCommandeHDLP();
+}
 function ouvrirCommandeHDLP(){
     document.getElementById("cards").innerHTML = `
     <div class="card" style="text-align: center; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); padding: 20px; background: #fff;">
