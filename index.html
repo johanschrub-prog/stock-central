@@ -1,150 +1,114 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Stock Central</title>
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+    <!-- 1. Bibliothèques externes -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<title>Stock Central</title>
+    <!-- 2. Script de synchronisation Cloud (chargé en premier) -->
+    <script src="sync.js"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
-
-<style>
-
-body{
-    font-family:Segoe UI,sans-serif;
-    margin:0;
-    background:#f5f6f8;
-}
-
-header{
-    background:#1976d2;
-    color:white;
-    padding:15px;
-    text-align:center;
-}
-
-.tabs{
-    display:flex;
-    flex-wrap:wrap;
-    gap:10px;
-    padding:10px;
-    background:white;
-}
-
-.tab{
-    width:48%;
-
-    min-height:60px;
-
-    font-size:18px;
-
-    font-weight:bold;
-
-    border:none;
-
-    border-radius:8px;
-
-    cursor:pointer;
-
-    background:#ddd;
-
-    white-space:normal;
-}
-
-.active{
-    color:white;
-}
-
-.toolbar{
-    display:flex;
-    gap:10px;
-    padding:10px;
-    background:white;
-    flex-wrap:wrap;
-}
-
-input{
-    padding:10px;
-}
-
-.cards{
-    padding:10px;
-}
-
-.card{
-    background:white;
-    border-radius:12px;
-    padding:15px;
-    margin-bottom:10px;
-    box-shadow:0 2px 6px rgba(0,0,0,.15);
-}
-
-.valeur{
-    color:#1976d2;
-    font-weight:bold;
-}
-#blocOutils{
-
-    width:100%;
-
-    display:flex;
-
-    flex-wrap:wrap;
-
-    justify-content:space-between;
-
-}
-#blocOutils button{
-
-    width:48%;
-
-    min-height:60px;
-
-    font-size:18px;
-
-    font-weight:bold;
-
-    margin:1%;
-
-    border:none;
-
-    border-radius:8px;
-
-    background:#ddd;
-
-    cursor:pointer;
-
-}
-#btnAccueil{
-    position:fixed;
-    bottom:20px;
-    right:20px;
-    width:55px;
-    height:55px;
-    border:none;
-    border-radius:50%;
-    background:#1976d2;
-    color:white;
-    font-size:24px;
-}
-.article-selectionne{
-
-    background:#fff3cd !important;
-
-    border:3px solid #ff9800 !important;
-
-    box-shadow:0 0 10px rgba(255,152,0,.5);
-
-}
-</style>
-
+    <style>
+        body {
+            font-family: Segoe UI, sans-serif;
+            margin: 0;
+            background: #f5f6f8;
+        }
+        header {
+            background: #1976d2;
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 10px;
+            background: white;
+        }
+        .tab {
+            width: 48%;
+            min-height: 60px;
+            font-size: 18px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            background: #ddd;
+            white-space: normal;
+        }
+        .active {
+            color: white;
+        }
+        .toolbar {
+            display: flex;
+            gap: 10px;
+            padding: 10px;
+            background: white;
+            flex-wrap: wrap;
+        }
+        input {
+            padding: 10px;
+        }
+        .cards {
+            padding: 10px;
+        }
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,.15);
+        }
+        .valeur {
+            color: #1976d2;
+            font-weight: bold;
+        }
+        #blocOutils {
+            width: 100%;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+        #blocOutils button {
+            width: 48%;
+            min-height: 60px;
+            font-size: 18px;
+            font-weight: bold;
+            margin: 1%;
+            border: none;
+            border-radius: 8px;
+            background: #ddd;
+            cursor: pointer;
+        }
+        #btnAccueil {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 55px;
+            height: 55px;
+            border: none;
+            border-radius: 50%;
+            background: #1976d2;
+            color: white;
+            font-size: 24px;
+        }
+        .article-selectionne {
+            background: #fff3cd !important;
+            border: 3px solid #ff9800 !important;
+            box-shadow: 0 0 10px rgba(255,152,0,.5);
+        }
+    </style>
 </head>
-
 <body>
 
 <header>
-<h2>📦 STOCK CENTRAL</h2>
+    <h2>📦 STOCK CENTRAL</h2>
 </header>
 
 <div id="ongletsPrincipaux" class="tabs"></div>
@@ -152,235 +116,73 @@ input{
 <div id="sousOnglets" class="tabs"></div>
 
 <div class="toolbar">
+    <input type="file" id="importStock" accept=".json" style="display:none" onchange="importStock(event)">
     
-<input
-type="file"
-id="importStock"
-accept=".json"
-style="display:none"
-onchange="importStock(event)">
-<script>
-let outilsOuverts = false;
+    <button id="flecheOutils" onclick="toggleOutils()" style="width:100%; min-height:60px; font-size:20px; font-weight:bold;">
+        ▶️ Outils
+    </button>
 
-function toggleOutils(){
+    <div id="blocOutils" style="display:none; width:100%; margin-top:10px;">
+        <button onclick="document.getElementById('importStock').click()">📂 Reprendre</button>
+        <button onclick="document.getElementById('importFournisseurs').click()">🏷️ Import Fournisseurs</button>
+        <button onclick="importCommandeHDLP()">🚚 Commandes HDLP</button>
+        <button onclick="importCommandeRCLP()">🚚 Commandes RCLP</button>
+        <button onclick="importRemonteeHDLP()">📥 Remontées HDLP</button>
+        <button onclick="importRemonteeRCLP()">📥 Remontées RCLP</button>
+        <button onclick="importVentesBoutique()">🛍️ Ventes Boutique</button>
+        <button onclick="document.getElementById('importExcel').click()">📥 Import Inventaire</button>
+        <button onclick="ouvrirReceptionRapide()">📦 Réception rapide</button>
+        <button onclick="exportStock()">💾 Sauvegarde</button>
+        <button onclick="remettreStocksAZero()">🧹 Remise à zéro des stocks</button>
+    </div>
 
-    outilsOuverts = !outilsOuverts;
-
-   document.getElementById("blocOutils").style.display =
-    outilsOuverts ? "flex" : "none";
-
-
-    document.getElementById("flecheOutils").innerHTML =
-        outilsOuverts ? "🔽 Outils" : "▶️ Outils";
-
-}
-</script>
-    
-<button
-id="flecheOutils"
-onclick="toggleOutils()"
-style="
-width:100%;
-min-height:60px;
-font-size:20px;
-font-weight:bold;
-">
-
-▶️ Outils
-
-</button>
-
-<div
-id="blocOutils"
-style="
-display:none;
-width:100%;
-margin-top:10px;
-">
-
-<button
-onclick="document.getElementById('importStock').click()">
-📂 Reprendre
-</button>
-
-<button
-onclick="document.getElementById('importFournisseurs').click()">
-🏷️ Import Fournisseurs
-</button>
-
-<button onclick="importCommandeHDLP()">
-🚚 Commandes HDLP
-</button>
-
-<button onclick="importCommandeRCLP()">
-🚚 Commandes RCLP
-</button>
-
-<button onclick="importRemonteeHDLP()">
-📥 Remontées HDLP
-</button>
-
-<button onclick="importRemonteeRCLP()">
-📥 Remontées RCLP
-</button>
-
-<button onclick="importVentesBoutique()">
-🛍️ Ventes Boutique
-</button>
-
-<button onclick="document.getElementById('importExcel').click()">
-📥 Import Inventaire
-</button>
-
-<button onclick="ouvrirReceptionRapide()">
-📦 Réception rapide
-</button>
-
-<button onclick="exportStock()">
-💾 Sauvegarde
-</button>
-
-<button onclick="remettreStocksAZero()">
-🧹 Remise à zéro des stocks
-</button>
-
-</div>
-
-<div
-style="
-width:100%;
-display:flex;
-gap:10px;
-margin-top:10px;
-">
-
-<input
-id="search"
-list="listeProduits"
-placeholder="Recherche article ou code"
-onclick="this.select()"
-oninput="render()"
-style="
-flex:1;
-">
-
-<select
-id="filtreCave"
-onchange="render()"
-style="
-flex:1;
-">
-
-<option value="">
-Toutes les caves
-</option>
-
-
-<option value="HDLP MINI BAR">HDLP MINI BAR</option>
-<option value="HDLP SOFT">HDLP SOFT</option>
-<option value="HDLP BAR">HDLP BAR</option>
-<option value="HDLP SEMINAIRE">HDLP SEMINAIRE</option>
-
-<option value="RCLP ALCOOL">RCLP ALCOOL</option>
-<option value="RCLP SOFT">RCLP SOFT</option>
-<option value="RCLP VIN">RCLP VIN</option>
-
-</select>
-<input
-type="file"
-id="importExcel"
-accept=".xlsx"
-style="display:none"
-onchange="importerExcel(event)">
-
+    <div style="width:100%; display:flex; gap:10px; margin-top:10px;">
+        <input id="search" list="listeProduits" placeholder="Recherche article ou code" onclick="this.select()" oninput="render()" style="flex:1;">
+        
+        <select id="filtreCave" onchange="render()" style="flex:1;">
+            <option value="">Toutes les caves</option>
+            <option value="HDLP MINI BAR">HDLP MINI BAR</option>
+            <option value="HDLP SOFT">HDLP SOFT</option>
+            <option value="HDLP BAR">HDLP BAR</option>
+            <option value="HDLP SEMINAIRE">HDLP SEMINAIRE</option>
+            <option value="RCLP ALCOOL">RCLP ALCOOL</option>
+            <option value="RCLP SOFT">RCLP SOFT</option>
+            <option value="RCLP VIN">RCLP VIN</option>
+        </select>
+        
+        <input type="file" id="importExcel" accept=".xlsx" style="display:none" onchange="importerExcel(event)">
+    </div>
 </div>
 
 <div id="cards" class="cards"></div>
 
-<button
-id="btnAccueil"
-onclick="location.href='https://johanschrub-prog.github.io/hotel-paix-hub/'">
-🏠
-</button>
-<div id="popupTransfert"
-style="
-display:none;
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,.5);
-z-index:9999;
-">
-
-<div
-style="
-background:white;
-margin:20px;
-padding:15px;
-border-radius:12px;
-">
-
-<h3>🔄 Transfert de stock</h3>
-
-<p id="articleTransfert"></p>
-
-<input
-id="quantiteTransfert"
-type="number"
-placeholder="Quantité"
-style="width:100%;margin-bottom:10px;">
-
-<select
-id="destinationTransfert"
-style="width:100%;padding:10px;">
-
-<option value="HDLP MINI BAR">
-HDLP MINI BAR
-</option>
-
-<option value="HDLP SOFT">
-HDLP SOFT
-</option>
-
-<option value="HDLP BAR">
-HDLP BAR
-</option>
-
-<option value="HDLP SEMINAIRE">
-HDLP SEMINAIRE
-</option>
-
-<option value="RCLP ALCOOL">
-RCLP ALCOOL
-</option>
-
-<option value="RCLP SOFT">
-RCLP SOFT
-</option>
-
-<option value="RCLP VIN">
-RCLP VIN
-</option>
-
-</select>
-
-<br><br>
-
-<button onclick="validerTransfert()">
-✅ Valider
+<button id="btnAccueil" onclick="location.href='https://johanschrub-prog.github.io/hotel-paix-hub/'">
+    🏠
 </button>
 
-<button onclick="fermerTransfert()">
-❌ Annuler
-</button>
-
+<div id="popupTransfert" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,.5); z-index:9999;">
+    <div style="background:white; margin:20px; padding:15px; border-radius:12px;">
+        <h3>🔄 Transfert de stock</h3>
+        <p id="articleTransfert"></p>
+        <input id="quantiteTransfert" type="number" placeholder="Quantité" style="width:100%;margin-bottom:10px;">
+        
+        <select id="destinationTransfert" style="width:100%;padding:10px;">
+            <option value="HDLP MINI BAR">HDLP MINI BAR</option>
+            <option value="HDLP SOFT">HDLP SOFT</option>
+            <option value="HDLP BAR">HDLP BAR</option>
+            <option value="HDLP SEMINAIRE">HDLP SEMINAIRE</option>
+            <option value="RCLP ALCOOL">RCLP ALCOOL</option>
+            <option value="RCLP SOFT">RCLP SOFT</option>
+            <option value="RCLP VIN">RCLP VIN</option>
+        </select>
+        
+        <br><br>
+        <button onclick="validerTransfert()">✅ Valider</button>
+        <button onclick="fermerTransfert()">❌ Annuler</button>
+    </div>
 </div>
 
-</div>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+<!-- 3. Scripts fonctionnels de l'application -->
 <script src="ventes.js"></script>
 <script src="remontee-hdlp.js"></script>
 <script src="remontee-rclp.js"></script>
@@ -388,7 +190,18 @@ RCLP VIN
 <script src="commandes-rclp.js"></script>
 <script src="stats.js"></script>
 <script src="fournisseurs.js"></script>
-
 <script src="app.js"></script>
+
+<!-- Script de gestion du menu Outils -->
+<script>
+let outilsOuverts = false;
+function toggleOutils(){
+    outilsOuverts = !outilsOuverts;
+    document.getElementById("blocOutils").style.display = outilsOuverts ? "flex" : "none";
+    document.getElementById("flecheOutils").innerHTML = outilsOuverts ? "🔽 Outils" : "▶️ Outils";
+}
+</script>
+
 </body>
 </html>
+```[cite: 3]
