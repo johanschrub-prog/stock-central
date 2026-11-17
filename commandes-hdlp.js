@@ -304,7 +304,7 @@ function chargerArticlesCommandeHDLP(){
                     <option ${caveMemo==="RCLP ALCOOL" ? "selected" : ""}>RCLP ALCOOL</option>
                 </select>
             </div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
                 <div>
                     <label style="font-size: 13px; font-weight: 600; color: #495057; display: block; margin-bottom: 4px;">📦 Cartons</label>
                     <input
@@ -317,7 +317,7 @@ function chargerArticlesCommandeHDLP(){
                             document.getElementById('pieces_${code}').focus();
                         }
                     "
-                    value="${cartonsVal}"
+                    value="${cartonsVal ? cartonsVal : ''}"
                     oninput="calculCommandeHDLP('${code}', ${colisage}, ${prix})">
                 </div>
                 <div>
@@ -336,6 +336,11 @@ function chargerArticlesCommandeHDLP(){
                                 ${prix}
                             );
                         }
+                    "
+                    value="${piecesVal ? piecesVal : ''}"
+                    oninput="calculCommandeHDLP('${code}', ${colisage}, ${prix})">
+                </div>
+            </div>
                     "
                     value="${piecesVal}"
                     oninput="calculCommandeHDLP('${code}', ${colisage}, ${prix})">
