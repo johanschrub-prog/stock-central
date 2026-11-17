@@ -70,6 +70,7 @@ async function initialiserSynchroCloud(force = false) {
 function forcerSynchroCloud() {
     initialiserSynchroCloud(true);
 }
+
 // Fonction pour forcer l'envoi immédiat de toutes les données locales vers le Cloud (depuis le téléphone)
 async function forcerEnvoiCloud() {
     try {
