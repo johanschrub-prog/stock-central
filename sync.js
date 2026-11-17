@@ -16,8 +16,8 @@ const CLES_SYNCHRO = [
 let syncTimeout = null;
 let donneesCloudCache = {};
 
-// 1. Chargement initial depuis JSONBin vers le localStorage
-async function initialiserSynchroCloud() {
+// 1. Chargement initial et manuel depuis JSONBin vers le localStorage
+async function initialiserSynchroCloud(force = false) {
     try {
         const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
             headers: { "X-Master-Key": API_KEY }
@@ -40,8 +40,8 @@ async function initialiserSynchroCloud() {
             }
         });
 
-        // Si de nouvelles données ont été récupérées, on recharge les variables en mémoire
-        if (aChange) {
+        // Si de nouvelles données ont été récupérées ou si c'est forcé, on recharge les variables en mémoire
+        if (aChange || force) {
             if (typeof commandesHDLP !== "undefined") commandesHDLP = JSON.parse(localStorage.getItem("commandesHDLP")) || [];
             if (typeof commandesRCLP !== "undefined") commandesRCLP = JSON.parse(localStorage.getItem("commandesRCLP")) || [];
             if (typeof inventaire !== "undefined") {
@@ -51,11 +51,24 @@ async function initialiserSynchroCloud() {
             if (typeof catalogueArticles !== "undefined") catalogueArticles = JSON.parse(localStorage.getItem("catalogueArticles")) || catalogueArticles;
             if (typeof stockParCave !== "undefined") stockParCave = JSON.parse(localStorage.getItem("stockParCave")) || stockParCave;
             if (typeof memoCaves !== "undefined") memoCaves = JSON.parse(localStorage.getItem("memoCaves")) || memoCaves;
+            
+            // Rafraîchit l'affichage de l'application si la fonction render existe
+            if (typeof render === "function") render();
+            
             console.log("Synchronisation Cloud terminée ✅");
+            if (force) alert("Synchronisation réussie ✅ Données à jour !");
+        } else if (force) {
+            alert("Les données étaient déjà à jour ✅");
         }
     } catch (err) {
         console.warn("Mode hors-ligne : utilisation des données locales.", err);
+        if (force) alert("Erreur : Impossible de joindre le cloud (vérifiez votre connexion internet).");
     }
+}
+
+// Fonction appelée par le bouton "Synchroniser maintenant"
+function forcerSynchroCloud() {
+    initialiserSynchroCloud(true);
 }
 
 // 2. Envoi groupé vers JSONBin (évite de saturer l'API si plusieurs sauvegardes s'enchaînent)
@@ -110,4 +123,4 @@ localStorage.setItem = function(key, value) {
 };
 
 // Lancement immédiat au chargement de la page
-initialiserSynchroCloud();
+initialiserSynchroCloud(false);
