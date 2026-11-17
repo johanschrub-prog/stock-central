@@ -256,7 +256,7 @@ function chargerArticlesCommandeRCLP(){
                 <label style="font-size: 13px; font-weight: 600; color: #495057; display: block; margin-bottom: 4px;">
                     📍 Stock destination
                 </label>
-                <select
+             <select
                 id="destination_${code}"
                 style="width: 100%; padding: 9px; font-size: 15px; border: 1px solid #ced4da; border-radius: 6px; background: #fff; box-sizing: border-box;"
                 onchange="
@@ -273,10 +273,6 @@ function chargerArticlesCommandeRCLP(){
                     <option ${caveMemo==="RCLP SOFT" ? "selected" : ""}>RCLP SOFT</option>
                     <option ${caveMemo==="RCLP VIN" ? "selected" : ""}>RCLP VIN</option>
                     <option ${caveMemo==="RCLP ALCOOL" ? "selected" : ""}>RCLP ALCOOL</option>
-                    <option ${caveMemo==="HDLP SOFT" ? "selected" : ""}>HDLP SOFT</option>
-                    <option ${caveMemo==="HDLP BAR" ? "selected" : ""}>HDLP BAR</option>
-                    <option ${caveMemo==="HDLP MINI BAR" ? "selected" : ""}>HDLP MINI BAR</option>
-                    <option ${caveMemo==="HDLP SEMINAIRE" ? "selected" : ""}>HDLP SEMINAIRE</option>
                 </select>
             </div>
          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
