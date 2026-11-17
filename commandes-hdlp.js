@@ -338,11 +338,7 @@ function chargerArticlesCommandeHDLP(){
                     oninput="calculCommandeHDLP('${code}', ${colisage}, ${prix})">
                 </div>
             </div>
-                    "
-                    value="${piecesVal}"
-                    oninput="calculCommandeHDLP('${code}', ${colisage}, ${prix})">
-                </div>
-            </div>
+         
             <div id="total_${code}" style="background: #f8f9fa; padding: 8px 12px; border-radius: 6px; text-align: right; font-weight: bold; color: #333; font-size: 14px; margin-bottom: 12px;">
                 ${totalPcs} pièce(s) - ${sousTotal} €
             </div>
