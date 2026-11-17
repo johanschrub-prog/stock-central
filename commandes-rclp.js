@@ -279,7 +279,7 @@ function chargerArticlesCommandeRCLP(){
                     <option ${caveMemo==="HDLP SEMINAIRE" ? "selected" : ""}>HDLP SEMINAIRE</option>
                 </select>
             </div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
+         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
                 <div>
                     <label style="font-size: 13px; font-weight: 600; color: #495057; display: block; margin-bottom: 4px;">📦 Cartons</label>
                     <input
@@ -292,8 +292,8 @@ function chargerArticlesCommandeRCLP(){
                             document.getElementById('pieces_${code}').focus();
                         }
                     "
-                    value="${cartonsVal}"
-                    oninput="calculCommandeRCLP('${code}', ${colisage}, ${prix})">
+                    value="${cartonsVal ? cartonsVal : ''}"
+                    oninput="calculCommandeHDLP('${code}', ${colisage}, ${prix})">
                 </div>
                 <div>
                     <label style="font-size: 13px; font-weight: 600; color: #495057; display: block; margin-bottom: 4px;">🍾 Pièces</label>
@@ -304,7 +304,7 @@ function chargerArticlesCommandeRCLP(){
                     onkeydown="
                         if(event.key==='Enter'){
                             event.preventDefault();
-                            validerArticleCommandeRCLP(
+                            validerArticleCommandeHDLP(
                                 '${code}',
                                 '${article.article.replace(/'/g, "\\'")}',
                                 ${colisage},
@@ -312,8 +312,8 @@ function chargerArticlesCommandeRCLP(){
                             );
                         }
                     "
-                    value="${piecesVal}"
-                    oninput="calculCommandeRCLP('${code}', ${colisage}, ${prix})">
+                    value="${piecesVal ? piecesVal : ''}"
+                    oninput="calculCommandeHDLP('${code}', ${colisage}, ${prix})">
                 </div>
             </div>
             <div id="total_${code}" style="background: #f8f9fa; padding: 8px 12px; border-radius: 6px; text-align: right; font-weight: bold; color: #333; font-size: 14px; margin-bottom: 12px;">
