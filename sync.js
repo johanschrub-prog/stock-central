@@ -70,7 +70,40 @@ async function initialiserSynchroCloud(force = false) {
 function forcerSynchroCloud() {
     initialiserSynchroCloud(true);
 }
+// Fonction pour forcer l'envoi immédiat de toutes les données locales vers le Cloud (depuis le téléphone)
+async function forcerEnvoiCloud() {
+    try {
+        let payload = {};
+        CLES_SYNCHRO.forEach(cle => {
+            const val = localStorage.getItem(cle);
+            if (val !== null) {
+                try {
+                    payload[cle] = JSON.parse(val);
+                } catch (e) {
+                    payload[cle] = val;
+                }
+            }
+        });
 
+        const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "X-Master-Key": API_KEY
+            },
+            body: JSON.stringify(payload)
+        });
+
+        if (res.ok) {
+            alert("Sauvegarde envoyée sur le Cloud avec succès ! ☁️\nVous pouvez maintenant aller sur le PC et cliquer sur 'Synchroniser'.");
+        } else {
+            alert("Erreur lors de l'envoi vers le Cloud.");
+        }
+    } catch (err) {
+        console.error("Erreur :", err);
+        alert("Erreur de connexion avec le Cloud.");
+    }
+}
 // 2. Envoi groupé vers JSONBin (évite de saturer l'API si plusieurs sauvegardes s'enchaînent)
 function planifierEnvoiCloud() {
     clearTimeout(syncTimeout);
