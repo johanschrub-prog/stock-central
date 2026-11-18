@@ -567,22 +567,7 @@ function mettreAJourListeFournisseurs() {
     liste.innerHTML = listeFournisseurs.map(f => `<option value="${f}"></option>`).join("");
 }
 
-function importStock(event) {
-    const file = event.target.files[0];
-    if (!file) return;
 
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        const data = JSON.parse(e.target.result);
-        catalogueArticles = data.catalogue || {};
-        stockParCave = data.stocks || {};
-        memoCaves = data.memoCaves || {};
-        save();
-        render();
-        alert("Sauvegarde restaurée");
-    };
-    reader.readAsText(file);
-}
 
 function modifierArticle(code) {
     const article = catalogueArticles[code];
