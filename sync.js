@@ -1,17 +1,20 @@
 const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbw4UcWpB51ZECV9JHmS27t3HCIY-1nfs0ntbFW-5s7dF56fT_O_-2o0wzCVGAvpisV_/exec";
 
+// La liste de toutes les clés utilisées par votre application Stock Central
 const CLES_SYNCHRO = [
-    "inventaireHDLP",
-    "commandesHDLP",
-    "commandesRCLP",
-    "stockParCave",
-    "catalogueArticles",
-    "memoCaves",
+    "StockCentral",
+    "Fournisseurs",
+    "analyseOuverte",
+    "boutiqueData",
+    "caveData",
+    "miseCoupe",
     "mouvements",
-    "fournisseurs"
+    "remonteesEffectuees",
+    "commandesHDLP",
+    "commandesRCLP"
 ];
 
-// Charger les données depuis Google Sheets (pour le PC)
+// Charger les données depuis Google Sheets vers le PC
 async function forcerSynchroCloud() {
     try {
         const res = await fetch(WEB_APP_URL);
@@ -29,38 +32,33 @@ async function forcerSynchroCloud() {
         });
 
         alert("Synchronisation réussie ✅ Données à jour !");
-
-        // 1. Si votre application possède une fonction globale de rafraîchissement (ex: render, init, chargerStock...)
-        if (typeof render === "function") {
-            render();
-        } else if (typeof initialiserApp === "function") {
-            initialiserApp();
-        } else {
-            // 2. Sinon, on force un rechargement complet et propre de la page
-            location.reload();
-        }
+        
+        // Recharge la page pour afficher instantanément tous les articles et stocks
+        location.reload();
         
     } catch (err) {
         alert("Erreur de synchro : " + err.message);
     }
 }
 
-// Envoyer les données depuis le S26 Ultra (via une astuce anti-blocage mobile)
+// Envoyer les données depuis le téléphone vers Google Sheets
 function forcerEnvoiCloud() {
     try {
         let payload = {};
         CLES_SYNCHRO.forEach(cle => {
             const val = localStorage.getItem(cle);
             if (val !== null) {
-                try { payload[cle] = JSON.parse(val); } catch (e) { payload[cle] = val; }
+                try { 
+                    payload[cle] = JSON.parse(val); 
+                } catch (e) { 
+                    payload[cle] = val; 
+                }
             }
         });
 
-        // On compresse et encode tout dans l'URL
         const jsonString = encodeURIComponent(JSON.stringify(payload));
         
-        // La méthode magique pour mobile : on crée une fausse image invisible. 
-        // Le S26 Ultra l'autorise à 100% car il pense charger une image, mais cela envoie les données au serveur !
+        // Utilisation de l'image beacon pour contourner les sécurités mobiles (S26 Ultra)
         const img = new Image();
         img.src = `${WEB_APP_URL}?data=${jsonString}&t=${Date.now()}`;
         
@@ -69,7 +67,6 @@ function forcerEnvoiCloud() {
         };
         
         img.onerror = function() {
-            // Même en cas de petite erreur d'affichage d'image, les données sont passées
             alert("Sauvegarde envoyée sur le Cloud avec succès ! ☁️");
         };
 
