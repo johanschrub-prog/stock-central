@@ -232,13 +232,28 @@ function importStock(event) {
 
     const reader = new FileReader();
     reader.onload = function(e) {
-        const data = JSON.parse(e.target.result);
-        catalogueArticles = data.catalogue || {};
-        stockParCave = data.stocks || {};
-        memoCaves = data.memoCaves || {};
-        save();
-        render();
-        alert("Sauvegarde restaurée");
+        try {
+            const data = JSON.parse(e.target.result);
+            
+            // Si c'est votre fichier global "sauvegarde_s26.json"
+            if (data.StockCentral || data.caveData) {
+                Object.keys(data).forEach(cle => {
+                    const val = typeof data[cle] === 'object' ? JSON.stringify(data[cle]) : data[cle];
+                    localStorage.setItem(cle, val);
+                });
+            } else {
+                // Si c'est l'ancien format centré uniquement sur StockCentral
+                localStorage.setItem("StockCentral", JSON.stringify(data));
+            }
+
+            alert("✅ Sauvegarde restaurée avec succès !");
+            
+            // 🔄 FORCE LE RECHARGEMENT DE LA PAGE POUR TOUT AFFICHER
+            location.reload();
+
+        } catch (err) {
+            alert("Erreur lors de la lecture du fichier : " + err.message);
+        }
     };
     reader.readAsText(file);
 }
