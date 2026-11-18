@@ -20,7 +20,8 @@ async function forcerSynchroCloud() {
         let aChange = false;
         CLES_SYNCHRO.forEach(cle => {
             if (record[cle] !== undefined) {
-                const valeurCloud = JSON.stringify(record[cle]);
+                // On s'assure de stocker proprement la valeur (chaîne ou objet JSON)
+                const valeurCloud = typeof record[cle] === 'object' ? JSON.stringify(record[cle]) : record[cle];
                 if (localStorage.getItem(cle) !== valeurCloud) {
                     Storage.prototype.setItem.call(localStorage, cle, valeurCloud);
                     aChange = true;
@@ -28,12 +29,11 @@ async function forcerSynchroCloud() {
             }
         });
 
-        if (aChange || typeof render === "function") {
-            if (typeof render === "function") render();
-            alert("Synchronisation réussie ✅ Données à jour !");
-        } else {
-            alert("Les données étaient déjà à jour ✅");
-        }
+        alert("Synchronisation réussie ✅ Données à jour !");
+        
+        // Recharge la page automatiquement pour afficher les stocks
+        location.reload();
+        
     } catch (err) {
         alert("Erreur de synchro : " + err.message);
     }
