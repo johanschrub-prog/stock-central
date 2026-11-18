@@ -1,4 +1,4 @@
-const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbw4UcWpB51ZECV9JHmS27t3HCIY-1nfs0ntbFW-5s7dF56fT_O_-2o0wzCVGAvpisV_/exec";
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxrbN7vNPGOFjvJzxHUo9UHX2Aqh3BWggwIPMmfiZE/dev";
 
 const CLES_SYNCHRO = [
     "inventaireHDLP",
