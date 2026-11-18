@@ -36,7 +36,8 @@ async function forcerSynchroCloud() {
     }
 }
 // Envoyer les données depuis le téléphone (via une image beacon infaillible sur Android)
-function forcerEnvoiCloud() {
+// Envoyer les données depuis le téléphone vers le Cloud
+async function forcerEnvoiCloud() {
     try {
         let payload = {};
         CLES_SYNCHRO.forEach(cle => {
@@ -46,21 +47,21 @@ function forcerEnvoiCloud() {
             }
         });
 
+        console.log("Envoi des données en cours...", payload);
+
+        // On utilise fetch en mode POST (ou GET via URL encodée si le POST est bloqué)
         const jsonString = encodeURIComponent(JSON.stringify(payload));
-
-        // Envoi via une image invisible (contourne 100% des blocages CORS et POST du S26 Ultra)
-        const img = new Image();
-        img.src = `${WEB_APP_URL}?data=${jsonString}&t=${Date.now()}`;
         
-        img.onload = function() {
-            alert("✅ Données du téléphone envoyées sur le Cloud avec succès ! ☁️");
-        };
-        img.onerror = function() {
-            // Même en cas d'erreur de chargement d'image, la requête est bien partie vers Google Sheets
-            alert("✅ Données du téléphone transmises au Cloud ! ☁️");
-        };
+        const response = await fetch(`${WEB_APP_URL}?data=${jsonString}&t=${Date.now()}`);
+        const result = await response.json();
 
-    } catch (err) {
-        alert("Erreur technique : " + err.message);
+        if (result.status === "success") {
+            alert("✅ Données du téléphone envoyées sur le Cloud avec succès ! ☁️");
+        } else {
+            alert("⚠️ Erreur renvoyée par le Cloud : " + (result.message || "Inconnue"));
+        }
+
+    }Rela catch (err) {
+        alert("Erreur critique d'envoi : " + err.message);
     }
 }
