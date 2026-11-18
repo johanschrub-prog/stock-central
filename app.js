@@ -229,28 +229,28 @@ function remettreStocksAZero() {
 function importStock(event) {
     const file = event.target.files[0];
     if (!file) return;
-
     const reader = new FileReader();
     reader.onload = function(e) {
         try {
             const data = JSON.parse(e.target.result);
             
-            // Si c'est votre fichier global "sauvegarde_s26.json"
-            if (data.StockCentral || data.caveData) {
-                Object.keys(data).forEach(cle => {
-                    const val = typeof data[cle] === 'object' ? JSON.stringify(data[cle]) : data[cle];
-                    localStorage.setItem(cle, val);
-                });
-            } else {
-                // Si c'est l'ancien format centré uniquement sur StockCentral
+            // Si c'est une sauvegarde globale type sauvegarde_s26.json
+            if (data.StockCentral) {
+                localStorage.setItem("StockCentral", typeof data.StockCentral === 'object' ? JSON.stringify(data.StockCentral) : data.StockCentral);
+                if (data.Fournisseurs) localStorage.setItem("Fournisseurs", typeof data.Fournisseurs === 'object' ? JSON.stringify(data.Fournisseurs) : data.Fournisseurs);
+                if (data.mouvements) localStorage.setItem("mouvements", typeof data.mouvements === 'object' ? JSON.stringify(data.mouvements) : data.mouvements);
+            } 
+            // Si c'est un export direct au format { catalogue, stocks, memoCaves }
+            else if (data.catalogue || data.stocks) {
+                localStorage.setItem("StockCentral", JSON.stringify(data));
+            } 
+            // Format brut direct
+            else {
                 localStorage.setItem("StockCentral", JSON.stringify(data));
             }
 
             alert("✅ Sauvegarde restaurée avec succès !");
-            
-            // 🔄 FORCE LE RECHARGEMENT DE LA PAGE POUR TOUT AFFICHER
             location.reload();
-
         } catch (err) {
             alert("Erreur lors de la lecture du fichier : " + err.message);
         }
