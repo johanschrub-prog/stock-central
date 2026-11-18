@@ -124,8 +124,8 @@
 
     <div id="blocOutils" style="display:none; width:100%; margin-top:10px;">
         <button onclick="forcerSynchroCloud()" style="background: #1976d2; color: white;">
-    🔄 Synchroniser maintenant
-</button>
+            🔄 Synchroniser maintenant
+        </button>
         <button onclick="document.getElementById('importStock').click()">📂 Reprendre</button>
         <button onclick="document.getElementById('importFournisseurs').click()">🏷️ Import Fournisseurs</button>
         <button onclick="importCommandeHDLP()">🚚 Commandes HDLP</button>
@@ -135,10 +135,15 @@
         <button onclick="importVentesBoutique()">🛍️ Ventes Boutique</button>
         <button onclick="document.getElementById('importExcel').click()">📥 Import Inventaire</button>
         <button onclick="ouvrirReceptionRapide()">📦 Réception rapide</button>
-       <button onclick="forcerEnvoiCloud()" style="background: #2e7d32; color: white;">
-    📤 Sauvegarder & Envoyer sur le Cloud
-</button>
+        <button onclick="forcerEnvoiCloud()" style="background: #2e7d32; color: white;">
+            📤 Sauvegarder & Envoyer sur le Cloud
+        </button>
         <button onclick="remettreStocksAZero()">🧹 Remise à zéro des stocks</button>
+        
+        <!-- BOUTON DE TEST SYNCHRO MOBILE (Intégré dans les outils) -->
+        <button onclick="forcerEnvoiManuel()" style="background: #28a745; color: white; width: 100%;">
+            🚀 Pont de secours S26 Ultra vers Cloud
+        </button>
     </div>
 
     <div style="width:100%; display:flex; gap:10px; margin-top:10px;">
@@ -197,16 +202,32 @@
 <script src="fournisseurs.js"></script>
 <script src="app.js"></script>
 
-<!-- Script de gestion du menu Outils -->
+<!-- Script de gestion du menu Outils & Pont de secours mobile -->
 <script>
 let outilsOuverts = false;
+
 function toggleOutils(){
     outilsOuverts = !outilsOuverts;
     document.getElementById("blocOutils").style.display = outilsOuverts ? "flex" : "none";
     document.getElementById("flecheOutils").innerHTML = outilsOuverts ? "🔽 Outils" : "▶️ Outils";
 }
+
+function forcerEnvoiManuel() {
+    let payload = {};
+    ["StockCentral", "Fournisseurs", "caveData", "mouvements"].forEach(cle => {
+        const val = localStorage.getItem(cle);
+        if (val) { 
+            try { payload[cle] = JSON.parse(val); } catch(e){ payload[cle] = val; } 
+        }
+    });
+
+    const url = "https://script.google.com/macros/s/AKfycbweHWVFqGyM4kPRax1cZsf3dElNklbXW53HZw0SJzeKBxgjLshMGQppfz5TcMQdhC6X/exec?data=" + encodeURIComponent(JSON.stringify(payload));
+
+    // Ouvre l'URL dans un nouvel onglet pour forcer l'écriture GET contournant les sécurités Android
+    window.open(url, '_blank');
+    alert("Onglet d'envoi ouvert ! Vérifiez sur le PC après un court instant.");
+}
 </script>
 
 </body>
 </html>
-```[cite: 3]
