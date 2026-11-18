@@ -16,7 +16,7 @@ const CLES_SYNCHRO = [
 // Charger les données depuis Google Sheets vers le PC
 async function forcerSynchroCloud() {
     try {
-        const res = await fetch(WEB_APP_URL);
+        const res = await fetch(WEB_APP_URL + "?t=" + Date.now()); // Ajout d'un anti-cache pour être sûr d'avoir du frais
         const record = await res.json();
 
         CLES_SYNCHRO.forEach(cle => {
@@ -27,12 +27,14 @@ async function forcerSynchroCloud() {
         });
 
         alert("Synchronisation réussie ✅ Données à jour !");
+        
+        // 🔄 C'est cette ligne qui force ton écran PC à afficher les nouvelles données !
         location.reload();
+        
     } catch (err) {
         alert("Erreur de synchro : " + err.message);
     }
 }
-
 // Envoyer les données depuis le téléphone (via une image beacon infaillible sur Android)
 function forcerEnvoiCloud() {
     try {
