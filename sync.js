@@ -13,7 +13,7 @@ const CLES_SYNCHRO = [
 
 let syncTimeout = null;
 
-// Charger les données depuis Google Sheets
+// Charger les données depuis Google Sheets (PC ou Téléphone)
 async function forcerSynchroCloud() {
     try {
         const res = await fetch(WEB_APP_URL);
@@ -41,7 +41,7 @@ async function forcerSynchroCloud() {
     }
 }
 
-// Envoyer les données vers Google Sheets (depuis le téléphone)
+// Envoyer les données via une requête GET (contourne tous les blocages mobiles)
 async function forcerEnvoiCloud() {
     try {
         let payload = {};
@@ -52,11 +52,12 @@ async function forcerEnvoiCloud() {
             }
         });
 
-        const res = await fetch(WEB_APP_URL, {
-            method: "POST",
-            body: JSON.stringify(payload)
-        });
+        // On encode toutes les données proprement dans l'URL pour passer incognito
+        const jsonString = encodeURIComponent(JSON.stringify(payload));
+        const urlComplate = `${WEB_APP_URL}?data=${jsonString}`;
 
+        const res = await fetch(urlComplate);
+        
         if (res.ok) {
             alert("Sauvegarde envoyée sur le Cloud avec succès ! ☁️");
         } else {
@@ -66,24 +67,3 @@ async function forcerEnvoiCloud() {
         alert("Erreur technique : " + err.message);
     }
 }
-
-// Sauvegarde auto en arrière-plan
-function planifierEnvoiCloud() {
-    clearTimeout(syncTimeout);
-    syncTimeout = setTimeout(async () => {
-        let payload = {};
-        CLES_SYNCHRO.forEach(cle => {
-            const val = localStorage.getItem(cle);
-            if (val !== null) {
-                try { payload[cle] = JSON.parse(val); } catch (e) { payload[cle] = val; }
-            }
-        });
-        await fetch(WEB_APP_URL, { method: "POST", body: JSON.stringify(payload) });
-    }, 1500);
-}
-
-const originalSetItem = localStorage.setItem;
-localStorage.setItem = function(key, value) {
-    originalSetItem.apply(this, arguments);
-    if (CLES_SYNCHRO.includes(key)) planifierEnvoiCloud();
-};
