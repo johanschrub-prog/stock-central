@@ -234,26 +234,26 @@ function importStock(event) {
         try {
             const rawData = JSON.parse(e.target.result);
             
-            // On déballe automatiquement si les données sont cachées dans l'enveloppe StockCentral
-            const data = rawData.StockCentral ? rawData.StockCentral : rawData;
+            // On cible directement l'objet StockCentral de ton fichier S26
+            const dataContainer = rawData.StockCentral ? rawData.StockCentral : rawData;
             
-            // On injecte proprement dans les variables de l'application
-            catalogueArticles = data.catalogue || {};
-            stockParCave = data.stocks || {};
+            // Injection de tout ton catalogue, tes stocks et tes mémo-caves d'un seul coup
+            catalogueArticles = dataContainer.catalogue || {};
+            stockParCave = dataContainer.stocks || {};
             memoCaves = data.memoCaves || {};
             
-            // On sauvegarde dans le localStorage du PC
+            // Sauvegarde dans le localStorage du PC
             save();
             
-            // Si le fichier contient aussi la liste des fournisseurs
+            // Si le fichier contient aussi les fournisseurs
             if (rawData.Fournisseurs) {
-                localStorage.setItem("Fournisseurs", typeof rawData.Fournisseurs === 'object' ? JSON.stringify(rawData.Fournisseurs) : rawData.Fournisseurs);
+                localStorage.setItem("Fournisseurs", JSON.stringify(rawData.Fournisseurs));
                 fournisseurs = JSON.parse(localStorage.getItem("Fournisseurs")) || [];
             }
 
-            alert("✅ Sauvegarde de ton S26 Ultra restaurée et intégrée avec succès !");
+            alert("✅ Ta sauvegarde complète a été importée avec succès !");
             
-            // 🔄 Rechargement forcé pour afficher les données sur le PC
+            // Actualisation totale de l'affichage
             location.reload();
         } catch (err) {
             alert("Erreur lors de la lecture du fichier : " + err.message);
