@@ -214,18 +214,23 @@ function toggleOutils(){
 
 function forcerEnvoiManuel() {
     let payload = {};
-    ["StockCentral", "Fournisseurs", "caveData", "mouvements"].forEach(cle => {
+    
+    // On ne prend que le cœur de l'inventaire pour alléger l'URL au maximum
+    ["StockCentral"].forEach(cle => {
         const val = localStorage.getItem(cle);
         if (val) { 
             try { payload[cle] = JSON.parse(val); } catch(e){ payload[cle] = val; } 
         }
     });
 
-    const url = "https://script.google.com/macros/s/AKfycbweHWVFqGyM4kPRax1cZsf3dElNklbXW53HZw0SJzeKBxgjLshMGQppfz5TcMQdhC6X/exec?data=" + encodeURIComponent(JSON.stringify(payload));
+    const jsonStr = JSON.stringify(payload);
+    console.log("Taille du message :", jsonStr.length, "caractères");
 
-    // Ouvre l'URL dans un nouvel onglet pour forcer l'écriture GET contournant les sécurités Android
+    const url = "https://script.google.com/macros/s/AKfycbweHWVFqGyM4kPRax1cZsf3dElNklbXW53HZw0SJzeKBxgjLshMGQppfz5TcMQdhC6X/exec?data=" + encodeURIComponent(jsonStr);
+
+    // Ouvre l'URL allégée
     window.open(url, '_blank');
-    alert("Onglet d'envoi ouvert ! Vérifiez sur le PC après un court instant.");
+    alert("Envoi allégé déclenché ! Vérifiez sur le PC dans 5 secondes.");
 }
 </script>
 
