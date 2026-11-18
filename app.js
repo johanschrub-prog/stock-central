@@ -232,31 +232,28 @@ function importStock(event) {
     const reader = new FileReader();
     reader.onload = function(e) {
         try {
-            const data = JSON.parse(e.target.result);
+            const rawData = JSON.parse(e.target.result);
             
-            // On gère tous les cas possibles de structure (fichier global ou direct)
-            let donneesAInjecter = data;
-            if (data.StockCentral) {
-                donneesAInjecter = typeof data.StockCentral === 'string' ? JSON.parse(data.StockCentral) : data.StockCentral;
-            }
+            // On déballe automatiquement si les données sont cachées dans l'enveloppe StockCentral
+            const data = rawData.StockCentral ? rawData.StockCentral : rawData;
             
-            // On extrait proprement le catalogue, les stocks et les mémo-caves
-            if (donneesAInjecter.catalogue) catalogueArticles = donneesAInjecter.catalogue;
-            if (donneesAInjecter.stocks) stockParCave = donneesAInjecter.stocks;
-            if (donneesAInjecter.memoCaves) memoCaves = donneesAInjecter.memoCaves;
-
-            // On sauvegarde le tout sous la bonne clé pour l'application PC
+            // On injecte proprement dans les variables de l'application
+            catalogueArticles = data.catalogue || {};
+            stockParCave = data.stocks || {};
+            memoCaves = data.memoCaves || {};
+            
+            // On sauvegarde dans le localStorage du PC
             save();
             
-            // Si le fichier contient d'autres clés globales (Fournisseurs, etc.)
-            if (data.Fournisseurs) {
-                localStorage.setItem("Fournisseurs", typeof data.Fournisseurs === 'object' ? JSON.stringify(data.Fournisseurs) : data.Fournisseurs);
+            // Si le fichier contient aussi la liste des fournisseurs
+            if (rawData.Fournisseurs) {
+                localStorage.setItem("Fournisseurs", typeof rawData.Fournisseurs === 'object' ? JSON.stringify(rawData.Fournisseurs) : rawData.Fournisseurs);
                 fournisseurs = JSON.parse(localStorage.getItem("Fournisseurs")) || [];
             }
 
-            alert("✅ Sauvegarde de ton S26 Ultra restaurée avec succès sur le PC !");
+            alert("✅ Sauvegarde de ton S26 Ultra restaurée et intégrée avec succès !");
             
-            // 🔄 RECHARGEMENT POUR METTRE À JOUR L'INTERFACE
+            // 🔄 Rechargement forcé pour afficher les données sur le PC
             location.reload();
         } catch (err) {
             alert("Erreur lors de la lecture du fichier : " + err.message);
