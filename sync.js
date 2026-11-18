@@ -1,6 +1,5 @@
 const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbw4UcWpB51ZECV9JHmS27t3HCIY-1nfs0ntbFW-5s7dF56fT_O_-2o0wzCVGAvpisV_/exec";
 
-// La liste de toutes les clés utilisées par votre application Stock Central
 const CLES_SYNCHRO = [
     "StockCentral",
     "Fournisseurs",
@@ -14,7 +13,7 @@ const CLES_SYNCHRO = [
     "commandesRCLP"
 ];
 
-// Charger les données depuis Google Sheets vers le PC
+// 1. Charger les données depuis Google Sheets vers le PC
 async function forcerSynchroCloud() {
     try {
         const res = await fetch(WEB_APP_URL);
@@ -32,8 +31,6 @@ async function forcerSynchroCloud() {
         });
 
         alert("Synchronisation réussie ✅ Données à jour !");
-        
-        // Recharge la page pour afficher instantanément tous les articles et stocks
         location.reload();
         
     } catch (err) {
@@ -41,36 +38,38 @@ async function forcerSynchroCloud() {
     }
 }
 
-// Envoyer les données depuis le téléphone vers Google Sheets
-function forcerEnvoiCloud() {
+// 2. Envoyer les données vers Google Sheets
+async function forcerEnvoiCloud() {
     try {
         let payload = {};
         CLES_SYNCHRO.forEach(cle => {
             const val = localStorage.getItem(cle);
             if (val !== null) {
-                try { 
-                    payload[cle] = JSON.parse(val); 
-                } catch (e) { 
-                    payload[cle] = val; 
-                }
+                try { payload[cle] = JSON.parse(val); } catch (e) { payload[cle] = val; }
             }
         });
 
-        const jsonString = encodeURIComponent(JSON.stringify(payload));
-        
-        // Utilisation de l'image beacon pour contourner les sécurités mobiles (S26 Ultra)
-        const img = new Image();
-        img.src = `${WEB_APP_URL}?data=${jsonString}&t=${Date.now()}`;
-        
-        img.onload = function() {
-            alert("Sauvegarde envoyée sur le Cloud avec succès ! ☁️");
-        };
-        
-        img.onerror = function() {
-            alert("Sauvegarde envoyée sur le Cloud avec succès ! ☁️");
-        };
+        const jsonString = JSON.stringify(payload);
 
-    } catch (err) {
+        // Si on est sur PC, on utilise fetch en POST (pas de limite de taille)
+        // Si on est sur mobile, l'image beacon prend le relais en cas de besoin
+        if (navigator.userAgent.includes("Mobile") || navigator.userAgent.includes("Android")) {
+            const img = new Image();
+            img.src = `${WEB_APP_URL}?data=${encodeURIComponent(jsonString)}&t=${Date.now()}`;
+            img.onload = () => alert("Sauvegarde envoyée sur le Cloud (Mobile) ! ☁️");
+            img.onerror = () => alert("Sauvegarde envoyée sur le Cloud (Mobile) ! ☁️");
+        } else {
+            const res = await fetch(WEB_APP_URL, {
+                method: "POST",
+                body: jsonString
+            });
+            if (res.ok) {
+                alert("Sauvegarde envoyée sur le Cloud (PC) avec succès ! ☁️");
+            } else {
+                alert("Erreur lors de l'envoi.");
+            }
+        }
+    }     catch (err) {
         alert("Erreur technique : " + err.message);
     }
 }
