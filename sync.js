@@ -20,7 +20,6 @@ async function forcerSynchroCloud() {
         let aChange = false;
         CLES_SYNCHRO.forEach(cle => {
             if (record[cle] !== undefined) {
-                // On s'assure de stocker proprement la valeur (chaîne ou objet JSON)
                 const valeurCloud = typeof record[cle] === 'object' ? JSON.stringify(record[cle]) : record[cle];
                 if (localStorage.getItem(cle) !== valeurCloud) {
                     Storage.prototype.setItem.call(localStorage, cle, valeurCloud);
@@ -30,9 +29,16 @@ async function forcerSynchroCloud() {
         });
 
         alert("Synchronisation réussie ✅ Données à jour !");
-        
-        // Recharge la page automatiquement pour afficher les stocks
-        location.reload();
+
+        // 1. Si votre application possède une fonction globale de rafraîchissement (ex: render, init, chargerStock...)
+        if (typeof render === "function") {
+            render();
+        } else if (typeof initialiserApp === "function") {
+            initialiserApp();
+        } else {
+            // 2. Sinon, on force un rechargement complet et propre de la page
+            location.reload();
+        }
         
     } catch (err) {
         alert("Erreur de synchro : " + err.message);
