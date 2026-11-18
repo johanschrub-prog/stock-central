@@ -51,19 +51,19 @@ async function forcerEnvoiCloud() {
 
         const jsonString = JSON.stringify(payload);
 
-        // On utilise fetch en POST avec un mode "no-cors" spécifique pour mobile si besoin, 
-        // ou l'envoi direct via fetch standard qui fonctionne souvent très bien en 5G/WiFi sur S26 Ultra
+        // Envoi direct en POST (supporte les gros volumes de données du téléphone)
         const res = await fetch(WEB_APP_URL, {
             method: "POST",
+            headers: {
+                "Content-Type": "text/plain;charset=utf-8"
+            },
             body: jsonString
         });
 
-        alert("Données du téléphone envoyées sur le Cloud avec succès ! ☁️");
+        const resultText = await res.text();
+        alert("✅ Succès ! Données envoyées depuis le S26 Ultra : " + resultText);
+        
     } catch (err) {
-        // En cas de blocage CORS mobile, on utilise l'alternative propre en morceaux
-        alert("Erreur, tentative alternative...");
-        const img = new Image();
-        img.src = `${WEB_APP_URL}?data=${encodeURIComponent(jsonString.substring(0, 1500))}&t=${Date.now()}`;
-        alert("Sauvegarde mobile transmise !");
+        alert("Erreur d'envoi mobile : " + err.message);
     }
 }
