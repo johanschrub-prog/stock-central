@@ -1,4 +1,4 @@
-const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbw4UcWpB51ZECV9JHmS27t3HCIY-1nfs0ntbFW-5s7dF56fT_O_-2o0wzCVGAvpisV_/exec";
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbweHWVFqGyM4kPRax1cZsf3dElNklbXW53HZw0SJzeKBxgjLshMGQppfz5TcMQdhC6X/exec";
 
 const CLES_SYNCHRO = [
     "StockCentral",
