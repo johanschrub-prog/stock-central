@@ -234,26 +234,28 @@ function importStock(event) {
         try {
             const rawData = JSON.parse(e.target.result);
             
-            // On cible directement l'objet StockCentral de ton fichier S26
+            // On ouvre l'enveloppe "StockCentral" si elle existe
             const dataContainer = rawData.StockCentral ? rawData.StockCentral : rawData;
             
-            // Injection de tout ton catalogue, tes stocks et tes mémo-caves d'un seul coup
             catalogueArticles = dataContainer.catalogue || {};
             stockParCave = dataContainer.stocks || {};
-            memoCaves = data.memoCaves || {};
+            memoCaves = dataContainer.memoCaves || {};
             
             // Sauvegarde dans le localStorage du PC
             save();
             
-            // Si le fichier contient aussi les fournisseurs
+            // Restauration des autres données du fichier global (Fournisseurs, mouvements, etc.)
             if (rawData.Fournisseurs) {
-                localStorage.setItem("Fournisseurs", JSON.stringify(rawData.Fournisseurs));
-                fournisseurs = JSON.parse(localStorage.getItem("Fournisseurs")) || [];
+                localStorage.setItem("Fournisseurs", typeof rawData.Fournisseurs === 'object' ? JSON.stringify(rawData.Fournisseurs) : rawData.Fournisseurs);
+            }
+            if (rawData.mouvements) {
+                localStorage.setItem("mouvements", typeof rawData.mouvements === 'object' ? JSON.stringify(rawData.mouvements) : rawData.mouvements);
+            }
+            if (rawData.remonteesEffectuees) {
+                localStorage.setItem("remonteesEffectuees", typeof rawData.remonteesEffectuees === 'object' ? JSON.stringify(rawData.remonteesEffectuees) : rawData.remonteesEffectuees);
             }
 
-            alert("✅ Ta sauvegarde complète a été importée avec succès !");
-            
-            // Actualisation totale de l'affichage
+            alert("✅ Sauvegarde restaurée avec succès ! (" + Object.keys(catalogueArticles).length + " articles chargés)");
             location.reload();
         } catch (err) {
             alert("Erreur lors de la lecture du fichier : " + err.message);
@@ -261,7 +263,6 @@ function importStock(event) {
     };
     reader.readAsText(file);
 }
-
 function exportStock() {
     const data = { catalogue: catalogueArticles, stocks: stockParCave, memoCaves: memoCaves };
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
