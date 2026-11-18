@@ -86,6 +86,8 @@ async function forcerEnvoiCloud() {
             }
         });
 
+        console.log("Tentative d'envoi vers JSONBin avec le Bin ID :", BIN_ID);
+
         const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
             method: "PUT",
             headers: {
@@ -95,14 +97,18 @@ async function forcerEnvoiCloud() {
             body: JSON.stringify(payload)
         });
 
+        // On récupère le texte exact de la réponse du serveur
+        const reponseTexte = await res.text();
+        console.log("Réponse du serveur :", res.status, reponseTexte);
+
         if (res.ok) {
-            alert("Sauvegarde envoyée sur le Cloud avec succès ! ☁️\nVous pouvez maintenant aller sur le PC et cliquer sur 'Synchroniser'.");
+            alert("Sauvegarde envoyée sur le Cloud avec succès ! ☁️");
         } else {
-            alert("Erreur lors de l'envoi vers le Cloud.");
+            alert(`Erreur du serveur (${res.status}) : ${reponseTexte}`);
         }
     } catch (err) {
-        console.error("Erreur :", err);
-        alert("Erreur de connexion avec le Cloud.");
+        console.error("Erreur technique détaillée :", err);
+        alert("Erreur bloquante (regardez la console) : " + err.message);
     }
 }
 // 2. Envoi groupé vers JSONBin (évite de saturer l'API si plusieurs sauvegardes s'enchaînent)
