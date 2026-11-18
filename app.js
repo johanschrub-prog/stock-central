@@ -234,17 +234,15 @@ function importStock(event) {
         try {
             const rawData = JSON.parse(e.target.result);
             
-            // On ouvre l'enveloppe "StockCentral" si elle existe
             const dataContainer = rawData.StockCentral ? rawData.StockCentral : rawData;
             
             catalogueArticles = dataContainer.catalogue || {};
             stockParCave = dataContainer.stocks || {};
             memoCaves = dataContainer.memoCaves || {};
             
-            // Sauvegarde dans le localStorage du PC
             save();
             
-            // Restauration des autres données du fichier global (Fournisseurs, mouvements, etc.)
+            // Restauration de TOUTES les données globales (fournisseurs, mouvements, remontées ET commandes)
             if (rawData.Fournisseurs) {
                 localStorage.setItem("Fournisseurs", typeof rawData.Fournisseurs === 'object' ? JSON.stringify(rawData.Fournisseurs) : rawData.Fournisseurs);
             }
@@ -254,8 +252,15 @@ function importStock(event) {
             if (rawData.remonteesEffectuees) {
                 localStorage.setItem("remonteesEffectuees", typeof rawData.remonteesEffectuees === 'object' ? JSON.stringify(rawData.remonteesEffectuees) : rawData.remonteesEffectuees);
             }
+            // ⬇️ LES LIGNES QU'IL MANQUAIT POUR LES COMMANDES :
+            if (rawData.commandesHDLP) {
+                localStorage.setItem("commandesHDLP", typeof rawData.commandesHDLP === 'object' ? JSON.stringify(rawData.commandesHDLP) : rawData.commandesHDLP);
+            }
+            if (rawData.commandesRCLP) {
+                localStorage.setItem("commandesRCLP", typeof rawData.commandesRCLP === 'object' ? JSON.stringify(rawData.commandesRCLP) : rawData.commandesRCLP);
+            }
 
-            alert("✅ Sauvegarde restaurée avec succès ! (" + Object.keys(catalogueArticles).length + " articles chargés)");
+            alert("✅ Sauvegarde et commandes restaurées avec succès ! (" + Object.keys(catalogueArticles).length + " articles)");
             location.reload();
         } catch (err) {
             alert("Erreur lors de la lecture du fichier : " + err.message);
