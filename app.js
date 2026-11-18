@@ -234,22 +234,29 @@ function importStock(event) {
         try {
             const data = JSON.parse(e.target.result);
             
-            // Si c'est une sauvegarde globale type sauvegarde_s26.json
+            // On gère tous les cas possibles de structure (fichier global ou direct)
+            let donneesAInjecter = data;
             if (data.StockCentral) {
-                localStorage.setItem("StockCentral", typeof data.StockCentral === 'object' ? JSON.stringify(data.StockCentral) : data.StockCentral);
-                if (data.Fournisseurs) localStorage.setItem("Fournisseurs", typeof data.Fournisseurs === 'object' ? JSON.stringify(data.Fournisseurs) : data.Fournisseurs);
-                if (data.mouvements) localStorage.setItem("mouvements", typeof data.mouvements === 'object' ? JSON.stringify(data.mouvements) : data.mouvements);
-            } 
-            // Si c'est un export direct au format { catalogue, stocks, memoCaves }
-            else if (data.catalogue || data.stocks) {
-                localStorage.setItem("StockCentral", JSON.stringify(data));
-            } 
-            // Format brut direct
-            else {
-                localStorage.setItem("StockCentral", JSON.stringify(data));
+                donneesAInjecter = typeof data.StockCentral === 'string' ? JSON.parse(data.StockCentral) : data.StockCentral;
+            }
+            
+            // On extrait proprement le catalogue, les stocks et les mémo-caves
+            if (donneesAInjecter.catalogue) catalogueArticles = donneesAInjecter.catalogue;
+            if (donneesAInjecter.stocks) stockParCave = donneesAInjecter.stocks;
+            if (donneesAInjecter.memoCaves) memoCaves = donneesAInjecter.memoCaves;
+
+            // On sauvegarde le tout sous la bonne clé pour l'application PC
+            save();
+            
+            // Si le fichier contient d'autres clés globales (Fournisseurs, etc.)
+            if (data.Fournisseurs) {
+                localStorage.setItem("Fournisseurs", typeof data.Fournisseurs === 'object' ? JSON.stringify(data.Fournisseurs) : data.Fournisseurs);
+                fournisseurs = JSON.parse(localStorage.getItem("Fournisseurs")) || [];
             }
 
-            alert("✅ Sauvegarde restaurée avec succès !");
+            alert("✅ Sauvegarde de ton S26 Ultra restaurée avec succès sur le PC !");
+            
+            // 🔄 RECHARGEMENT POUR METTRE À JOUR L'INTERFACE
             location.reload();
         } catch (err) {
             alert("Erreur lors de la lecture du fichier : " + err.message);
