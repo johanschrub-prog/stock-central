@@ -1,5 +1,5 @@
 const SUPABASE_URL = "https://ruliocancqpgrxmwxmzx.supabase.co";
-const SUPABASE_ANON_KEY = "sb_publishable_-sW0kf2vJQjRCoDJBUxBcQ_J-IVPbQD";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ1bGlvY2FuY3FwZ3J4bXd4bXp4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMxMDA4NjQsImV4cCI6MjEwODY3Njg2NH0.Yx68tyvaU1fLXhtN4Wfp-B8pMOktp7w8tE6v7Pn22do";
 const SUPABASE_ROW_ID = "main_state";
 
 const CLES_SYNCHRO = [
