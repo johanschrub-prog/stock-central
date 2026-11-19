@@ -1,5 +1,5 @@
 const SUPABASE_URL = "https://ruliocancqpgrxmwxmzx.supabase.co";
-const SUPABASE_ANON_KEY = "COLLE_TA_CLE_ANON_ICI";
+const SUPABASE_ANON_KEY = "sb_publishable_-sW0kf2vJQjRCoDJBUxBcQ_J-IVPbQD";
 const SUPABASE_ROW_ID = "main_state";
 
 const CLES_SYNCHRO = [
