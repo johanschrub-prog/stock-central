@@ -34,6 +34,9 @@ function save() {
         memoCaves: memoCaves
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(dataAEnregistrer));
+    if (typeof planifierSauvegardeAuto === "function") {
+        planifierSauvegardeAuto();
+    }
 }
 function obtenirArticleEtStock(categorie, codeArticle) {
     const infosArticle = catalogueArticles[codeArticle] || {};
@@ -429,6 +432,9 @@ function saveFournisseurs(){
         "Fournisseurs",
         JSON.stringify(fournisseurs)
     );
+    if (typeof planifierSauvegardeAuto === "function") {
+        planifierSauvegardeAuto();
+    }
 }
 function renderOnglets() {
     document.getElementById("ongletsPrincipaux").innerHTML = `
