@@ -2084,6 +2084,139 @@ function saveRemonteesEffectuees(data){
     }
     localStorage.setItem("remonteesEffectuees", JSON.stringify(data));
 }
+function ouvrirStockFournisseur() {
+    // Ferme le menu Outils s'il est ouvert pour laisser de la place à l'écran
+    if (typeof outilsOuverts !== "undefined" && outilsOuverts && typeof toggleOutils === "function") {
+        toggleOutils();
+    }
+
+    const nomsSet = new Set();
+
+    (fournisseurs || []).forEach(f => {
+        const nom = String(f.nom || "").trim();
+        if (nom) nomsSet.add(nom);
+    });
+
+    Object.values(catalogueArticles || {}).forEach(art => {
+        const nom = String(art.fournisseur || "").trim();
+        if (nom) nomsSet.add(nom);
+    });
+
+    const listeNoms = [...nomsSet].sort((a, b) =>
+        a.localeCompare(b, "fr", { sensitivity: "base" })
+    );
+
+    const fournisseurSelectionne = localStorage.getItem("fournisseurStockFiltre") || "";
+
+    document.getElementById("cards").innerHTML = `
+    <div class="card" style="border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); padding: 20px; background: #fff; box-sizing: border-box;">
+        <h2 style="margin-top: 0; color: #333; font-size: 20px;">🏭 Stock par fournisseur</h2>
+        <label style="font-size: 13px; font-weight: bold; color: #495057; display: block; margin-bottom: 6px;">
+            Choisir un fournisseur
+        </label>
+        <select id="selectFournisseurStock" onchange="localStorage.setItem('fournisseurStockFiltre', this.value); afficherResultatStockFournisseur();" style="width: 100%; padding: 12px; font-size: 16px; border: 1px solid #ced4da; border-radius: 8px; background: white; box-sizing: border-box;">
+            <option value="">-- Sélectionner un fournisseur --</option>
+            ${listeNoms.map(nom => `
+                <option value="${nom.replace(/"/g, "&quot;")}" ${fournisseurSelectionne === nom ? "selected" : ""}>
+                    ${nom}
+                </option>
+            `).join("")}
+        </select>
+    </div>
+    <div id="resultatStockFournisseur"></div>
+    `;
+
+    afficherResultatStockFournisseur();
+}
+
+function afficherResultatStockFournisseur() {
+    const conteneur = document.getElementById("resultatStockFournisseur");
+    if (!conteneur) return;
+
+    const fournisseurChoisi = (document.getElementById("selectFournisseurStock")?.value || "").trim();
+    if (!fournisseurChoisi) {
+        conteneur.innerHTML = `
+        <div class="card" style="text-align: center; color: #666;">
+            Sélectionne un fournisseur dans la liste ci-dessus pour voir les stocks HDLP et RCLP.
+        </div>`;
+        return;
+    }
+
+    const cibleUpper = fournisseurChoisi.toUpperCase();
+    const lignes = [];
+
+    Object.keys(catalogueArticles || {}).forEach(code => {
+        const art = catalogueArticles[code];
+        if (!art) return;
+        if (String(art.fournisseur || "").trim().toUpperCase() !== cibleUpper) return;
+
+        let stockHDLP = 0;
+        let stockRCLP = 0;
+
+        (categories.HDLP || []).forEach(cave => {
+            stockHDLP += Number(stockParCave[cave]?.[code] || 0);
+        });
+        (categories.RCLP || []).forEach(cave => {
+            stockRCLP += Number(stockParCave[cave]?.[code] || 0);
+        });
+
+        const total = stockHDLP + stockRCLP;
+        const prix = Number(art.prix || 0);
+
+        lignes.push({
+            code: code,
+            article: art.article || "Article sans nom",
+            refFournisseur: art.codeFournisseur || "",
+            prix: prix,
+            stockHDLP: stockHDLP,
+            stockRCLP: stockRCLP,
+            total: total,
+            valeurTotal: total * prix
+        });
+    });
+
+    lignes.sort((a, b) => (parseInt(a.code, 10) || 0) - (parseInt(b.code, 10) || 0) || String(a.code).localeCompare(String(b.code)));
+
+    const totalHDLP = lignes.reduce((s, x) => s + x.stockHDLP, 0);
+    const totalRCLP = lignes.reduce((s, x) => s + x.stockRCLP, 0);
+    const totalGlobal = lignes.reduce((s, x) => s + x.total, 0);
+    const valeurGlobale = lignes.reduce((s, x) => s + x.valeurTotal, 0);
+
+    let html = `
+    <div class="card" style="border-radius: 12px; padding: 16px; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin-bottom: 12px;">
+        <h3 style="margin: 0 0 10px 0;">📊 Résumé — ${fournisseurChoisi}</h3>
+        <div>Articles référencés : <b>${lignes.length}</b></div>
+        <div>🏨 Total HDLP : <b>${totalHDLP}</b></div>
+        <div>🍴 Total RCLP : <b>${totalRCLP}</b></div>
+        <div>📦 Stock total : <b>${totalGlobal}</b></div>
+        <div>💶 Valeur totale : <b style="color:#1976d2;">${valeurGlobale.toFixed(2)} €</b></div>
+    </div>
+    `;
+
+    if (lignes.length === 0) {
+        html += `<div class="card">Aucun article associé à ce fournisseur dans le catalogue.</div>`;
+        conteneur.innerHTML = html;
+        return;
+    }
+
+    lignes.forEach(item => {
+        html += `
+        <div class="card" style="border-radius: 12px; padding: 15px; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.06); margin-bottom: 10px;">
+            <div style="font-size: 16px; font-weight: bold; color: #333; margin-bottom: 4px;">${item.article}</div>
+            <div style="font-size: 12px; color: #666; margin-bottom: 10px;">
+                Code : <b>${item.code}</b>${item.refFournisseur ? ` • Réf. : <b>${item.refFournisseur}</b>` : ""} • Prix : <b>${item.prix.toFixed(2)} €</b>
+            </div>
+            <div style="display: flex; justify-content: space-between; background: #f8f9fa; padding: 10px; border-radius: 8px; font-size: 14px;">
+                <span>🏨 HDLP : <b>${item.stockHDLP}</b></span>
+                <span>🍴 RCLP : <b>${item.stockRCLP}</b></span>
+                <span>📦 Total : <b>${item.total}</b></span>
+            </div>
+        </div>
+        `;
+    });
+
+    conteneur.innerHTML = html;
+}
 // Initialisation au démarrage
 mettreAJourSuggestions();
 changerSite("DASHBOARD");
