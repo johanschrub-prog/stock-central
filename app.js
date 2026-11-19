@@ -1722,14 +1722,8 @@ function render() {
                 `;
             });
 
-            const boutonMaj = `
-            <div class="card">
-                <button onclick="mettreAJourStockJson()" style="width:100%; height:70px; background:#28a745; color:white; font-size:22px; font-weight:bold; border:none; border-radius:8px;">
-                    🔄 METTRE À JOUR STOCK.JSON
-                </button>
-            </div>
-            `;
-            document.getElementById("cards").innerHTML = boutonMaj + htmlRecherche;
+          
+          document.getElementById("cards").innerHTML = htmlRecherche;
             return;
         }
 
