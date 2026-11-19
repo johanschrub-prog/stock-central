@@ -113,7 +113,12 @@
 <div id="sousOnglets" class="tabs"></div>
 <div class="toolbar">
     <input type="file" id="importStock" accept=".json" style="display:none" onchange="importStock(event)">
-    
+    <div class="toolbar">
+    <input type="file" id="importStock" accept=".json" style="display:none" onchange="importStock(event)">
+
+    <button onclick="ouvrirStockFournisseur()" style="width:100%; min-height:56px; font-size:18px; font-weight:bold; background:#6f42c1; color:white; border:none; border-radius:8px; cursor:pointer;">
+        🏭 Stock fournisseur
+    </button>
     <button id="flecheOutils" onclick="toggleOutils()" style="width:100%; min-height:60px; font-size:20px; font-weight:bold;">
         ▶️ Outils
     </button>
