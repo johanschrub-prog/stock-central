@@ -1892,8 +1892,8 @@ function afficherFournisseurs(){
                 <label style="font-size: 12px; font-weight: bold; color: #495057; display: block; margin-bottom: 4px;">✉️ Adresse e-mail</label>
                 <input type="email" value="${f.email || ''}" onchange="modifierFournisseur('${f.id}', 'email', this.value)" style="width: 100%; padding: 8px; font-size: 15px; border: 1px solid #ced4da; border-radius: 6px; box-sizing: border-box; margin-bottom: 8px;">
                 
-               <button type="button" onclick="ouvrirMailOutlook('${f.email || ''}')" style="width: 100%; height: 45px; background: #ff9800; color: white; font-weight: bold; border: none; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
-    📧 Envoyer un mail (Économat)
+           <button type="button" onclick="location.href='mailto:${f.email || ''}'" style="width: 100%; height: 45px; background: #ff9800; color: white; font-weight: bold; border: none; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
+    📧 Envoyer un mail
 </button>
             </div>
             <hr style="border: none; border-top: 1px solid #eee; margin: 12px 0;">
