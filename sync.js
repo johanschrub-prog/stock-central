@@ -93,3 +93,62 @@ async function forcerSynchroCloud() {
         alert("❌ Erreur de synchro Supabase : " + err.message);
     }
 }
+let timerSauvegardeAuto = null;
+
+function majStatutCloud(texte, couleur = "#5c6672") {
+    const el = document.getElementById("statutCloud");
+    if (!el) return;
+    el.textContent = texte;
+    el.style.color = couleur;
+}
+
+async function envoyerCloudSilencieux() {
+    if (typeof SUPABASE_URL === "undefined" || typeof SUPABASE_ANON_KEY === "undefined") return;
+
+    majStatutCloud("☁️ Envoi Cloud...", "#1976d2");
+
+    try {
+        const payload = {};
+        const cles = typeof CLES_SYNCHRO !== "undefined" ? CLES_SYNCHRO : [
+            "StockCentral", "Fournisseurs", "analyseOuverte", "boutiqueData",
+            "caveData", "miseCoupe", "mouvements", "remonteesEffectuees",
+            "commandesHDLP", "commandesRCLP", "filtreCategorie", "filtreStock",
+            "categorieDashboard", "stockMiniDashboard"
+        ];
+
+        cles.forEach(cle => {
+            const val = localStorage.getItem(cle);
+            if (val !== null) {
+                try { payload[cle] = JSON.parse(val); } catch (e) { payload[cle] = val; }
+            }
+        });
+
+        const url = `${SUPABASE_URL}/rest/v1/stockcentral_sync?id=eq.${encodeURIComponent(SUPABASE_ROW_ID)}`;
+        const res = await fetch(url, {
+            method: "PATCH",
+            headers: headersSupabase(true),
+            body: JSON.stringify({
+                payload: payload,
+                updated_at: new Date().toISOString()
+            })
+        });
+
+        if (!res.ok) {
+            majStatutCloud("⚠️ Cloud : erreur (" + res.status + ")", "#c62828");
+            return;
+        }
+
+        const heure = new Date().toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
+        majStatutCloud(`☁️ Cloud synchro à ${heure}`, "#2e7d32");
+    } catch (err) {
+        majStatutCloud("⚠️ Cloud : hors ligne / à vérifier", "#ef6c00");
+    }
+}
+
+function planifierSauvegardeAuto(delaiMs = 5 * 60 * 1000) {
+    majStatutCloud("☁️ Modif en attente (5 min)...", "#6c757d");
+    clearTimeout(timerSauvegardeAuto);
+    timerSauvegardeAuto = setTimeout(() => {
+        envoyerCloudSilencieux();
+    }, delaiMs);
+}
