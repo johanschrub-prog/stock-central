@@ -1,4 +1,6 @@
-const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbweHWVFqGyM4kPRax1cZsf3dElNklbXW53HZw0SJzeKBxgjLshMGQppfz5TcMQdhC6X/exec";
+const SUPABASE_URL = "https://ruliocancqpgrxmwxmzx.supabase.co";
+const SUPABASE_ANON_KEY = "COLLE_TA_CLE_ANON_ICI";
+const SUPABASE_ROW_ID = "main_state";
 
 const CLES_SYNCHRO = [
     "StockCentral",
@@ -13,55 +15,84 @@ const CLES_SYNCHRO = [
     "commandesRCLP"
 ];
 
-// Charger les données depuis Google Sheets vers le PC
+function headersSupabase() {
+    return {
+        "apikey": SUPABASE_ANON_KEY,
+        "Authorization": `Bearer ${SUPABASE_ANON_KEY}`,
+        "Content-Type": "application/json",
+        "Prefer": "return=representation"
+    };
+}
+
+// Envoyer les données (S26 Ultra ou PC -> Supabase)
+async function forcerEnvoiCloud() {
+    try {
+        const payload = {};
+        CLES_SYNCHRO.forEach(cle => {
+            const val = localStorage.getItem(cle);
+            if (val !== null) {
+                try {
+                    payload[cle] = JSON.parse(val);
+                } catch (e) {
+                    payload[cle] = val;
+                }
+            }
+        });
+
+        const url = `${SUPABASE_URL}/rest/v1/stockcentral_sync?id=eq.${encodeURIComponent(SUPABASE_ROW_ID)}`;
+        const res = await fetch(url, {
+            method: "PATCH",
+            headers: headersSupabase(),
+            body: JSON.stringify({
+                payload: payload,
+                updated_at: new Date().toISOString()
+            })
+        });
+
+        if (!res.ok) {
+            const errText = await res.text();
+            throw new Error(`HTTP ${res.status} : ${errText}`);
+        }
+
+        alert("✅ Données envoyées sur Supabase avec succès !");
+    } catch (err) {
+        alert("❌ Erreur d'envoi Supabase : " + err.message);
+    }
+}
+
+// Récupérer les données (Supabase -> PC ou S26 Ultra)
 async function forcerSynchroCloud() {
     try {
-        const res = await fetch(WEB_APP_URL + "?t=" + Date.now()); // Ajout d'un anti-cache pour être sûr d'avoir du frais
-        const record = await res.json();
+        const url = `${SUPABASE_URL}/rest/v1/stockcentral_sync?id=eq.${encodeURIComponent(SUPABASE_ROW_ID)}&select=payload,updated_at&t=${Date.now()}`;
+        const res = await fetch(url, {
+            method: "GET",
+            headers: {
+                "apikey": SUPABASE_ANON_KEY,
+                "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
+            },
+            cache: "no-store"
+        });
+
+        if (!res.ok) {
+            const errText = await res.text();
+            throw new Error(`HTTP ${res.status} : ${errText}`);
+        }
+
+        const rows = await res.json();
+        const record = (rows && rows[0] && rows[0].payload) ? rows[0].payload : {};
 
         CLES_SYNCHRO.forEach(cle => {
             if (record[cle] !== undefined) {
-                const valeurCloud = typeof record[cle] === 'object' ? JSON.stringify(record[cle]) : record[cle];
+                const valeurCloud = typeof record[cle] === "object"
+                    ? JSON.stringify(record[cle])
+                    : String(record[cle]);
                 Storage.prototype.setItem.call(localStorage, cle, valeurCloud);
             }
         });
 
-        alert("Synchronisation réussie ✅ Données à jour !");
-        
-        // 🔄 C'est cette ligne qui force ton écran PC à afficher les nouvelles données !
+        alert("✅ Synchronisation Supabase réussie ! Données à jour.");
         location.reload();
-        
     } catch (err) {
-        alert("Erreur de synchro : " + err.message);
-    }
-}
-// Envoyer les données depuis le téléphone (via une image beacon infaillible sur Android)
-// Envoyer les données depuis le téléphone vers le Cloud
-async function forcerEnvoiCloud() {
-    try {
-        let payload = {};
-        CLES_SYNCHRO.forEach(cle => {
-            const val = localStorage.getItem(cle);
-            if (val !== null) {
-                try { payload[cle] = JSON.parse(val); } catch (e) { payload[cle] = val; }
-            }
-        });
-
-        console.log("Envoi des données en cours...", payload);
-
-        // On utilise fetch en mode POST (ou GET via URL encodée si le POST est bloqué)
-        const jsonString = encodeURIComponent(JSON.stringify(payload));
-        
-        const response = await fetch(`${WEB_APP_URL}?data=${jsonString}&t=${Date.now()}`);
-        const result = await response.json();
-
-        if (result.status === "success") {
-            alert("✅ Données du téléphone envoyées sur le Cloud avec succès ! ☁️");
-        } else {
-            alert("⚠️ Erreur renvoyée par le Cloud : " + (result.message || "Inconnue"));
-        }
-
-    }Rela catch (err) {
-        alert("Erreur critique d'envoi : " + err.message);
+        alert("❌ Erreur de synchro Supabase : " + err.message);
     }
 }
