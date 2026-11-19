@@ -1,28 +1,23 @@
 const STORAGE_KEY = "StockCentral";
 let siteActif = "DASHBOARD";
-
 // 1. Chargement de la nouvelle structure (Catalogue Unique + Stocks par cave)
 let stockData = JSON.parse(localStorage.getItem(STORAGE_KEY)) || { catalogue: {}, stocks: {}, memoCaves: {} };
 let catalogueArticles = stockData.catalogue || {};
 let stockParCave = stockData.stocks || {};
 let memoCaves = stockData.memoCaves || {}; // Remplace les 900 clés "cave_..." dans un seul mini-objet !
-
 let articleTransfertActif = null;
 let fournisseurs = JSON.parse(localStorage.getItem("Fournisseurs")) || [];
 let analyseOuverte = localStorage.getItem("analyseOuverte") === "1";
 let ongletRemontees = "HDLP";
 let validationOuverte = null;
 let categorieActive = "";
-
 const categories = {
     HDLP: ["HDLP MINI BAR", "HDLP SOFT", "HDLP BAR", "HDLP SEMINAIRE"],
     RCLP: ["RCLP ALCOOL", "RCLP SOFT", "RCLP VIN"]
 };
-
 function voirPoidsDetails() {
     let details = "";
     let totalGlobal = 0;
-
     for (let i = 0; i < localStorage.length; i++) {
         const cle = localStorage.key(i);
         const valeur = localStorage.getItem(cle) || "";
@@ -30,7 +25,6 @@ function voirPoidsDetails() {
         totalGlobal += tailleKo;
         details += `• ${cle} : ${tailleKo.toFixed(1)} Ko\n`;
     }
-
     alert(`📊 Total : ${(totalGlobal / 1024).toFixed(2)} Mo\n\nDétail :\n${details}`);
 }
 function save() {
@@ -51,43 +45,32 @@ function obtenirArticleEtStock(categorie, codeArticle) {
         categorie: categorie
     };
 }
-
 function analyserStockageNavigateur() {
     let tailleTotaleApp = 0;
     let tailleGlobalLocalStorage = 0;
     let detailsParCle = "";
-
-    // Parcourt tout le localStorage pour calculer les tailles
     for (let i = 0; i < localStorage.length; i++) {
         const cle = localStorage.key(i);
         const valeur = localStorage.getItem(cle) || "";
-        // Chaque caractère en JavaScript (UTF-16) pèse 2 octets
         const tailleEnOctets = (cle.length + valeur.length) * 2;
         
         tailleGlobalLocalStorage += tailleEnOctets;
         
-        // On isole les clés principales de votre appli pour le détail
         if (["StockCentral", "Fournisseurs", "inventaireHDLP", "remonteeHDLP", "remonteeRCLP"].includes(cle)) {
             tailleTotaleApp += tailleEnOctets;
             detailsParCle += `• ${cle} : ${(tailleEnOctets / (1024 * 1024)).toFixed(2)} Mo\n`;
         }
     }
-
-    // La limite standard du localStorage est généralement de 5 Mo (5 * 1024 * 1024 octets)
     const limiteEstimeeOctets = 5 * 1024 * 1024;
     const pourcentageUtilise = ((tailleGlobalLocalStorage / limiteEstimeeOctets) * 100).toFixed(1);
-
-    // Affichage du rapport complet
     let rapport = `📊 RAPPORT DE STOCKAGE LOCAL\n\n`;
     rapport += `Total global utilisé : ${(tailleGlobalLocalStorage / (1024 * 1024)).toFixed(2)} Mo / ~5 Mo (${pourcentageUtilise}%)\n\n`;
     rapport += `Détail de vos clés principales :\n${detailsParCle}`;
-
     alert(rapport);
 }
 function mettreAJourSuggestions() {
     const suggestions = document.getElementById("listeProduits");
     if (!suggestions) return;
-
     const propositions = Object.values(catalogueArticles)
         .map(article => `${article.code} - ${article.article}`)
         .sort((a, b) => {
@@ -95,10 +78,8 @@ function mettreAJourSuggestions() {
             const codeB = parseInt(b.split(" - ")[0]) || 0;
             return codeA - codeB;
         });
-
     suggestions.innerHTML = propositions.map(p => `<option value="${p}"></option>`).join("");
 }
-
 function mettreAJourListeFournisseurs() {
     const listeFournisseurs = [
         ...new Set(
@@ -107,31 +88,24 @@ function mettreAJourListeFournisseurs() {
                 .filter(f => f && f.trim() !== "")
         )
     ].sort();
-
     const liste = document.getElementById("listeFournisseurs");
     if (!liste) return;
-
     liste.innerHTML = listeFournisseurs.map(f => `<option value="${f}"></option>`).join("");
 }
 function importerFournisseurs(event) {
     const fichier = event.target.files[0];
     if (!fichier) return;
-
     const reader = new FileReader();
     reader.onload = function(e) {
         const workbook = XLSX.read(e.target.result, { type: "array" });
         const sheet = workbook.Sheets[workbook.SheetNames[0]];
         const lignes = XLSX.utils.sheet_to_json(sheet);
-
         let maj = 0;
         let nouveaux = 0;
-
         lignes.forEach(ligne => {
             const code = String(ligne.CODE || "").trim();
             if (!code) return;
-
             if (catalogueArticles[code]) {
-                // Mise à jour directe en 1 ligne !
                 catalogueArticles[code].article = ligne.ARTICLE || catalogueArticles[code].article;
                 catalogueArticles[code].fournisseur = ligne.FOURNISSEUR || "";
                 catalogueArticles[code].codeFournisseur = ligne.CODE_FOURNISSEUR || "";
@@ -139,7 +113,6 @@ function importerFournisseurs(event) {
                 catalogueArticles[code].prix = Number(ligne.PRIX_ACHAT || 0);
                 maj++;
             } else {
-                // Création dans le catalogue unique
                 catalogueArticles[code] = {
                     code: code,
                     article: ligne.ARTICLE || "NOUVEL ARTICLE",
@@ -151,7 +124,6 @@ function importerFournisseurs(event) {
                 nouveaux++;
             }
         });
-
         save();
         mettreAJourSuggestions();
         render();
@@ -159,29 +131,24 @@ function importerFournisseurs(event) {
     };
     reader.readAsArrayBuffer(fichier);
 }
-
 function importerPrix(event) {
     const fichier = event.target.files[0];
     if (!fichier) return;
-
     const reader = new FileReader();
     reader.onload = function(e) {
         const data = new Uint8Array(e.target.result);
         const wb = XLSX.read(data, { type: 'array' });
         const ws = wb.Sheets[wb.SheetNames[0]];
         const lignes = XLSX.utils.sheet_to_json(ws);
-
         let maj = 0;
         lignes.forEach(ligne => {
             const code = String(ligne.Code || "").trim();
             const prix = Number(ligne.Prix || 0);
-
             if (catalogueArticles[code]) {
                 catalogueArticles[code].prix = prix;
                 maj++;
             }
         });
-
         save();
         render();
         alert(`${maj} prix mis à jour`);
@@ -191,41 +158,30 @@ function importerPrix(event) {
 function modifierArticle(code) {
     const article = catalogueArticles[code];
     if (!article) return;
-
     const stockActuel = stockParCave[categorieActive]?.[code] || 0;
-
     let nouveauStock = prompt("Stock", stockActuel);
     if (nouveauStock === null) return;
-
     let nouveauPrix = prompt("Prix", article.prix);
     if (nouveauPrix === null) return;
-
     if (!stockParCave[categorieActive]) stockParCave[categorieActive] = {};
     
     const qte = Number(nouveauStock);
     if (qte === 0) {
-        delete stockParCave[categorieActive][code]; // On efface les zéros pour garder le fichier ultra-léger
+        delete stockParCave[categorieActive][code];
     } else {
         stockParCave[categorieActive][code] = qte;
     }
-
     article.prix = Number(nouveauPrix);
-
     save();
     render();
 }
-
 function remettreStocksAZero() {
     if (!confirm("Remettre tous les stocks à zéro ?")) return;
-
-    // Il suffit de vider l'objet des stocks, le catalogue des 900 articles reste intact !
     stockParCave = {};
-
     save();
     render();
     alert("Tous les stocks ont été remis à zéro ✅");
 }
-
 function importStock(event) {
     const file = event.target.files[0];
     if (!file) return;
@@ -233,7 +189,6 @@ function importStock(event) {
     reader.onload = function(e) {
         try {
             const rawData = JSON.parse(e.target.result);
-            
             const dataContainer = rawData.StockCentral ? rawData.StockCentral : rawData;
             
             catalogueArticles = dataContainer.catalogue || {};
@@ -242,7 +197,6 @@ function importStock(event) {
             
             save();
             
-            // Restauration de TOUTES les données globales (fournisseurs, mouvements, remontées ET commandes)
             if (rawData.Fournisseurs) {
                 localStorage.setItem("Fournisseurs", typeof rawData.Fournisseurs === 'object' ? JSON.stringify(rawData.Fournisseurs) : rawData.Fournisseurs);
             }
@@ -252,14 +206,12 @@ function importStock(event) {
             if (rawData.remonteesEffectuees) {
                 localStorage.setItem("remonteesEffectuees", typeof rawData.remonteesEffectuees === 'object' ? JSON.stringify(rawData.remonteesEffectuees) : rawData.remonteesEffectuees);
             }
-            // ⬇️ LES LIGNES QU'IL MANQUAIT POUR LES COMMANDES :
             if (rawData.commandesHDLP) {
                 localStorage.setItem("commandesHDLP", typeof rawData.commandesHDLP === 'object' ? JSON.stringify(rawData.commandesHDLP) : rawData.commandesHDLP);
             }
             if (rawData.commandesRCLP) {
                 localStorage.setItem("commandesRCLP", typeof rawData.commandesRCLP === 'object' ? JSON.stringify(rawData.commandesRCLP) : rawData.commandesRCLP);
             }
-
             alert("✅ Sauvegarde et commandes restaurées avec succès ! (" + Object.keys(catalogueArticles).length + " articles)");
             location.reload();
         } catch (err) {
@@ -276,34 +228,27 @@ function exportStock() {
     lien.download = "stock-central.json";
     lien.click();
 }
-// Petite fonction utilitaire pour mettre à jour le stock proprement
 function ajusterStockCave(cave, code, deltaQuantite) {
     if (!stockParCave[cave]) stockParCave[cave] = {};
     const actuel = Number(stockParCave[cave][code] || 0);
     const nouveau = actuel + Number(deltaQuantite);
-
     if (nouveau === 0) {
         delete stockParCave[cave][code];
     } else {
         stockParCave[cave][code] = nouveau;
     }
 }
-
 function validerImportHDLP() {
     const mouvements = JSON.parse(localStorage.getItem("remonteeHDLP")) || [];
     const historiqueGlobal = JSON.parse(localStorage.getItem("mouvements")) || [];
-
     mouvements.forEach((m, index) => {
         const cave = document.getElementById("caveHDLP_" + index).value;
         const code = String(m.code).trim();
         memoCaves[code] = cave;
-
         if (!catalogueArticles[code]) return;
-
         const qte = Number(m.quantite || 0);
         const delta = m.type === "REDESCENTE" ? qte : -qte;
         ajusterStockCave(cave, code, delta);
-
         historiqueGlobal.push({
             date: m.date,
             code: code,
@@ -314,29 +259,23 @@ function validerImportHDLP() {
             origine: m.type === "REDESCENTE" ? "REDESCENTE HDLP" : "REMONTEE HDLP"
         });
     });
-
     save();
     localStorage.setItem("mouvements", JSON.stringify(historiqueGlobal));
     localStorage.removeItem("remonteeHDLP");
     changerSite("DASHBOARD");
     alert("Mouvements HDLP importés ✅");
 }
-
 function validerImportRCLP() {
     const mouvements = JSON.parse(localStorage.getItem("remonteeRCLP")) || [];
     const historiqueGlobal = JSON.parse(localStorage.getItem("mouvements")) || [];
-
     mouvements.forEach((m, index) => {
         const cave = document.getElementById("caveRCLP_" + index).value;
         const code = String(m.code).trim();
         memoCaves[code] = cave;
-
         if (!catalogueArticles[code]) return;
-
         const qte = Number(m.quantite || 0);
         const delta = m.type === "REDESCENTE" ? qte : -qte;
         ajusterStockCave(cave, code, delta);
-
         historiqueGlobal.push({
             date: m.date,
             code: code,
@@ -347,28 +286,22 @@ function validerImportRCLP() {
             origine: m.type === "REDESCENTE" ? "REDESCENTE RCLP" : "REMONTEE RCLP"
         });
     });
-
     save();
     localStorage.setItem("mouvements", JSON.stringify(historiqueGlobal));
     localStorage.removeItem("remonteeRCLP");
     changerSite("DASHBOARD");
     alert("Remontées RCLP importées ✅");
 }
-
 function validerImportBoutique() {
     const ventes = JSON.parse(localStorage.getItem("ventesBoutique")) || [];
     const historiqueGlobal = JSON.parse(localStorage.getItem("mouvements")) || [];
-
     ventes.forEach((v, index) => {
         const cave = document.getElementById("venteBoutique_" + index).value;
         const code = String(v.code).trim();
         memoCaves[code] = cave;
-
         if (!catalogueArticles[code]) return;
-
         const qte = Number(v.quantite || 0);
-        ajusterStockCave(cave, code, -qte); // Une vente sort du stock
-
+        ajusterStockCave(cave, code, -qte);
         historiqueGlobal.push({
             date: v.date || new Date().toISOString(),
             code: code,
@@ -379,7 +312,6 @@ function validerImportBoutique() {
             origine: "VENTE BOUTIQUE"
         });
     });
-
     save();
     localStorage.setItem("mouvements", JSON.stringify(historiqueGlobal));
     localStorage.removeItem("ventesBoutique");
@@ -387,15 +319,11 @@ function validerImportBoutique() {
     alert("Ventes boutique importées ✅");
 }
 function modifierFournisseur(id, champ, valeur){
-
     const fournisseur = fournisseurs.find(
         f => String(f.id) === String(id)
     );
-
     if(!fournisseur) return;
-
     valeur = String(valeur).trim();
-
     if(champ === "email"){
         if(
             valeur !== "" &&
@@ -405,7 +333,6 @@ function modifierFournisseur(id, champ, valeur){
             return;
         }
     }
-
     if(
         champ === "portable" ||
         champ === "bureau"
@@ -415,9 +342,7 @@ function modifierFournisseur(id, champ, valeur){
             ""
         );
     }
-
     if(champ === "nom"){
-
         const existe = fournisseurs.some(
             f =>
                 String(f.id) !== String(id) &&
@@ -426,17 +351,13 @@ function modifierFournisseur(id, champ, valeur){
                     .toUpperCase() ===
                 valeur.toUpperCase()
         );
-
         if(existe){
             alert("Ce fournisseur existe déjà");
             return;
         }
     }
-
     fournisseur[champ] = valeur;
-
     if(champ === "representant" && valeur){
-
         const fournisseurExistant = fournisseurs.find(
             f =>
                 String(f.id) !== String(id) &&
@@ -450,46 +371,32 @@ function modifierFournisseur(id, champ, valeur){
                     f.bureau
                 )
         );
-
         if(fournisseurExistant){
-
             fournisseur.portable =
                 fournisseurExistant.portable || "";
-
             fournisseur.email =
                 fournisseurExistant.email || "";
-
             fournisseur.bureau =
                 fournisseurExistant.bureau || "";
         }
     }
-
     saveFournisseurs();
     afficherFournisseurs();
 }
 function toggleAnalyse(){
-
     analyseOuverte = !analyseOuverte;
-
     localStorage.setItem(
         "analyseOuverte",
         analyseOuverte ? "1" : "0"
     );
-
     render();
-
 }
 function changerOngletRemontees(type){
-
     ongletRemontees = type;
-
     render();
-
 }
 function changerSite(site){
-
     siteActif = site;
-
     if(site === "APPLICATIONS"){
         categorieActive = "APPLICATIONS";
     }
@@ -514,122 +421,18 @@ function changerSite(site){
     else{
         categorieActive = "DASHBOARD";
     }
-
     renderOnglets();
     render();
-
 }
 function saveFournisseurs(){
-
     localStorage.setItem(
         "Fournisseurs",
         JSON.stringify(fournisseurs)
     );
-
 }
-
-function importerPrix(event) {
-    const fichier = event.target.files[0];
-    if (!fichier) return;
-
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        const data = new Uint8Array(e.target.result);
-        const wb = XLSX.read(data, { type: 'array' });
-        const ws = wb.Sheets[wb.SheetNames[0]];
-        const lignes = XLSX.utils.sheet_to_json(ws);
-
-        let maj = 0;
-        lignes.forEach(ligne => {
-            const code = String(ligne.Code || "").trim();
-            const prix = Number(ligne.Prix || 0);
-
-            if (catalogueArticles[code]) {
-                catalogueArticles[code].prix = prix;
-                maj++;
-            }
-        });
-
-        save();
-        render();
-        alert(maj + " prix mis à jour");
-    };
-    reader.readAsArrayBuffer(fichier);
-}
-
-function mettreAJourListeFournisseurs() {
-    const listeFournisseurs = [
-        ...new Set(
-            Object.values(catalogueArticles)
-                .map(a => a.fournisseur)
-                .filter(f => f && f.trim() !== "")
-        )
-    ].sort();
-
-    const liste = document.getElementById("listeFournisseurs");
-    if (!liste) return;
-
-    liste.innerHTML = listeFournisseurs.map(f => `<option value="${f}"></option>`).join("");
-}
-
-
-
-function modifierArticle(code) {
-    const article = catalogueArticles[code];
-    if (!article) return;
-
-    const stockActuel = stockParCave[categorieActive]?.[code] || 0;
-
-    let nouveauStock = prompt("Stock", stockActuel);
-    if (nouveauStock === null) return;
-
-    let nouveauPrix = prompt("Prix", article.prix);
-    if (nouveauPrix === null) return;
-
-    if (!stockParCave[categorieActive]) stockParCave[categorieActive] = {};
-    
-    const qte = Number(nouveauStock);
-    if (qte === 0) {
-        delete stockParCave[categorieActive][code]; // Nettoyage automatique des zéros
-    } else {
-        stockParCave[categorieActive][code] = qte;
-    }
-
-    article.prix = Number(nouveauPrix);
-
-    save();
-    render();
-}
-
-function remettreStocksAZero() {
-    if (!confirm("Remettre tous les stocks à zéro ?")) return;
-
-    stockParCave = {}; // On vide uniquement les quantités, le catalogue reste intact
-
-    save();
-    render();
-    alert("Tous les stocks ont été remis à zéro ✅");
-}
-
-function exportStock() {
-    const data = {
-        catalogue: catalogueArticles,
-        stocks: stockParCave,
-        memoCaves: memoCaves
-    };
-
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
-    const lien = document.createElement("a");
-    lien.href = URL.createObjectURL(blob);
-    lien.download = "stock-central.json";
-    lien.click();
-}
-
 function renderOnglets() {
     document.getElementById("ongletsPrincipaux").innerHTML = `
     <div style="max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; box-sizing: border-box;">
-        
-        <!-- Ligne 1 : Tableau de bord & Espace disque -->
         <div style="display: flex; gap: 10px; width: 100%;">
             <button class="tab" style="flex: 1; height: 65px; font-size: 16px; font-weight: bold; background: ${siteActif==='DASHBOARD' ? '#198754' : '#ffffff'}; color: ${siteActif==='DASHBOARD' ? 'white' : '#333'}; border: 1px solid #ced4da; border-radius: 10px; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.04); display: flex; align-items: center; justify-content: center; gap: 8px;" onclick="changerSite('DASHBOARD')">
                 📊 TABLEAU DE BORD
@@ -639,8 +442,6 @@ function renderOnglets() {
                 <span style="font-size: 11px; opacity: 0.9;">Mémoire</span>
             </button>
         </div>
-
-        <!-- Ligne 2 : Stock HDLP & Stock RCLP -->
         <div style="display: flex; gap: 10px; width: 100%;">
             <button class="tab" style="flex: 1; height: 65px; font-size: 16px; font-weight: bold; background: ${siteActif==='HDLP' ? '#1976d2' : '#ffffff'}; color: ${siteActif==='HDLP' ? 'white' : '#333'}; border: 1px solid #ced4da; border-radius: 10px; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.04); display: flex; align-items: center; justify-content: center; gap: 8px;" onclick="changerSite('HDLP')">
                 🏨 STOCK HDLP
@@ -649,8 +450,6 @@ function renderOnglets() {
                 🍴 STOCK RCLP
             </button>
         </div>
-
-        <!-- Ligne 3 : Applications & Remontées effectuées -->
         <div style="display: flex; gap: 10px; width: 100%;">
             <button class="tab" style="flex: 1; height: 65px; font-size: 16px; font-weight: bold; background: ${siteActif==='APPLICATIONS' ? '#673ab7' : '#ffffff'}; color: ${siteActif==='APPLICATIONS' ? 'white' : '#333'}; border: 1px solid #ced4da; border-radius: 10px; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.04); display: flex; align-items: center; justify-content: center; gap: 8px;" onclick="changerSite('APPLICATIONS')">
                 📱 APPLICATIONS
@@ -659,8 +458,6 @@ function renderOnglets() {
                 🍾 REMONTÉES EFFECTUÉES
             </button>
         </div>
-
-        <!-- Ligne 4 : Articles & Fournisseurs -->
         <div style="display: flex; gap: 10px; width: 100%;">
             <button class="tab" style="flex: 1; height: 65px; font-size: 16px; font-weight: bold; background: ${siteActif==='ARTICLES' ? '#795548' : '#ffffff'}; color: ${siteActif==='ARTICLES' ? 'white' : '#333'}; border: 1px solid #ced4da; border-radius: 10px; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.04); display: flex; align-items: center; justify-content: center; gap: 8px;" onclick="changerSite('ARTICLES')">
                 📦 ARTICLES
@@ -669,10 +466,8 @@ function renderOnglets() {
                 🚚 FOURNISSEURS
             </button>
         </div>
-
     </div>
     `;
-
     let html = "";
     if (siteActif === "HDLP" || siteActif === "RCLP") {
         categories[siteActif].forEach(c => {
@@ -693,11 +488,7 @@ function ouvrirApplications(){
     <div class="card" style="text-align: center;">
         <h2>📱 Applications</h2>
         <br>
-
-        <!-- Conteneur global de la grille de menu -->
         <div style="display: flex; flex-direction: column; gap: 15px; max-width: 600px; margin: 0 auto;">
-
-            <!-- Ligne 1 : Remontées HDLP & Remontées RCLP (Côte à côte) -->
             <div style="display: flex; gap: 4%; width: 100%;">
                 <button onclick="ouvrirRemonteeHDLP()" style="width: 48%; height: 70px; font-size: 16px; font-weight: bold; background: #1976d2; color: white; border: none; border-radius: 8px; cursor: pointer;">
                     📤 Remontées HDLP
@@ -706,15 +497,11 @@ function ouvrirApplications(){
                     📤 Remontées RCLP
                 </button>
             </div>
-
-            <!-- Ligne 2 : Ventes Boutique (Seule, prend toute la largeur) -->
             <div style="width: 100%;">
                 <button onclick="ouvrirSaisieVentesBoutique()" style="width: 100%; height: 70px; font-size: 16px; font-weight: bold; background: #ff9800; color: white; border: none; border-radius: 8px; cursor: pointer;">
                     🛍️ Ventes boutique
                 </button>
             </div>
-
-            <!-- Ligne 3 : Commande HDLP & Commandes RCLP (Côte à côte) -->
             <div style="display: flex; gap: 4%; width: 100%;">
                 <button onclick="ouvrirCommandeHDLP()" style="width: 48%; height: 70px; font-size: 16px; font-weight: bold; background: #28a745; color: white; border: none; border-radius: 8px; cursor: pointer;">
                     📦 Commandes HDLP
@@ -723,36 +510,28 @@ function ouvrirApplications(){
                     📦 Commandes RCLP
                 </button>
             </div>
-
         </div>
     </div>
     `;
 }
-
 function changerCategorie(cat){
     categorieActive = cat;
     renderOnglets();
     render();
 }
-
 function importRemonteeHDLP(){
     const mouvements = JSON.parse(localStorage.getItem("remonteeHDLP")) || [];
-
     if(mouvements.length === 0){
         alert("Aucune remontée HDLP");
         return;
     }
-
     let html = `
     <div class="card">
     <h2>📥 Remontées HDLP</h2>
     <button onclick="supprimerRemonteesHDLP()">🗑️ Purger HDLP</button>
     `;
-
     mouvements.forEach((m,index)=>{
-        // Utilisation de memoCaves au lieu de localStorage.getItem("cave_" + m.code)
         const caveMemo = memoCaves[m.code] || "HDLP BAR";
-
         html += `
         <div style="border-bottom:1px solid #ddd; padding:10px;">
             <b>${m.article}</b>
@@ -778,13 +557,11 @@ function importRemonteeHDLP(){
         </div>
         `;
     });
-
     html += `
     <br>
     <button onclick="validerImportHDLP()">✅ Importer les remontées</button>
     </div>
     `;
-
     document.getElementById("cards").innerHTML = html;
 }
 function supprimerVentesBoutique(){
@@ -794,7 +571,6 @@ function supprimerVentesBoutique(){
     localStorage.removeItem("ventesBoutique");
     alert("Ventes boutique supprimées ✅");
 }
-
 function supprimerRemonteesRCLP(){
     if(!confirm("Supprimer toutes les remontées RCLP ?")){
         return;
@@ -802,7 +578,6 @@ function supprimerRemonteesRCLP(){
     localStorage.removeItem("remonteeRCLP");
     alert("Remontées RCLP supprimées ✅");
 }
-
 function supprimerRemonteesHDLP(){
     if(!confirm("Supprimer toutes les remontées HDLP ?")){
         return;
@@ -810,25 +585,19 @@ function supprimerRemonteesHDLP(){
     localStorage.removeItem("remonteeHDLP");
     alert("Remontées HDLP supprimées ✅");
 }
-
 function importRemonteeRCLP(){
     const mouvements = JSON.parse(localStorage.getItem("remonteeRCLP")) || [];
-
     if(mouvements.length === 0){
         alert("Aucune remontée RCLP");
         return;
     }
-
     let html = `
     <div class="card">
         <h2>📥 Remontées RCLP</h2>
         <button onclick="supprimerRemonteesRCLP()">🗑️ Purger RCLP</button>
     `;
-
     mouvements.forEach((m, index) => {
-        // Utilisation de memoCaves au lieu de localStorage.getItem("cave_" + m.code)
         const caveMemo = memoCaves[m.code] || "RCLP ALCOOL";
-
         html += `
         <div style="border-bottom:1px solid #ddd; padding:10px;">
             <b>${m.article}</b>
@@ -851,144 +620,26 @@ function importRemonteeRCLP(){
         </div>
         `;
     });
-
     html += `
         <br>
         <button onclick="validerImportRCLP()">✅ Importer les remontées</button>
     </div>
     `;
-
     document.getElementById("cards").innerHTML = html;
 }
-function validerImportRCLP(){
-
-    const mouvements =
-    JSON.parse(
-        localStorage.getItem(
-            "remonteeRCLP"
-        )
-    ) || [];
-
-    mouvements.forEach((m,index)=>{
-
-        const cave =
-
-        document
-        .getElementById(
-            "caveRCLP_" + index
-        )
-        .value;
-
-        localStorage.setItem(
-            "cave_" + m.code,
-            cave
-        );
-
-        const article =
-
-        stock[cave]
-        ?.find(a =>
-
-            String(a.code)
-
-            ===
-
-            String(m.code)
-
-        );
-
-        if(!article) return;
-
-       if(
-    m.type ===
-    "REDESCENTE"
-){
-
-    article.stock =
-
-    Number(article.stock || 0)
-
-    +
-
-    Number(m.quantite || 0);
-
-}
-else{
-
-    article.stock =
-
-    Number(article.stock || 0)
-
-    -
-
-    Number(m.quantite || 0);
-
-}
-
-        if(!article.mouvements){
-
-            article.mouvements = [];
-
-        }
-
-    article.mouvements.push({
-
-    date:
-    m.date,
-
-    type:
-    m.type === "REDESCENTE"
-    ? "ENTREE"
-    : "SORTIE",
-
-    quantite:
-    m.quantite,
-
-    origine:
-    m.type === "REDESCENTE"
-    ? "REDESCENTE RCLP"
-    : "REMONTEE RCLP"
-
-});
-
-    });
-
-    save();
-
-    localStorage.removeItem(
-        "remonteeRCLP"
-    );
-
-    changerSite(
-        "DASHBOARD"
-    );
-
-    alert(
-        "Remontées RCLP importées ✅"
-    );
-
-}
-// Note : validerImportRCLP est déjà gérée par la version propre aux normes du Catalogue Unique. 
-// Si elle était encore présente ici en double, vous pouvez la remplacer entièrement par importVentesBoutique ci-dessous :
-
 function importVentesBoutique(){
     const ventes = JSON.parse(localStorage.getItem("ventesBoutique")) || [];
-
     if(ventes.length === 0){
         alert("Aucune vente boutique");
         return;
     }
-
     let html = `
     <div class="card">
         <h2>🛍️ Ventes Boutique</h2>
         <button onclick="supprimerVentesBoutique()">🗑️ Purger Boutique</button>
     `;
-
     ventes.forEach((v, index) => {
-        // Utilisation de memoCaves au lieu de localStorage.getItem("cave_" + v.code)
         const caveMemo = memoCaves[v.code] || "HDLP SOFT";
-
         html += `
         <div style="border-bottom:1px solid #ddd; padding:10px;">
             <b>${v.article}</b>
@@ -1010,70 +661,30 @@ function importVentesBoutique(){
         </div>
         `;
     });
-
     html += `
         <br>
         <button onclick="validerImportBoutique()">✅ Importer les ventes</button>
     </div>
     `;
-
     document.getElementById("cards").innerHTML = html;
 }
-function validerImportBoutique() {
-    const ventes = JSON.parse(localStorage.getItem("ventesBoutique")) || [];
-    const historiqueGlobal = JSON.parse(localStorage.getItem("mouvements")) || [];
-
-    ventes.forEach((v, index) => {
-        const cave = document.getElementById("venteBoutique_" + index).value;
-        const code = String(v.code).trim();
-        memoCaves[code] = cave;
-
-        if (!catalogueArticles[code]) return;
-
-        const qte = Number(v.quantite || 0);
-        ajusterStockCave(cave, code, -qte); // Une vente sort du stock
-
-        historiqueGlobal.push({
-            date: v.date || new Date().toISOString(),
-            code: code,
-            article: v.article,
-            cave: cave,
-            type: "SORTIE",
-            quantite: qte,
-            origine: "VENTE BOUTIQUE"
-        });
-    });
-
-    save();
-    localStorage.setItem("mouvements", JSON.stringify(historiqueGlobal));
-    localStorage.removeItem("ventesBoutique");
-    changerSite("DASHBOARD");
-    alert("Ventes Boutique importées ✅");
-}
-
 function importCommandeHDLP() {
     const commandes = JSON.parse(localStorage.getItem("commandeHDLP")) || [];
-
     if (commandes.length === 0) {
         alert("Aucune commande HDLP");
         return;
     }
-
     let html = `
     <div class="card">
     <h2>🚚 Commandes HDLP</h2>
     `;
-
     commandes.forEach((c, index) => {
         const code = String(c.code).trim();
         const caveMemo = memoCaves[code] || "HDLP BAR";
-
-        // On récupère le prix depuis le catalogue unique
         const articleExiste = catalogueArticles[code];
         const montantDefaut = articleExiste?.prix 
             ? Number(articleExiste.prix) * Number(c.quantite) 
             : "";
-
         html += `
         <div style="border-bottom:1px solid #ddd; padding:10px;">
             <b>${c.article}</b>
@@ -1096,17 +707,14 @@ function importCommandeHDLP() {
         </div>
         `;
     });
-
     html += `
     <br>
     <button onclick="validerImportCommandeHDLP()">✅ Importer les réceptions</button>
     <button style="background:#dc3545;margin-left:10px;" onclick="annulerCommandeHDLP()">❌ Annuler réception</button>
     </div>
     `;
-
     document.getElementById("cards").innerHTML = html;
 }
-
 function annulerCommandeHDLP() {
     if (!confirm("Annuler toutes les réceptions HDLP en attente ?")) {
         return;
@@ -1115,21 +723,16 @@ function annulerCommandeHDLP() {
     changerSite("DASHBOARD");
     alert("Réceptions HDLP annulées ✅");
 }
-
 function validerImportCommandeHDLP() {
     const commandes = JSON.parse(localStorage.getItem("commandeHDLP")) || [];
     const historiqueGlobal = JSON.parse(localStorage.getItem("mouvements")) || [];
-
     commandes.forEach((c, index) => {
         const cave = document.getElementById("commandeHDLP_" + index).value;
         const code = String(c.code).trim();
         memoCaves[code] = cave;
-
         const montant = Number(document.getElementById("prixHDLP_" + index).value || 0);
         const qteCommande = Number(c.quantite || 0);
         const prixUnitaire = qteCommande > 0 ? montant / qteCommande : 0;
-
-        // 1. Si l'article n'existe pas dans le catalogue unique, on le crée
         if (!catalogueArticles[code]) {
             catalogueArticles[code] = {
                 code: code,
@@ -1140,16 +743,10 @@ function validerImportCommandeHDLP() {
                 colisage: Number(c.conditionnement || 1)
             };
         }
-
-        // 2. Mise à jour du prix unitaire dans le Catalogue Unique si renseigné
         if (prixUnitaire > 0) {
             catalogueArticles[code].prix = Number(prixUnitaire.toFixed(2));
         }
-
-        // 3. Ajout dans le stock de la cave
         ajusterStockCave(cave, code, qteCommande);
-
-        // 4. Ajout dans l'historique global des mouvements
         historiqueGlobal.push({
             date: c.date || new Date().toISOString(),
             code: code,
@@ -1161,7 +758,6 @@ function validerImportCommandeHDLP() {
             fournisseur: c.fournisseur || ""
         });
     });
-
     save();
     localStorage.setItem("mouvements", JSON.stringify(historiqueGlobal));
     localStorage.removeItem("commandeHDLP");
@@ -1170,27 +766,21 @@ function validerImportCommandeHDLP() {
 }
 function importCommandeRCLP(){
     const commandes = JSON.parse(localStorage.getItem("commandeRCLP")) || [];
-
     if(commandes.length === 0){
         alert("Aucune commande RCLP");
         return;
     }
-
     let html = `
     <div class="card">
     <h2>🚚 Commandes RCLP</h2>
     `;
-
     commandes.forEach((c, index) => {
         const code = String(c.code).trim();
         const caveMemo = memoCaves[code] || "RCLP ALCOOL";
-
-        // On récupère le prix depuis le catalogue unique
         const articleExiste = catalogueArticles[code];
         const montantDefaut = articleExiste?.prix 
             ? Number(articleExiste.prix) * Number(c.quantite) 
             : "";
-
         html += `
         <div style="border-bottom:1px solid #ddd; padding:10px;">
             <b>${c.article}</b>
@@ -1212,17 +802,14 @@ function importCommandeRCLP(){
         </div>
         `;
     });
-
     html += `
     <br>
     <button onclick="validerImportCommandeRCLP()">✅ Importer les réceptions</button>
     <button style="background:#dc3545;margin-left:10px;" onclick="annulerCommandeRCLP()">❌ Annuler réception</button>
     </div>
     `;
-
     document.getElementById("cards").innerHTML = html;
 }
-
 function annulerCommandeRCLP(){
     if(!confirm("Annuler toutes les réceptions RCLP en attente ?")){
         return;
@@ -1231,21 +818,16 @@ function annulerCommandeRCLP(){
     changerSite("DASHBOARD");
     alert("Réceptions RCLP annulées ✅");
 }
-
 function validerImportCommandeRCLP(){
     const commandes = JSON.parse(localStorage.getItem("commandeRCLP")) || [];
     const historiqueGlobal = JSON.parse(localStorage.getItem("mouvements")) || [];
-
     commandes.forEach((c, index) => {
         const cave = document.getElementById("commandeRCLP_" + index).value;
         const code = String(c.code).trim();
         memoCaves[code] = cave;
-
         const montant = Number(document.getElementById("prixRCLP_" + index).value || 0);
         const qteCommande = Number(c.quantite || 0);
         const prixUnitaire = qteCommande > 0 ? montant / qteCommande : 0;
-
-        // 1. Si l'article n'existe pas dans le catalogue unique, on le crée
         if(!catalogueArticles[code]){
             catalogueArticles[code] = {
                 code: code,
@@ -1256,16 +838,10 @@ function validerImportCommandeRCLP(){
                 colisage: Number(c.conditionnement || 1)
             };
         }
-
-        // 2. Mise à jour du prix unique dans le Catalogue Unique
         if(prixUnitaire > 0){
             catalogueArticles[code].prix = Number(prixUnitaire.toFixed(2));
         }
-
-        // 3. Ajout dans le stock de la cave
         ajusterStockCave(cave, code, qteCommande);
-
-        // 4. Ajout dans l'historique global des mouvements
         historiqueGlobal.push({
             date: c.date || new Date().toISOString(),
             code: code,
@@ -1277,70 +853,52 @@ function validerImportCommandeRCLP(){
             fournisseur: c.fournisseur || ""
         });
     });
-
     save();
     localStorage.setItem("mouvements", JSON.stringify(historiqueGlobal));
     localStorage.removeItem("commandeRCLP");
     changerSite("DASHBOARD");
     alert("Commandes RCLP importées ✅");
 }
-// Variable pour stocker le transfert en cours (on y stocke le code et la cave source)
 let transfertEnCours = null;
-
 function transfererArticle(codeArticle, caveSource) {
     const articleInfo = catalogueArticles[codeArticle];
     if (!articleInfo) return;
-
     const stockActuel = stockParCave[caveSource]?.[codeArticle] || 0;
-
     transfertEnCours = {
         code: codeArticle,
         caveSource: caveSource,
         article: articleInfo.article,
         stock: stockActuel
     };
-
     document.getElementById("articleTransfert").innerHTML = "<b>" + articleInfo.article + "</b><br>Stock : " + stockActuel;
     document.getElementById("quantiteTransfert").value = "";
     document.getElementById("popupTransfert").style.display = "block";
 }
-
 function transfertCoupe(codeArticle, caveSource) {
     const stockActuel = stockParCave[caveSource]?.[codeArticle] || 0;
-
     const quantite = Number(prompt("Quantité à transférer en coupes ?", "1"));
     if (isNaN(quantite) || quantite <= 0) {
         return;
     }
-
     if (stockActuel < quantite) {
         alert("Stock insuffisant");
         return;
     }
-
-    // Vérification de l'article Champagne Coupe (code 185)
     if (!catalogueArticles["185"]) {
         alert("Article code 185 introuvable dans le catalogue");
         return;
     }
-
-    // 1. Retrait du stock de la cave source
     stockParCave[caveSource][codeArticle] = stockActuel - quantite;
     if (stockParCave[caveSource][codeArticle] === 0) {
         delete stockParCave[caveSource][codeArticle];
     }
-
-    // 2. Ajout du stock dans la cave où se trouve le code 185 (ou la cave active par défaut)
     const caveCible185 = memoCaves["185"] || caveSource;
     if (!stockParCave[caveCible185]) stockParCave[caveCible185] = {};
     const stock185Actuel = stockParCave[caveCible185]["185"] || 0;
     stockParCave[caveCible185]["185"] = stock185Actuel + quantite;
-
-    // 3. Enregistrement dans l'historique global des mouvements
     const historiqueGlobal = JSON.parse(localStorage.getItem("mouvements")) || [];
     const dateStr = new Date().toLocaleString();
     const articleNom = catalogueArticles[codeArticle]?.article || "Article";
-
     historiqueGlobal.push(
         {
             date: dateStr,
@@ -1361,54 +919,39 @@ function transfertCoupe(codeArticle, caveSource) {
             origine: articleNom
         }
     );
-
     save();
     localStorage.setItem("mouvements", JSON.stringify(historiqueGlobal));
     render();
-
     alert("✅ " + quantite + " transférée(s) vers Champagne Coupe");
 }
-
 function fermerTransfert() {
     document.getElementById("popupTransfert").style.display = "none";
     transfertEnCours = null;
 }
-
 function validerTransfert() {
     if (!transfertEnCours) return;
-
     const quantite = Number(document.getElementById("quantiteTransfert").value);
     if (isNaN(quantite) || quantite <= 0) {
         alert("Quantité invalide");
         return;
     }
-
     const destination = document.getElementById("destinationTransfert").value;
     const { code, caveSource } = transfertEnCours;
-
     const stockSource = stockParCave[caveSource]?.[code] || 0;
-
     if (quantite > stockSource) {
         alert("Stock insuffisant");
         return;
     }
-
-    // 1. Retrait de la cave source
     stockParCave[caveSource][code] = stockSource - quantite;
     if (stockParCave[caveSource][code] === 0) {
         delete stockParCave[caveSource][code];
     }
-
-    // 2. Ajout dans la cave de destination
     if (!stockParCave[destination]) stockParCave[destination] = {};
     const stockDestinationActuel = stockParCave[destination][code] || 0;
     stockParCave[destination][code] = stockDestinationActuel + quantite;
-
-    // 3. Enregistrement dans l'historique global
     const historiqueGlobal = JSON.parse(localStorage.getItem("mouvements")) || [];
     const dateStr = new Date().toISOString();
     const articleNom = catalogueArticles[code]?.article || "Article";
-
     historiqueGlobal.push(
         {
             date: dateStr,
@@ -1429,18 +972,14 @@ function validerTransfert() {
             origine: "DEPUIS " + caveSource
         }
     );
-
     save();
     localStorage.setItem("mouvements", JSON.stringify(historiqueGlobal));
     fermerTransfert();
     render();
-
     alert("Transfert effectué ✅");
 }
 function render() {
     let liste = [];
-
-    // 1. Construction de la liste des articles selon la catégorie active
     if (categorieActive === "TOUS_HDLP") {
         categories["HDLP"].forEach(cave => {
             const stocksCave = stockParCave[cave] || {};
@@ -1468,9 +1007,7 @@ function render() {
             });
         });
     } else if (categories["HDLP"].includes(categorieActive) || categories["RCLP"].includes(categorieActive)) {
-        // C'est une cave spécifique (ex: "HDLP BAR")
         const stocksCave = stockParCave[categorieActive] || {};
-        // On affiche tous les articles du catalogue qui ont un stock dans cette cave (ou tout le catalogue si vous préférez)
         Object.keys(catalogueArticles).forEach(code => {
             const infos = catalogueArticles[code];
             const stockQte = stocksCave[code] || 0;
@@ -1482,7 +1019,6 @@ function render() {
             });
         });
     }
-
     const valeurRecherche = document.getElementById("search")?.value || "";
     const rechercheCode = valeurRecherche.includes(" - ") ? valeurRecherche.split(" - ")[0].trim() : "";
     const rechercheTexte = valeurRecherche.includes(" - ") ? valeurRecherche.split(" - ").slice(1).join(" - ").toLowerCase().trim() : valeurRecherche.toLowerCase().trim();
@@ -1490,20 +1026,13 @@ function render() {
     const filtreCave = document.getElementById("filtreCave")?.value || "";
     const filtreCategorie = document.getElementById("filtreCategorie")?.value || localStorage.getItem("filtreCategorie") || "";
     const filtreStock = localStorage.getItem("filtreStock") ?? "";
+    const afficherZero = document.getElementById("afficherZero")?.checked || false;
 
-    // Récupération globale des mouvements depuis la clé dédiée
     let mouvements = JSON.parse(localStorage.getItem("mouvements")) || [];
-
     const categoriesProduits = [
         ...new Set(Object.values(catalogueArticles).map(a => a.categorie).filter(c => c))
     ].sort();
-
-    const fournisseurs = [
-        ...new Set(mouvements.map(m => m.fournisseur).filter(f => f))
-    ].sort();
-
     let html = "";
-
     if (categorieActive === "APPLICATIONS") {
         ouvrirApplications();
         return;
@@ -1516,8 +1045,7 @@ function render() {
         renderFournisseurs();
         return;
     }
-
-   if (categorieActive === "REMONTEES_EFFECTUEES") {
+    if (categorieActive === "REMONTEES_EFFECTUEES") {
         let remontees = getRemonteesEffectuees();
         if (ongletRemontees === "HDLP") {
             remontees = remontees.filter(r => r.type === "HDLP" || r.type === "REDESCENTE HDLP");
@@ -1528,20 +1056,15 @@ function render() {
         if (ongletRemontees === "BOUTIQUE") {
             remontees = remontees.filter(r => r.type === "BOUTIQUE" || r.type === "REDESCENTE BOUTIQUE");
         }
-
         let htmlRemontees = `
         <div class="card" style="border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); padding: 20px; background: #fff; box-sizing: border-box;">
             <h2 style="margin-top: 0; color: #333; font-size: 20px;">🍾 Remontées effectuées</h2>
             <br>
-
-            <!-- Barre d'onglets dynamique moderne -->
             <div style="display: flex; gap: 8px; margin-bottom: 15px;">
                 <button class="tab" style="flex: 1; height: 45px; font-size: 14px; font-weight: bold; border-radius: 6px; cursor: pointer; border: 1px solid #ced4da; background: ${ongletRemontees === 'HDLP' ? '#1976d2' : '#f8f9fa'}; color: ${ongletRemontees === 'HDLP' ? 'white' : '#333'};" onclick="ongletRemontees='HDLP';render();">🏨 HDLP</button>
                 <button class="tab" style="flex: 1; height: 45px; font-size: 14px; font-weight: bold; border-radius: 6px; cursor: pointer; border: 1px solid #ced4da; background: ${ongletRemontees === 'RCLP' ? '#ff9800' : '#f8f9fa'}; color: ${ongletRemontees === 'RCLP' ? 'white' : '#333'};" onclick="ongletRemontees='RCLP';render();">🍴 RCLP</button>
                 <button class="tab" style="flex: 1; height: 45px; font-size: 14px; font-weight: bold; border-radius: 6px; cursor: pointer; border: 1px solid #ced4da; background: ${ongletRemontees === 'BOUTIQUE' ? '#e91e63' : '#f8f9fa'}; color: ${ongletRemontees === 'BOUTIQUE' ? 'white' : '#333'};" onclick="ongletRemontees='BOUTIQUE';render();">🛍️ Boutique</button>
             </div>
-
-            <!-- Filtres de recherche et de date -->
             <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px;">
                 <div>
                     <label style="font-size: 12px; font-weight: bold; color: #495057; display: block; margin-bottom: 4px;">📅 Date de recherche</label>
@@ -1554,11 +1077,9 @@ function render() {
             </div>
         </div>
         `;
-
         const dateRecherche = document.getElementById("filtreDateRemontees")?.value || "";
         const rechercheArticle = (document.getElementById("filtreArticleRemontees")?.value || "").toLowerCase();
         const validations = {};
-
         remontees.forEach(r => {
             const id = r.validationId || "sansValidation";
             if (dateRecherche && String(r.date || "").substring(0, 10) !== dateRecherche) return;
@@ -1568,12 +1089,10 @@ function render() {
             }
             validations[id].lignes.push(r);
         });
-
         Object.entries(validations).reverse().forEach(([id, validation]) => {
             const heure = validation.dateHeure ? new Date(validation.dateHeure).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }) : "--:--";
             const total = validation.lignes.reduce((s, r) => s + Number(r.quantite || 0), 0);
             const estOuvert = validationOuverte === id;
-
             htmlRemontees += `
             <div class="card" style="border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); padding: 15px; margin-bottom: 15px; background: #fff; box-sizing: border-box;">
                 <button style="width:100%; text-align:left; padding: 12px 15px; font-size: 15px; font-weight: bold; background: ${estOuvert ? '#e7f1ff' : '#f8f9fa'}; color: #333; border: 1px solid #ced4da; border-radius: 8px; cursor: pointer; display: flex; justify-content: space-between; align-items: center;" onclick="validationOuverte = validationOuverte === '${id}' ? null : '${id}'; render();">
@@ -1586,7 +1105,6 @@ function render() {
                     <span style="font-size: 16px;">${estOuvert ? '🔽' : '▶️'}</span>
                 </button>
             `;
-
             if (estOuvert) {
                 htmlRemontees += `
                 <div style="margin-top: 15px;">
@@ -1595,7 +1113,6 @@ function render() {
                     </button>
                 </div>
                 `;
-
                 validation.lignes.forEach(ligne => {
                     htmlRemontees += `
                     <div style="border: 1px solid #e9ecef; border-radius: 8px; padding: 12px; margin-top: 10px; background: #fcfcfc;">
@@ -1604,7 +1121,6 @@ function render() {
                             Code : ${ligne.code}
                         </span>
                         <br><br>
-
                         <div style="display: flex; flex-direction: column; gap: 10px;">
                             <div>
                                 <label style="font-size: 12px; font-weight: bold; color: #495057; display: block; margin-bottom: 4px;">Cave de destination</label>
@@ -1618,16 +1134,13 @@ function render() {
                                     <option value="RCLP ALCOOL" ${ligne.cave === "RCLP ALCOOL" ? "selected" : ""}>RCLP ALCOOL</option>
                                 </select>
                             </div>
-
                             <div style="font-size: 13px; color: #555;">
                                 Type : <b>${ligne.type}</b>
                             </div>
-
                             <div>
                                 <label style="font-size: 12px; font-weight: bold; color: #495057; display: block; margin-bottom: 4px;">Quantité</label>
                                 <input type="number" id="quantite_${ligne.id}" value="${ligne.quantite}" style="width: 100%; padding: 8px; border: 1px solid #ced4da; border-radius: 6px; font-size: 15px; box-sizing: border-box; text-align: center;">
                             </div>
-
                             <div style="display: flex; gap: 8px; margin-top: 5px;">
                                 <button onclick="modifierRemontee('${ligne.id}')" style="flex: 1; background: #0d6efd; color: white; border: none; padding: 9px; font-weight: bold; border-radius: 6px; cursor: pointer;">
                                     💾 Enregistrer
@@ -1643,11 +1156,9 @@ function render() {
             }
             htmlRemontees += `</div>`;
         });
-
         document.getElementById("cards").innerHTML = htmlRemontees;
         return;
     }
-
     if (categorieActive === "DASHBOARD") {
         const categorieDashboard = localStorage.getItem("categorieDashboard") || "";
         const stockMiniDashboard = localStorage.getItem("stockMiniDashboard");
@@ -1657,13 +1168,10 @@ function render() {
         let totalArticles = Object.keys(catalogueArticles).length;
         let sansPrix = 0;
         let stockZero = 0;
-
-        // Calculs basés sur le Catalogue Unique et stockParCave
         Object.keys(catalogueArticles).forEach(code => {
             const art = catalogueArticles[code];
             const prix = Number(art.prix || 0);
             if (prix === 0) sansPrix++;
-
             let stockTotalArticle = 0;
             Object.keys(stockParCave).forEach(cave => {
                 const qte = Number(stockParCave[cave][code] || 0);
@@ -1672,31 +1180,24 @@ function render() {
                 if (cave.startsWith("HDLP")) valeurHDLP += val;
                 else if (cave.startsWith("RCLP")) valeurRCLP += val;
             });
-
             if (stockTotalArticle === 0) stockZero++;
         });
-
         if (valeurRecherche.trim() !== "") {
             let resultats = [];
             const dejaVus = new Set();
-
             Object.keys(catalogueArticles).forEach(code => {
                 const article = catalogueArticles[code];
                 const matchRecherche = (rechercheTexte !== "" && (article.article || "").toLowerCase().includes(rechercheTexte)) ||
                                        (rechercheCode !== "" && String(code) === rechercheCode);
-
                 if (!matchRecherche || dejaVus.has(code)) return;
                 dejaVus.add(code);
-
                 let stockHDLP = 0;
                 let stockRCLP = 0;
-
                 Object.keys(stockParCave).forEach(cave => {
                     const qte = Number(stockParCave[cave][code] || 0);
                     if (cave.startsWith("HDLP")) stockHDLP += qte;
                     if (cave.startsWith("RCLP")) stockRCLP += qte;
                 });
-
                 resultats.push({
                     article: article.article,
                     code: code,
@@ -1706,7 +1207,6 @@ function render() {
                     stockRCLP: stockRCLP
                 });
             });
-
             let htmlRecherche = "";
             resultats.forEach(r => {
                 htmlRecherche += `
@@ -1721,31 +1221,25 @@ function render() {
                 </div>
                 `;
             });
-
           
-          document.getElementById("cards").innerHTML = htmlRecherche;
+            document.getElementById("cards").innerHTML = htmlRecherche;
             return;
         }
-
         let analyseCategorie = "";
         if (categorieDashboard) {
             Object.keys(catalogueArticles).forEach(code => {
                 const article = catalogueArticles[code];
                 if (article.categorie !== categorieDashboard) return;
-
                 let stockHDLP = 0;
                 let stockRCLP = 0;
-
                 Object.keys(stockParCave).forEach(c => {
                     const qte = Number(stockParCave[c][code] || 0);
                     if (c.startsWith("HDLP")) stockHDLP += qte;
                     if (c.startsWith("RCLP")) stockRCLP += qte;
                 });
-
                 if (stockMiniDashboard !== null && stockMiniDashboard !== "" && stockHDLP < Number(stockMiniDashboard) && stockRCLP < Number(stockMiniDashboard)) {
                     return;
                 }
-
                 analyseCategorie += `
                 <div class="card" style="width:100%; box-sizing:border-box;">
                     <b>${article.article}</b><br><br>
@@ -1756,10 +1250,7 @@ function render() {
                 `;
             });
         }
-
         document.getElementById("cards").innerHTML = `
-     
-
         <div style="margin-left:-10px; margin-right:-10px; background:white; border-radius:12px; box-shadow:0 2px 6px rgba(0,0,0,.15); margin-bottom:10px; overflow:hidden;">
             <button onclick="toggleAnalyse()" style="width:100%; min-height:80px; font-size:22px; font-weight:bold; border:none; border-radius:0; background:#f8f9fa; cursor:pointer; margin:0; display:block; box-sizing:border-box;">
                 ${analyseOuverte ? "🔽" : "▶️"} Analyse par catégorie
@@ -1780,7 +1271,6 @@ function render() {
             </div>
             ` : ""}
         </div>
-
         <div class="card">
             <h2>🏨 HDLP</h2> Valeur du stock :<br><br><strong>${valeurHDLP.toFixed(2)} €</strong>
         </div>
@@ -1798,11 +1288,9 @@ function render() {
         </div>
         ${analyseCategorie}
         `;
-
         renderOnglets();
         return;
     }
-
     if (categorieActive === "TOUS_HDLP" || categorieActive === "TOUS_RCLP") {
         html += `
         <div class="card">
@@ -1818,224 +1306,181 @@ function render() {
         `;
     }
 
-liste
-        .filter(a => {
-            const matchRecherche = valeurRecherche === "" || String(a.code || "").includes(valeurRecherche.trim()) || (a.article || "").toLowerCase().includes(valeurRecherche.toLowerCase().trim());
-            const matchCave = !filtreCave || a.cave === filtreCave;
-            const matchCategorie = !filtreCategorie || a.categorie === filtreCategorie;
-            const matchStock = filtreStock === "" || Number(a.stock || 0) >= Number(filtreStock);
-            return matchRecherche && matchCave && matchCategorie && matchStock;
-        })
-        .forEach(a => {
-            const valeur = (Number(a.stock) || 0) * (Number(a.prix) || 0);
-            const estRCLP = String(a.cave || categorieActive).includes("RCLP");
-            
-            html += `
-            <div class="card" style="border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); padding: 16px; margin-bottom: 15px; background: #fff; box-sizing: border-box;">
-                <!-- En-tête : Nom & Code -->
-                <div style="margin-bottom: 10px;">
-                    <h3 style="margin: 0 0 6px 0; font-size: 17px; color: #333;">${a.article}</h3>
-                    <div style="display: flex; flex-wrap: wrap; gap: 6px;">
-                        <span style="background: #f1f3f5; padding: 3px 8px; border-radius: 5px; font-size: 12px; color: #495057; font-weight: 600;">
-                            Code : ${a.code}
-                        </span>
-                        <span style="background: #e2f0d9; padding: 3px 8px; border-radius: 5px; font-size: 12px; color: #2b542c; font-weight: 600;">
-                            Cat. : ${a.categorie || "-"}
-                        </span>
-                        ${categorieActive === "TOUS_HDLP" || categorieActive === "TOUS_RCLP" ? `
-                        <span style="background: #e7f1ff; padding: 3px 8px; border-radius: 5px; font-size: 12px; color: #0d6efd; font-weight: 600;">
-                            Cave : ${a.cave}
-                        </span>` : ""}
-                    </div>
-                </div>
+    const listeFiltree = liste.filter(a => {
+        const qte = Number(a.stock || 0);
+        const matchZero = afficherZero || qte > 0;
+        const matchRecherche = valeurRecherche === "" || String(a.code || "").includes(valeurRecherche.trim()) || (a.article || "").toLowerCase().includes(valeurRecherche.toLowerCase().trim());
+        const matchCave = !filtreCave || a.cave === filtreCave;
+        const matchCategorie = !filtreCategorie || a.categorie === filtreCategorie;
+        const matchStock = filtreStock === "" || qte >= Number(filtreStock);
+        return matchZero && matchRecherche && matchCave && matchCategorie && matchStock;
+    });
 
-                <hr style="border: none; border-top: 1px solid #eee; margin: 12px 0;">
-
-                <!-- Grille de saisie Stock & Prix -->
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
-                    <div>
-                        <label style="font-size: 12px; font-weight: bold; color: #495057; display: block; margin-bottom: 4px;">📦 Stock</label>
-                        <input type="number" value="${a.stock || 0}" style="width: 100%; padding: 8px; font-size: 16px; border: 1px solid #ced4da; border-radius: 6px; box-sizing: border-box; text-align: center;" onchange="
-                            if(!stockParCave['${a.cave || categorieActive}']) stockParCave['${a.cave || categorieActive}'] = {};
-                            const qte = Number(this.value);
-                            if(qte === 0) {
-                                delete stockParCave['${a.cave || categorieActive}']['${a.code}'];
-                            } else {
-                                stockParCave['${a.cave || categorieActive}']['${a.code}'] = qte;
-                            }
-                            save();
-                            render();
-                        ">
-                    </div>
-                    <div>
-                        <label style="font-size: 12px; font-weight: bold; color: #495057; display: block; margin-bottom: 4px;">💶 Prix (€)</label>
-                        <input type="number" step="0.01" value="${a.prix || 0}" style="width: 100%; padding: 8px; font-size: 16px; border: 1px solid #ced4da; border-radius: 6px; box-sizing: border-box; text-align: center;" onchange="
-                            const nouveauPrix = Number(this.value);
-                            if(catalogueArticles['${a.code}']) {
-                                catalogueArticles['${a.code}'].prix = nouveauPrix;
-                            }
-                            save();
-                            render();
-                        ">
-                    </div>
-                </div>
-
-                <!-- Bandeau Valeur totale -->
-                <div style="background: #f8f9fa; padding: 8px 12px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 14px;">
-                    <span style="color: #666;">Valeur totale :</span>
-                    <span style="color: ${Number(a.stock) < 0 ? '#dc3545' : '#1976d2'}; font-weight: bold; font-size: 15px;">
-                        ${valeur.toFixed(2)} €
+    listeFiltree.forEach(a => {
+        const valeur = (Number(a.stock) || 0) * (Number(a.prix) || 0);
+        const estRCLP = String(a.cave || categorieActive).includes("RCLP");
+        
+        html += `
+        <div class="card" style="border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); padding: 16px; margin-bottom: 15px; background: #fff; box-sizing: border-box;">
+            <div style="margin-bottom: 10px;">
+                <h3 style="margin: 0 0 6px 0; font-size: 17px; color: #333;">${a.article}</h3>
+                <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                    <span style="background: #f1f3f5; padding: 3px 8px; border-radius: 5px; font-size: 12px; color: #495057; font-weight: 600;">
+                        Code : ${a.code}
                     </span>
-                </div>
-
-                <!-- Boutons d'action -->
-                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                    <button onclick="modifierArticle('${a.code}')" style="flex: 1; min-width: 90px; background: #6c757d; color: white; border: none; padding: 9px; font-weight: bold; border-radius: 6px; cursor: pointer;">
-                        ✏️ Modifier
-                    </button>
-                    <button onclick="transfererArticle('${a.code}', '${a.cave || categorieActive}')" style="flex: 1; min-width: 90px; background: #0d6efd; color: white; border: none; padding: 9px; font-weight: bold; border-radius: 6px; cursor: pointer;">
-                        🔄 Transférer
-                    </button>
-                    ${estRCLP ? `
-                    <button onclick="transfertCoupe('${a.code}', '${a.cave || categorieActive}')" style="background: #ffc107; color: #000; border: none; padding: 9px 12px; font-weight: bold; border-radius: 6px; cursor: pointer;">
-                        🥂 Coupe
-                    </button>` : ""}
+                    <span style="background: #e2f0d9; padding: 3px 8px; border-radius: 5px; font-size: 12px; color: #2b542c; font-weight: 600;">
+                        Cat. : ${a.categorie || "-"}
+                    </span>
+                    ${categorieActive === "TOUS_HDLP" || categorieActive === "TOUS_RCLP" ? `
+                    <span style="background: #e7f1ff; padding: 3px 8px; border-radius: 5px; font-size: 12px; color: #0d6efd; font-weight: 600;">
+                        Cave : ${a.cave}
+                    </span>` : ""}
                 </div>
             </div>
-            `;
-        });
+            <hr style="border: none; border-top: 1px solid #eee; margin: 12px 0;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
+                <div>
+                    <label style="font-size: 12px; font-weight: bold; color: #495057; display: block; margin-bottom: 4px;">📦 Stock</label>
+                    <input type="number" value="${a.stock || 0}" style="width: 100%; padding: 8px; font-size: 16px; border: 1px solid #ced4da; border-radius: 6px; box-sizing: border-box; text-align: center;" onchange="
+                        if(!stockParCave['${a.cave || categorieActive}']) stockParCave['${a.cave || categorieActive}'] = {};
+                        const qte = Number(this.value);
+                        if(qte === 0) {
+                            delete stockParCave['${a.cave || categorieActive}']['${a.code}'];
+                        } else {
+                            stockParCave['${a.cave || categorieActive}']['${a.code}'] = qte;
+                        }
+                        save();
+                        render();
+                    ">
+                </div>
+                <div>
+                    <label style="font-size: 12px; font-weight: bold; color: #495057; display: block; margin-bottom: 4px;">💶 Prix (€)</label>
+                    <input type="number" step="0.01" value="${a.prix || 0}" style="width: 100%; padding: 8px; font-size: 16px; border: 1px solid #ced4da; border-radius: 6px; box-sizing: border-box; text-align: center;" onchange="
+                        const nouveauPrix = Number(this.value);
+                        if(catalogueArticles['${a.code}']) {
+                            catalogueArticles['${a.code}'].prix = nouveauPrix;
+                        }
+                        save();
+                        render();
+                    ">
+                </div>
+            </div>
+            <div style="background: #f8f9fa; padding: 8px 12px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 14px;">
+                <span style="color: #666;">Valeur totale :</span>
+                <span style="color: ${Number(a.stock) < 0 ? '#dc3545' : '#1976d2'}; font-weight: bold; font-size: 15px;">
+                    ${valeur.toFixed(2)} €
+                </span>
+            </div>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <button onclick="modifierArticle('${a.code}')" style="flex: 1; min-width: 90px; background: #6c757d; color: white; border: none; padding: 9px; font-weight: bold; border-radius: 6px; cursor: pointer;">
+                    ✏️ Modifier
+                </button>
+                <button onclick="transfererArticle('${a.code}', '${a.cave || categorieActive}')" style="flex: 1; min-width: 90px; background: #0d6efd; color: white; border: none; padding: 9px; font-weight: bold; border-radius: 6px; cursor: pointer;">
+                    🔄 Transférer
+                </button>
+                ${estRCLP ? `
+                <button onclick="transfertCoupe('${a.code}', '${a.cave || categorieActive}')" style="background: #ffc107; color: #000; border: none; padding: 9px 12px; font-weight: bold; border-radius: 6px; cursor: pointer;">
+                    🥂 Coupe
+                </button>` : ""}
+            </div>
+        </div>
+        `;
+    });
 
     let totalStock = 0;
     let totalValeur = 0;
-
-    liste.forEach(a => {
+    listeFiltree.forEach(a => {
         totalStock += Number(a.stock || 0);
         totalValeur += Number(a.stock || 0) * Number(a.prix || 0);
     });
-
     html += `
     <div class="card">
         <b>RÉCAPITULATIF</b><br><br>
-        Articles : ${liste.length}<br>
-        Articles avec stock : ${liste.filter(a => Number(a.stock) > 0).length}<br>
+        Articles affichés : ${listeFiltree.length}<br>
+        Articles avec stock : ${listeFiltree.filter(a => Number(a.stock) > 0).length}<br>
         Stock total : ${totalStock}<br>
         Valeur totale : ${totalValeur.toFixed(2)} €
     </div>
     `;
-
     document.getElementById("cards").innerHTML = html;
 }
 function supprimerValidation(validationId){
     if(!confirm("Supprimer toute la validation ?")){
         return;
     }
-
     let remontees = getRemonteesEffectuees();
-
     remontees
     .filter(r => r.validationId === validationId)
     .forEach(ligne => {
         annulerImpactStock(ligne);
     });
-
     save();
-
     remontees = remontees.filter(r => r.validationId !== validationId);
     saveRemonteesEffectuees(remontees);
-
     validationOuverte = null;
     render();
 }
-
 function estRedescente(type){
     return String(type).startsWith("REDESCENTE");
 }
-
 function annulerImpactStock(ligne){
     const cave = ligne.caveOrigine || ligne.cave;
     const code = ligne.code;
     const qte = Number(ligne.quantiteOrigine ?? ligne.quantite ?? 0);
-
     if(!cave || !code) return;
-
     if(!stockParCave[cave]) stockParCave[cave] = {};
     const stockActuel = Number(stockParCave[cave][code] || 0);
-
-    // Si c'était une redescente, elle avait rajouté du stock, donc on l'enlève. Si c'était une remontée, elle avait retiré du stock, donc on le remet.
     const delta = estRedescente(ligne.type) ? -qte : qte;
     const nouveauStock = stockActuel + delta;
-
     if(nouveauStock === 0){
         delete stockParCave[cave][code];
     } else {
         stockParCave[cave][code] = nouveauStock;
     }
 }
-
 function appliquerImpactStock(ligne){
     const cave = ligne.cave;
     const code = ligne.code;
     const qte = Number(ligne.quantite || 0);
-
     if(!cave || !code) return;
-
     if(!stockParCave[cave]) stockParCave[cave] = {};
     const stockActuel = Number(stockParCave[cave][code] || 0);
-
-    // Une redescente rajoute du stock, une remontée en retire
     const delta = estRedescente(ligne.type) ? qte : -qte;
     const nouveauStock = stockActuel + delta;
-
     if(nouveauStock === 0){
         delete stockParCave[cave][code];
     } else {
         stockParCave[cave][code] = nouveauStock;
     }
 }
-
 function supprimerRemontee(id){
     if(!confirm("Supprimer cet article ?")){
         return;
     }
-
     let remontees = getRemonteesEffectuees();
     const ligne = remontees.find(r => r.id === id);
-
     if(ligne){
         annulerImpactStock(ligne);
         save();
     }
-
     remontees = remontees.filter(r => r.id !== id);
     saveRemonteesEffectuees(remontees);
-
     render();
 }
-
 function modifierRemontee(id){
     const remontees = getRemonteesEffectuees();
     const ligne = remontees.find(r => r.id === id);
-
     if(!ligne){
         return;
     }
-
-    // 1. On annule l'ancien impact
     annulerImpactStock(ligne);
-
-    // 2. On met à jour avec les nouvelles valeurs du formulaire
     ligne.cave = document.getElementById("cave_" + id).value;
     ligne.quantite = Number(document.getElementById("quantite_" + id).value || 0);
-
-    // 3. On applique le nouvel impact
     appliquerImpactStock(ligne);
-
     ligne.caveOrigine = ligne.cave;
     ligne.quantiteOrigine = ligne.quantite;
-
     save();
     saveRemonteesEffectuees(remontees);
-
     alert("Modification enregistrée");
     render();
 }
@@ -2045,26 +1490,19 @@ function exportHistoriqueExcel(){
     const filtreFournisseur = localStorage.getItem("filtreFournisseur") || "";
     const filtreDateDebut = localStorage.getItem("filtreDateDebut") || "";
     const filtreDateFin = localStorage.getItem("filtreDateFin") || "";
-
-    // On récupère l'historique depuis la clé globale centralisée
     const mouvementsGlobal = JSON.parse(localStorage.getItem("mouvements")) || [];
     let exportData = [];
-
     mouvementsGlobal.forEach(m => {
         const cave = m.cave || "";
-
         if(filtreSite && !cave.startsWith(filtreSite)){
             return;
         }
-
         if(filtreType && !String(m.type).includes(filtreType)){
             return;
         }
-
         if(filtreFournisseur && String(m.fournisseur || "").toUpperCase() !== String(filtreFournisseur).toUpperCase()){
             return;
         }
-
         let dateMouvement = "";
         if(String(m.date).includes("/")){
             const morceaux = m.date.split(" ")[0].split("/");
@@ -2074,15 +1512,12 @@ function exportHistoriqueExcel(){
         } else {
             dateMouvement = String(m.date).substring(0,10);
         }
-
         if(filtreDateDebut && dateMouvement < filtreDateDebut){
             return;
         }
-
         if(filtreDateFin && dateMouvement > filtreDateFin){
             return;
         }
-
         exportData.push({
             Date: m.date,
             Article: m.article,
@@ -2094,36 +1529,27 @@ function exportHistoriqueExcel(){
             Fournisseur: m.fournisseur || ""
         });
     });
-
     if(exportData.length === 0){
         alert("Aucun mouvement à exporter");
         return;
     }
-
     const wb = XLSX.utils.book_new();
     const ws = XLSX.utils.json_to_sheet(exportData);
     XLSX.utils.book_append_sheet(wb, ws, "Historique");
-
     const maintenant = new Date();
     const fichier = "historique-stock-" +
         maintenant.getFullYear() + "-" +
         String(maintenant.getMonth()+1).padStart(2,"0") + "-" +
         String(maintenant.getDate()).padStart(2,"0") + ".xlsx";
-
     XLSX.writeFile(wb, fichier);
 }
-
 function importerExcel(event){
     const file = event.target.files[0];
     if(!file) return;
-
     const reader = new FileReader();
     reader.onload = function(e){
-        alert("DEBUT IMPORT");
-
         const workbook = XLSX.read(e.target.result, { type: "array" });
         
-        // Réinitialisation propre des structures vers le nouveau format léger
         catalogueArticles = {};
         stockParCave = {
             "HDLP MINI BAR": {},
@@ -2134,34 +1560,20 @@ function importerExcel(event){
             "RCLP SOFT": {},
             "RCLP VIN": {}
         };
- function importerFeuille(nomFeuille, categorie) {
+
+        function importerFeuille(nomFeuille, categorie) {
             const sheet = workbook.Sheets[nomFeuille];
             if (!sheet) {
                 console.log("Feuille introuvable :", nomFeuille);
                 return;
             }
-
             const rows = XLSX.utils.sheet_to_json(sheet, { defval: "" });
-
             rows.forEach(row => {
                 const code = String(row.NA || row.CODE || "").trim();
                 if (!code) return;
-
-                // On cherche si l'article existait déjà dans l'ancien catalogue ou les anciennes structures pour récupérer ses infos
-                // (ancienStock était un objet de catégories contenant des tableaux d'articles dans la fonction parente, ou on regarde catalogueArticles directement)
-                let ancienArticle = catalogueArticles[code];
-                if (!ancienArticle) {
-                    // Recherche de secours dans l'ancien format si présent
-                    Object.keys(ancienStock).forEach(cat => {
-                        const trouve = (ancienStock[cat] || []).find(a => String(a.code) === String(code));
-                        if (trouve) ancienArticle = trouve;
-                    });
-                }
-
+                const ancienArticle = catalogueArticles[code];
                 const colisage = Number(ancienArticle?.colisage || 1);
                 const stockInventaire = (Number(row.PAQUET || 0) * colisage) + Number(row.PIECE || 0);
-
-                // 1. Remplissage ou mise à jour du Catalogue Unique (les infos ne sont écrites qu'une seule fois)
                 if (!catalogueArticles[code]) {
                     catalogueArticles[code] = {
                         code: code,
@@ -2173,16 +1585,12 @@ function importerExcel(event){
                         colisage: colisage
                     };
                 }
-
-                // 2. Enregistrement de la quantité dans la cave spécifique
                 if (!stockParCave[categorie]) stockParCave[categorie] = {};
                 if (stockInventaire > 0) {
                     stockParCave[categorie][code] = stockInventaire;
                 } else {
-                    delete stockParCave[categorie][code]; // On évite de stocker des zéros inutiles
+                    delete stockParCave[categorie][code];
                 }
-
-                // Mémorisation de la cave pour cet article
                 memoCaves[code] = categorie;
             });
         }
@@ -2195,22 +1603,12 @@ function importerExcel(event){
         importerFeuille("INVENTAIRE RCLP CAVE SOFT", "RCLP SOFT");
         importerFeuille("INVENTAIRE RCLP CAVE VIN", "RCLP VIN");
 
-        alert("AVANT SAVE");
-        
         save();
         localStorage.removeItem("inventaireHDLP");
-        
-        alert("APRES SAVE");
-
-        const stockCode60 = stockParCave["HDLP BAR"]?.["60"] || 0;
-        alert("Vérification stock code 60 : " + (stockCode60 > 0 ? stockCode60 : "introuvable"));
-
         mettreAJourSuggestions();
         render();
-
         alert("✅ Inventaire importé");
     };
-
     reader.readAsArrayBuffer(file);
 }
 function renderArticles(){
@@ -2218,8 +1616,6 @@ function renderArticles(){
     <div class="card" style="border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); padding: 20px; background: #fff; box-sizing: border-box;">
         <h2 style="margin-top: 0; color: #333; font-size: 20px;">📦 Gestion des articles</h2>
         <br>
-
-        <!-- Barre de recherche moderne -->
         <div style="margin-bottom: 15px;">
             <input
             id="rechercheArticleMaster"
@@ -2227,8 +1623,6 @@ function renderArticles(){
             oninput="afficherArticlesMaster()"
             style="width: 100%; padding: 10px; font-size: 16px; border: 1px solid #ced4da; border-radius: 6px; box-sizing: border-box;">
         </div>
-
-        <!-- Bouton Nouvel article -->
         <div style="margin-bottom: 20px;">
             <button
             onclick="nouvelArticle()"
@@ -2236,13 +1630,11 @@ function renderArticles(){
                 ➕ Nouvel article
             </button>
         </div>
-
         <div id="listeArticlesMaster"></div>
     </div>
     `;
     afficherArticlesMaster();
 }
-
 function afficherArticlesMaster(){
     const recherche = document.getElementById("rechercheArticleMaster")?.value?.toLowerCase() || "";
     let html = "";
@@ -2256,16 +1648,12 @@ function afficherArticlesMaster(){
         ){
             return;
         }
-
         html += `
         <div class="card" style="border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); padding: 16px; margin-bottom: 15px; background: #fff; box-sizing: border-box;">
-            <!-- Titre / Nom de l'article -->
             <div style="margin-bottom: 12px;">
                 <label style="font-size: 12px; font-weight: bold; color: #495057; display: block; margin-bottom: 4px;">🏷️ Désignation article</label>
                 <input value="${article.article || ''}" onchange="modifierArticleMaster('${code}', 'article', this.value)" style="width: 100%; padding: 9px; font-size: 16px; border: 1px solid #ced4da; border-radius: 6px; box-sizing: border-box; font-weight: bold; color: #333;">
             </div>
-
-            <!-- Grille Code & Code Fournisseur -->
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
                 <div>
                     <label style="font-size: 12px; font-weight: bold; color: #495057; display: block; margin-bottom: 4px;">🔑 Code unique</label>
@@ -2276,8 +1664,6 @@ function afficherArticlesMaster(){
                     <input value="${article.codeFournisseur || ''}" onchange="modifierArticleMaster('${code}', 'codeFournisseur', this.value)" style="width: 100%; padding: 8px; font-size: 15px; border: 1px solid #ced4da; border-radius: 6px; box-sizing: border-box;">
                 </div>
             </div>
-
-            <!-- Grille Fournisseur & Catégorie -->
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
                 <div>
                     <label style="font-size: 12px; font-weight: bold; color: #495057; display: block; margin-bottom: 4px;">🏢 Fournisseur</label>
@@ -2288,8 +1674,6 @@ function afficherArticlesMaster(){
                     <input list="listeCategoriesMaster" value="${article.categorie || ''}" onchange="modifierArticleMaster('${code}', 'categorie', this.value)" style="width: 100%; padding: 8px; font-size: 15px; border: 1px solid #ced4da; border-radius: 6px; box-sizing: border-box;">
                 </div>
             </div>
-
-            <!-- Grille Prix & Colisage -->
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 5px;">
                 <div>
                     <label style="font-size: 12px; font-weight: bold; color: #495057; display: block; margin-bottom: 4px;">💶 Prix pièce (€)</label>
@@ -2303,7 +1687,6 @@ function afficherArticlesMaster(){
         </div>
         `;
     });
-
     const fournisseursList = [...new Set(Object.values(catalogueArticles).map(a => a.fournisseur).filter(f => f))].sort();
     const categoriesList = [...new Set(Object.values(catalogueArticles).map(a => a.categorie).filter(c => c))].sort();
     
@@ -2321,7 +1704,6 @@ function afficherArticlesMaster(){
 function modifierArticleMaster(codeActuel, champ, valeur){
     let article = catalogueArticles[codeActuel];
     if(!article) return;
-
     if(champ === "code"){
         const nouveauCode = String(valeur).trim();
         if(!nouveauCode || catalogueArticles[nouveauCode]) {
@@ -2329,11 +1711,8 @@ function modifierArticleMaster(codeActuel, champ, valeur){
             afficherArticlesMaster();
             return;
         }
-        // Si le code change, on déplace l'article dans l'objet catalogue
         catalogueArticles[nouveauCode] = { ...article, code: nouveauCode };
         delete catalogueArticles[codeActuel];
-
-        // On met aussi à jour les clés dans les stocks par cave et memoCaves si nécessaire
         Object.keys(stockParCave).forEach(cave => {
             if(stockParCave[cave][codeActuel] !== undefined) {
                 stockParCave[cave][nouveauCode] = stockParCave[cave][codeActuel];
@@ -2347,26 +1726,20 @@ function modifierArticleMaster(codeActuel, champ, valeur){
     } else {
         article[champ] = (champ === "prix" || champ === "colisage") ? Number(valeur) : valeur;
     }
-
     save();
     mettreAJourSuggestions();
     afficherArticlesMaster();
 }
-
 function nouvelArticle(){
     const code = prompt("Code article");
     if(!code) return;
-
     const trimmedCode = String(code).trim();
     if(catalogueArticles[trimmedCode]){
         alert("Un article avec ce code existe déjà !");
         return;
     }
-
     const nom = prompt("Nom article");
     if(!nom) return;
-
-    // Création unique dans le catalogue (plus besoin de dupliquer dans 7 tableaux de caves !)
     catalogueArticles[trimmedCode] = {
         code: trimmedCode,
         article: nom,
@@ -2376,14 +1749,12 @@ function nouvelArticle(){
         codeFournisseur: "",
         colisage: 1
     };
-
     save();
     mettreAJourSuggestions();
     afficherArticlesMaster();
     alert("Article créé avec succès ✅");
 }
 function renderFournisseurs(){
-    // Extraction des fournisseurs depuis le catalogue unique
     Object.values(catalogueArticles).forEach(article => {
         const nom = String(article.fournisseur || "").trim();
         if(
@@ -2404,13 +1775,10 @@ function renderFournisseurs(){
         }
     });
     saveFournisseurs();
-
     document.getElementById("cards").innerHTML = `
     <div class="card" style="border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); padding: 20px; background: #fff; box-sizing: border-box;">
         <h2 style="margin-top: 0; color: #333; font-size: 20px;">🚚 Gestion des fournisseurs</h2>
         <br>
-
-        <!-- Barre de recherche moderne -->
         <div style="margin-bottom: 15px;">
             <input
             id="rechercheFournisseur"
@@ -2418,8 +1786,6 @@ function renderFournisseurs(){
             oninput="afficherFournisseurs()"
             style="width: 100%; padding: 10px; font-size: 16px; border: 1px solid #ced4da; border-radius: 6px; box-sizing: border-box;">
         </div>
-
-        <!-- Bouton Nouveau fournisseur moderne -->
         <div style="margin-bottom: 20px;">
             <button
             onclick="nouveauFournisseur()"
@@ -2427,40 +1793,31 @@ function renderFournisseurs(){
                 ➕ Nouveau fournisseur
             </button>
         </div>
-
         <div id="listeFournisseurs"></div>
     </div>
     `;
     afficherFournisseurs();
 }
-
 function analyserStockage() {
     const donnees = [];
-
     for (let i = 0; i < localStorage.length; i++) {
         const cle = localStorage.key(i);
         const taille = (localStorage.getItem(cle) || "").length;
         donnees.push({ cle, taille });
     }
-
     donnees.sort((a, b) => b.taille - a.taille);
-
     let rapport = "📦 TOP STOCKAGE\n\n";
     let total = 0;
-
     donnees.forEach(item => {
         total += item.taille;
         rapport += item.cle + " : " + (item.taille / 1024).toFixed(2) + " Ko\n";
     });
-
     rapport += "\nTOTAL : " + (total / 1024).toFixed(2) + " Ko";
     alert(rapport);
 }
-
 function nouveauFournisseur(){
     const nom = prompt("Nom du nouveau fournisseur :");
     if(!nom || nom.trim() === "") return;
-
     fournisseurs.push({
         id: Date.now().toString(),
         nom: nom.trim(),
@@ -2470,7 +1827,6 @@ function nouveauFournisseur(){
         bureau: "",
         email: ""
     });
-
     saveFournisseurs();
     afficherFournisseurs();
 }
@@ -2480,7 +1836,6 @@ function supprimerFournisseur(id){
     saveFournisseurs();
     afficherFournisseurs();
 }
-
 function afficherFournisseurs(){
     const recherche = document.getElementById("rechercheFournisseur")?.value?.toLowerCase() || "";
     let html = "";
@@ -2493,16 +1848,12 @@ function afficherFournisseurs(){
         ){
             return;
         }
-
         html += `
         <div class="card" style="border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); padding: 16px; margin-bottom: 15px; background: #fff; box-sizing: border-box;">
-            <!-- En-tête : Nom du fournisseur -->
             <div style="margin-bottom: 12px;">
                 <label style="font-size: 12px; font-weight: bold; color: #495057; display: block; margin-bottom: 4px;">🏢 Nom fournisseur</label>
                 <input value="${f.nom || ''}" onchange="modifierFournisseur('${f.id}', 'nom', this.value)" style="width: 100%; padding: 9px; font-size: 16px; border: 1px solid #ced4da; border-radius: 6px; box-sizing: border-box; font-weight: bold; color: #333;">
             </div>
-
-            <!-- Grille Numéro client & Représentant -->
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
                 <div>
                     <label style="font-size: 12px; font-weight: bold; color: #495057; display: block; margin-bottom: 4px;">🔖 N° client</label>
@@ -2513,10 +1864,7 @@ function afficherFournisseurs(){
                     <input value="${f.representant || ''}" onchange="modifierFournisseur('${f.id}', 'representant', this.value)" style="width: 100%; padding: 8px; font-size: 15px; border: 1px solid #ced4da; border-radius: 6px; box-sizing: border-box;">
                 </div>
             </div>
-
             <hr style="border: none; border-top: 1px solid #eee; margin: 12px 0;">
-
-            <!-- Section Téléphone Portable & Actions (Appel / SMS) -->
             <div style="margin-bottom: 12px;">
                 <label style="font-size: 12px; font-weight: bold; color: #495057; display: block; margin-bottom: 4px;">📱 Portable</label>
                 <input type="tel" value="${f.portable || ''}" onchange="modifierFournisseur('${f.id}', 'portable', this.value)" style="width: 100%; padding: 8px; font-size: 15px; border: 1px solid #ced4da; border-radius: 6px; box-sizing: border-box; margin-bottom: 8px;">
@@ -2530,14 +1878,10 @@ function afficherFournisseurs(){
                     </button>
                 </div>
             </div>
-
-            <!-- Téléphone Bureau -->
             <div style="margin-bottom: 12px;">
                 <label style="font-size: 12px; font-weight: bold; color: #495057; display: block; margin-bottom: 4px;">☎️ Téléphone bureau</label>
                 <input type="tel" inputmode="numeric" value="${f.bureau || ''}" onchange="modifierFournisseur('${f.id}', 'bureau', this.value)" style="width: 100%; padding: 8px; font-size: 15px; border: 1px solid #ced4da; border-radius: 6px; box-sizing: border-box;">
             </div>
-
-            <!-- Section E-mail & Action (Mail) -->
             <div style="margin-bottom: 15px;">
                 <label style="font-size: 12px; font-weight: bold; color: #495057; display: block; margin-bottom: 4px;">✉️ Adresse e-mail</label>
                 <input type="email" value="${f.email || ''}" onchange="modifierFournisseur('${f.id}', 'email', this.value)" style="width: 100%; padding: 8px; font-size: 15px; border: 1px solid #ced4da; border-radius: 6px; box-sizing: border-box; margin-bottom: 8px;">
@@ -2546,20 +1890,15 @@ function afficherFournisseurs(){
                     📧 Envoyer un mail
                 </button>
             </div>
-
             <hr style="border: none; border-top: 1px solid #eee; margin: 12px 0;">
-
-            <!-- Bouton de suppression -->
             <button type="button" style="width: 100%; height: 42px; background: #dc3545; color: white; font-weight: bold; border: none; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;" onclick="supprimerFournisseur('${f.id}')">
                 🗑️ Supprimer le fournisseur
             </button>
         </div>
         `;
     });
-
     document.getElementById("listeFournisseurs").innerHTML = html;
 }
-
 function renderStatsRemontees(site){
     document.getElementById("cards").innerHTML = `
     <div class="card">
@@ -2583,10 +1922,8 @@ function renderStatsRemontees(site){
     `;
 }
 function calculerStatsRemontees(site){
-    // Récupération de l'historique global des mouvements
     const mouvementsGlobal = JSON.parse(localStorage.getItem("mouvements")) || [];
     let mouvements = [];
-
     mouvementsGlobal.forEach(m => {
         if(
             String(m.origine || "").toUpperCase().includes("REMONTEE") &&
@@ -2602,19 +1939,14 @@ function calculerStatsRemontees(site){
             });
         }
     });
-
     const debut = document.getElementById("dateDebutRemontee").value;
     const fin = document.getElementById("dateFinRemontee").value;
-
     const ventesJour = {};
     const articles = {};
     const categoriesStats = {};
-
     let total = 0;
-
     mouvements.forEach(v => {
         let dateVente = "";
-
         if(String(v.date).includes("/")){
             const p = v.date.split(" ")[0].split("/");
             if(p.length === 3){
@@ -2623,37 +1955,29 @@ function calculerStatsRemontees(site){
         } else {
             dateVente = String(v.date).substring(0,10);
         }
-
         if(debut && dateVente < debut){
             return;
         }
-
         if(fin && dateVente > fin){
             return;
         }
-
         total += v.quantite;
-
         if(!articles[v.article]){
             articles[v.article] = 0;
         }
         articles[v.article] += v.quantite;
-
         if(!ventesJour[dateVente]){
             ventesJour[dateVente] = 0;
         }
         ventesJour[dateVente] += v.quantite;
-
         if(!categoriesStats[v.categorie]){
             categoriesStats[v.categorie] = 0;
         }
         categoriesStats[v.categorie] += v.quantite;
     });
-
     const top = Object.entries(articles)
         .sort((a,b)=>b[1]-a[1])
         .slice(0,35);
-
     let html = `
     <div class="card">
         <h2>📊 Résultat</h2>
@@ -2661,15 +1985,12 @@ function calculerStatsRemontees(site){
         <br><br>
         <h3>🏆 Top remontées</h3>
     `;
-
     top.forEach(t=>{
         const pourcentage = total > 0 ? ((t[1]/total)*100).toFixed(1) : 0;
         html += `${t[0]} : <b>${t[1]}</b> (${pourcentage}%)<br>`;
     });
-
     html += "</div>";
     document.getElementById("resultatStatsRemontee").innerHTML = html;
-
     const canvas = document.getElementById("graphRemontees");
     if(canvas){
         const ancien = Chart.getChart(canvas);
@@ -2707,14 +2028,11 @@ function calculerStatsRemontees(site){
         });
     }
 }
-
 function ouvrirGraphiquePleinEcran(id){
     const canvas = document.getElementById(id);
     if(!canvas) return;
-
     const image = canvas.toDataURL("image/png");
     const fenetre = window.open("","Graphique");
-
     fenetre.document.write(`
         <html>
         <head>
@@ -2726,21 +2044,18 @@ function ouvrirGraphiquePleinEcran(id){
         </html>
     `);
 }
-
 function mettreAJourStockJson(){
     const dataAExporter = {
         catalogue: catalogueArticles,
         stocks: stockParCave,
         memoCaves: memoCaves
     };
-
     const blob = new Blob([JSON.stringify(dataAExporter, null, 2)], { type: "application/json" });
     const lien = document.createElement("a");
     lien.href = URL.createObjectURL(blob);
     lien.download = "stock.json";
     lien.click();
 }
-
 function migrerRemontees(){
     const remontees = getRemonteesEffectuees();
     remontees.forEach(r => {
@@ -2754,31 +2069,18 @@ function migrerRemontees(){
     saveRemonteesEffectuees(remontees);
     alert("Migration terminée");
 }
-
 function getRemonteesEffectuees(){
     return JSON.parse(localStorage.getItem("remonteesEffectuees") || "[]");
 }
-
 function saveRemonteesEffectuees(data){
     if(data.length > 200){
         data = data.slice(0, 200);
     }
     localStorage.setItem("remonteesEffectuees", JSON.stringify(data));
 }
-
-function supprimerFournisseur(id){
-    if(!confirm("Supprimer ce fournisseur ?")){
-        return;
-    }
-    fournisseurs = fournisseurs.filter(f => String(f.id) !== String(id));
-    saveFournisseurs();
-    afficherFournisseurs();
-}
-
 // Initialisation au démarrage
 mettreAJourSuggestions();
 changerSite("DASHBOARD");
-
 console.log(
     "Stock code 60 (HDLP BAR) au démarrage :",
     stockParCave["HDLP BAR"]?.["60"] || "0 ou introuvable"
