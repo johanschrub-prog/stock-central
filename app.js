@@ -1758,11 +1758,7 @@ function render() {
         }
 
         document.getElementById("cards").innerHTML = `
-        <div class="card">
-            <button onclick="mettreAJourStockJson()" style="width:100%; height:70px; background:#28a745; color:white; font-size:22px; font-weight:bold; border:none; border-radius:8px;">
-                🔄 METTRE À JOUR STOCK.JSON
-            </button>
-        </div>
+     
 
         <div style="margin-left:-10px; margin-right:-10px; background:white; border-radius:12px; box-shadow:0 2px 6px rgba(0,0,0,.15); margin-bottom:10px; overflow:hidden;">
             <button onclick="toggleAnalyse()" style="width:100%; min-height:80px; font-size:22px; font-weight:bold; border:none; border-radius:0; background:#f8f9fa; cursor:pointer; margin:0; display:block; box-sizing:border-box;">
