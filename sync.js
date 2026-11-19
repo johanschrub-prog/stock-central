@@ -63,13 +63,10 @@ async function forcerEnvoiCloud() {
 // Récupérer les données (Supabase -> PC ou S26 Ultra)
 async function forcerSynchroCloud() {
     try {
-        const url = `${SUPABASE_URL}/rest/v1/stockcentral_sync?id=eq.${encodeURIComponent(SUPABASE_ROW_ID)}&select=payload,updated_at&t=${Date.now()}`;
+        const url = `${SUPABASE_URL}/rest/v1/stockcentral_sync?id=eq.${encodeURIComponent(SUPABASE_ROW_ID)}&select=payload,updated_at`;
         const res = await fetch(url, {
             method: "GET",
-            headers: {
-                "apikey": SUPABASE_ANON_KEY,
-                "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
-            },
+            headers: headersSupabase(false),
             cache: "no-store"
         });
 
