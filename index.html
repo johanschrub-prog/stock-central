@@ -4,14 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Stock Central</title>
-
     <!-- 1. Bibliothèques externes -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
     <!-- 2. Script de synchronisation Cloud (chargé en premier) -->
     <script src="sync.js"></script>
-
     <style>
         body {
             font-family: Segoe UI, sans-serif;
@@ -106,23 +103,18 @@
     </style>
 </head>
 <body>
-
 <header>
     <h2>📦 STOCK CENTRAL</h2>
 </header>
-
 <div id="ongletsPrincipaux" class="tabs"></div>
-
 <div id="sousOnglets" class="tabs"></div>
-
 <div class="toolbar">
     <input type="file" id="importStock" accept=".json" style="display:none" onchange="importStock(event)">
     
     <button id="flecheOutils" onclick="toggleOutils()" style="width:100%; min-height:60px; font-size:20px; font-weight:bold;">
         ▶️ Outils
     </button>
-
-   <div id="blocOutils" style="display:none; width:100%; margin-top:10px;">
+    <div id="blocOutils" style="display:none; width:100%; margin-top:10px;">
         <button onclick="forcerSynchroCloud()" style="background: #1976d2; color: white;">
             🔄 Synchroniser maintenant
         </button>
@@ -130,8 +122,7 @@
         <button onclick="forcerEnvoiCloud()" style="background: #2e7d32; color: white;">
             📤 Sauvegarder & Envoyer sur le Cloud
         </button>
-      </div>
-
+    </div>
     <div style="width:100%; display:flex; gap:10px; margin-top:10px;">
         <input id="search" list="listeProduits" placeholder="Recherche article ou code" onclick="this.select()" oninput="render()" style="flex:1;">
         
@@ -148,14 +139,17 @@
         
         <input type="file" id="importExcel" accept=".xlsx" style="display:none" onchange="importerExcel(event)">
     </div>
+    <div style="width:100%; display:flex; align-items:center; gap:8px; margin-top:6px;">
+        <input type="checkbox" id="afficherZero" onchange="render()" style="width:20px; height:20px; cursor:pointer;">
+        <label for="afficherZero" style="font-size:16px; font-weight:bold; cursor:pointer;">
+            Afficher tous les articles (même stock à 0)
+        </label>
+    </div>
 </div>
-
 <div id="cards" class="cards"></div>
-
 <button id="btnAccueil" onclick="location.href='https://johanschrub-prog.github.io/hotel-paix-hub/'">
     🏠
 </button>
-
 <div id="popupTransfert" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,.5); z-index:9999;">
     <div style="background:white; margin:20px; padding:15px; border-radius:12px;">
         <h3>🔄 Transfert de stock</h3>
@@ -177,7 +171,6 @@
         <button onclick="fermerTransfert()">❌ Annuler</button>
     </div>
 </div>
-
 <!-- 3. Scripts fonctionnels de l'application -->
 <script src="ventes.js"></script>
 <script src="remontee-hdlp.js"></script>
@@ -187,17 +180,14 @@
 <script src="stats.js"></script>
 <script src="fournisseurs.js"></script>
 <script src="app.js"></script>
-
 <!-- Script de gestion du menu Outils & Pont de secours mobile -->
 <script>
 let outilsOuverts = false;
-
 function toggleOutils(){
     outilsOuverts = !outilsOuverts;
     document.getElementById("blocOutils").style.display = outilsOuverts ? "flex" : "none";
     document.getElementById("flecheOutils").innerHTML = outilsOuverts ? "🔽 Outils" : "▶️ Outils";
 }
-
 function forcerEnvoiManuel() {
     let payload = {};
     const cles = [
@@ -212,7 +202,6 @@ function forcerEnvoiManuel() {
             try { payload[cle] = JSON.parse(val); } catch(e){ payload[cle] = val; }
         }
     });
-
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(payload, null, 2));
     const downloadAnchor = document.createElement('a');
     downloadAnchor.setAttribute("href", dataStr);
@@ -224,6 +213,5 @@ function forcerEnvoiManuel() {
     alert("✅ Fichier 'sauvegarde_s26.json' téléchargé sur votre téléphone !");
 }
 </script>
-
 </body>
 </html>
