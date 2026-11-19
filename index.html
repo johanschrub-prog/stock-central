@@ -122,29 +122,15 @@
         ▶️ Outils
     </button>
 
-    <div id="blocOutils" style="display:none; width:100%; margin-top:10px;">
+   <div id="blocOutils" style="display:none; width:100%; margin-top:10px;">
         <button onclick="forcerSynchroCloud()" style="background: #1976d2; color: white;">
             🔄 Synchroniser maintenant
         </button>
-        <button onclick="document.getElementById('importStock').click()">📂 Reprendre</button>
-        <button onclick="document.getElementById('importFournisseurs').click()">🏷️ Import Fournisseurs</button>
-        <button onclick="importCommandeHDLP()">🚚 Commandes HDLP</button>
-        <button onclick="importCommandeRCLP()">🚚 Commandes RCLP</button>
-        <button onclick="importRemonteeHDLP()">📥 Remontées HDLP</button>
-        <button onclick="importRemonteeRCLP()">📥 Remontées RCLP</button>
-        <button onclick="importVentesBoutique()">🛍️ Ventes Boutique</button>
         <button onclick="document.getElementById('importExcel').click()">📥 Import Inventaire</button>
-        <button onclick="ouvrirReceptionRapide()">📦 Réception rapide</button>
         <button onclick="forcerEnvoiCloud()" style="background: #2e7d32; color: white;">
             📤 Sauvegarder & Envoyer sur le Cloud
         </button>
-        <button onclick="remettreStocksAZero()">🧹 Remise à zéro des stocks</button>
-        
-        <!-- BOUTON DE TEST SYNCHRO MOBILE (Intégré dans les outils) -->
-        <button onclick="forcerEnvoiManuel()" style="background: #28a745; color: white; width: 100%;">
-            🚀 Pont de secours S26 Ultra vers Cloud
-        </button>
-    </div>
+      </div>
 
     <div style="width:100%; display:flex; gap:10px; margin-top:10px;">
         <input id="search" list="listeProduits" placeholder="Recherche article ou code" onclick="this.select()" oninput="render()" style="flex:1;">
